@@ -10,12 +10,13 @@ class FinanceTransaction extends Model
     protected $table = 'finance_transactions';
 
     protected $fillable = [
-        "finance_account_id",
-        "finance_category_id",
-        "amount",
-        "date",
-        "description",
-        "created_by",
+        'finance_account_id',
+        'finance_category_id',
+        'finance_type_id',
+        'amount',
+        'date',
+        'description',
+        'created_by',
     ];
 
     public function financeAccount()
@@ -26,6 +27,11 @@ class FinanceTransaction extends Model
     public function financeCategory()
     {
         return $this->belongsTo(FinanceCategory::class, 'finance_category_id');
+    }
+
+    public function financeType()
+    {
+        return $this->belongsTo(FinanceType::class, 'finance_type_id');
     }
 
     public function creator()

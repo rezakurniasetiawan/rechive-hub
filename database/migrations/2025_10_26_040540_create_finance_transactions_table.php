@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('amount', 10, 2);
             $table->dateTime('date');
             $table->text('description')->nullable();
+            $table->foreignId('finance_type_id')->constrained('finance_types')->onDelete('cascade');
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });

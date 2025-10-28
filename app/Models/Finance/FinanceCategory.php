@@ -11,12 +11,16 @@ class FinanceCategory extends Model
 
     protected $fillable = [
         'name',
-        'type',
         'color',
+        'finance_type_id',
         'created_by',
     ];
 
-    // relationship to User (creator)
+    public function financeType()
+    {
+        return $this->belongsTo(FinanceType::class, 'finance_type_id');
+    }
+
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');

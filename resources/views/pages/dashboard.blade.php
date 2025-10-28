@@ -11,71 +11,94 @@
                         Reload Data </a>
                 </div>
                 <div class="grid grid-cols-12 gap-6 mt-5">
+                    {{-- 💰 Total Balance --}}
                     <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
                         <div class="report-box zoom-in">
                             <div class="box p-5">
-                                <div class="flex">
-                                    <i data-feather="shopping-cart" class="report-box__icon text-theme-10"></i>
+                                <div class="flex items-center">
+                                    <i data-feather="dollar-sign" class="report-box__icon text-theme-10"></i>
                                     <div class="ml-auto">
                                         <div class="report-box__indicator bg-theme-9 tooltip cursor-pointer"
-                                            title="33% Higher than last month"> 33% <i data-feather="chevron-up"
-                                                class="w-4 h-4"></i> </div>
+                                            title="Updated automatically from accounts">
+                                            <i data-feather="refresh-ccw" class="w-4 h-4"></i>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="text-3xl font-bold leading-8 mt-6">4.510</div>
-                                <div class="text-base text-gray-600 mt-1">Item Sales</div>
+                                <div class="text-3xl font-bold leading-8 mt-6">
+                                    Rp{{ number_format($totalBalance ?? 0, 0, ',', '.') }}
+                                </div>
+                                <div class="text-base text-gray-600 mt-1">Total Balance</div>
                             </div>
                         </div>
                     </div>
+
+                    {{-- 📈 Income This Month --}}
                     <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
                         <div class="report-box zoom-in">
                             <div class="box p-5">
-                                <div class="flex">
-                                    <i data-feather="credit-card" class="report-box__icon text-theme-11"></i>
+                                <div class="flex items-center">
+                                    <i data-feather="trending-up" class="report-box__icon text-theme-9"></i>
+                                    <div class="ml-auto">
+                                        <div class="report-box__indicator bg-theme-9 tooltip cursor-pointer"
+                                            title="Total income this month">
+                                            +{{ $incomeGrowth ?? 0 }}% <i data-feather="chevron-up" class="w-4 h-4"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-3xl font-bold leading-8 mt-6">
+                                    Rp{{ number_format($incomeMonth ?? 0, 0, ',', '.') }}
+                                </div>
+                                <div class="text-base text-gray-600 mt-1">Income This Month</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- 📉 Expense This Month --}}
+                    <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                        <div class="report-box zoom-in">
+                            <div class="box p-5">
+                                <div class="flex items-center">
+                                    <i data-feather="trending-down" class="report-box__icon text-theme-6"></i>
                                     <div class="ml-auto">
                                         <div class="report-box__indicator bg-theme-6 tooltip cursor-pointer"
-                                            title="2% Lower than last month"> 2% <i data-feather="chevron-down"
-                                                class="w-4 h-4"></i> </div>
+                                            title="Total expenses this month">
+                                            -{{ $expenseGrowth ?? 0 }}% <i data-feather="chevron-down"
+                                                class="w-4 h-4"></i>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="text-3xl font-bold leading-8 mt-6">3.521</div>
-                                <div class="text-base text-gray-600 mt-1">New Orders </div>
+                                <div class="text-3xl font-bold leading-8 mt-6">
+                                    Rp{{ number_format($expenseMonth ?? 0, 0, ',', '.') }}
+                                </div>
+                                <div class="text-base text-gray-600 mt-1">Expense This Month</div>
                             </div>
                         </div>
                     </div>
+
+                    {{-- 🔄 Net Flow --}}
                     <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
                         <div class="report-box zoom-in">
                             <div class="box p-5">
-                                <div class="flex">
-                                    <i data-feather="monitor" class="report-box__icon text-theme-12"></i>
+                                <div class="flex items-center">
+                                    <i data-feather="bar-chart-2" class="report-box__icon text-theme-12"></i>
                                     <div class="ml-auto">
-                                        <div class="report-box__indicator bg-theme-9 tooltip cursor-pointer"
-                                            title="12% Higher than last month"> 12% <i data-feather="chevron-up"
-                                                class="w-4 h-4"></i> </div>
+                                        <div class="report-box__indicator {{ ($netFlow ?? 0) >= 0 ? 'bg-theme-9' : 'bg-theme-6' }} tooltip cursor-pointer"
+                                            title="Net flow = Income - Expense">
+                                            {{ ($netFlow ?? 0) >= 0 ? '+' : '' }}{{ $netGrowth ?? 0 }}%
+                                            <i data-feather="{{ ($netFlow ?? 0) >= 0 ? 'chevron-up' : 'chevron-down' }}"
+                                                class="w-4 h-4"></i>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="text-3xl font-bold leading-8 mt-6">2.145</div>
-                                <div class="text-base text-gray-600 mt-1">Total Products</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
-                        <div class="report-box zoom-in">
-                            <div class="box p-5">
-                                <div class="flex">
-                                    <i data-feather="user" class="report-box__icon text-theme-9"></i>
-                                    <div class="ml-auto">
-                                        <div class="report-box__indicator bg-theme-9 tooltip cursor-pointer"
-                                            title="22% Higher than last month"> 22% <i data-feather="chevron-up"
-                                                class="w-4 h-4"></i> </div>
-                                    </div>
+                                <div class="text-3xl font-bold leading-8 mt-6">
+                                    Rp{{ number_format($netFlow ?? 0, 0, ',', '.') }}
                                 </div>
-                                <div class="text-3xl font-bold leading-8 mt-6">152.000</div>
-                                <div class="text-base text-gray-600 mt-1">Unique Visitor</div>
+                                <div class="text-base text-gray-600 mt-1">Net Flow</div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
             <!-- END: General Report -->
             <!-- BEGIN: Sales Report -->
@@ -84,16 +107,17 @@
                     <h2 class="text-lg font-medium truncate mr-5">
                         Sales Report
                     </h2>
-                    <div class="sm:ml-auto mt-3 sm:mt-0 relative text-gray-700">
+                    {{-- <div class="sm:ml-auto mt-3 sm:mt-0 relative text-gray-700">
                         <i data-feather="calendar" class="w-4 h-4 z-10 absolute my-auto inset-y-0 ml-3 left-0"></i>
                         <input type="text" data-daterange="true" class="datepicker input w-full sm:w-56 box pl-10">
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="intro-y box p-5 mt-12 sm:mt-5">
                     <div class="flex flex-col xl:flex-row xl:items-center">
                         <div class="flex">
                             <div>
-                                <div class="text-theme-20 text-lg xl:text-xl font-bold">$15,000</div>
+                                <div class="text-theme-20 text-lg xl:text-xl font-bold">
+                                    Rp{{ number_format($expenseMonth ?? 0, 0, ',', '.') }}</div>
                                 <div class="text-gray-600">This Month</div>
                             </div>
                             <div class="w-px h-12 border border-r border-dashed border-gray-300 mx-4 xl:mx-6">
@@ -103,7 +127,7 @@
                                 <div class="text-gray-600">Last Month</div>
                             </div>
                         </div>
-                        <div class="dropdown relative xl:ml-auto mt-5 xl:mt-0">
+                        {{-- <div class="dropdown relative xl:ml-auto mt-5 xl:mt-0">
                             <button
                                 class="dropdown-toggle button font-normal border text-white relative flex items-center text-gray-700">
                                 Filter by Category <i data-feather="chevron-down" class="w-4 h-4 ml-2"></i>
@@ -121,10 +145,10 @@
                                         class="flex items-center block p-2 transition duration-300 ease-in-out bg-white hover:bg-gray-200 rounded-md">Sport</a>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="report-chart">
-                        <canvas id="report-line-chart" height="160" class="mt-6"></canvas>
+                        <canvas id="report-line-chart-rechive-hub" height="250" class="mt-6"></canvas>
                     </div>
                 </div>
             </div>
@@ -939,3 +963,189 @@
             </div>
         </div>
     </div>
+
+    @if (isset($chartLabels))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const ctx = document.getElementById('report-line-chart-rechive-hub').getContext('2d');
+                const chartHeight = ctx.canvas.clientHeight || 300;
+
+                // 🌈 Gradasi warna halus untuk area
+                const gradientIncome = ctx.createLinearGradient(0, 0, 0, chartHeight);
+                gradientIncome.addColorStop(0, 'rgba(28, 63, 170, 0.4)');
+                gradientIncome.addColorStop(1, 'rgba(28, 63, 170, 0)');
+
+                const gradientExpense = ctx.createLinearGradient(0, 0, 0, chartHeight);
+                gradientExpense.addColorStop(0, 'rgba(220, 38, 38, 0.3)');
+                gradientExpense.addColorStop(1, 'rgba(220, 38, 38, 0)');
+
+                // 🪙 Format ke Rupiah
+                const formatRupiah = (num) => {
+                    if (isNaN(num)) return 'Rp 0';
+                    return 'Rp ' + Number(num).toLocaleString('id-ID', {
+                        minimumFractionDigits: 0
+                    });
+                };
+
+                const chartData = {
+                    labels: @json($chartLabels),
+                    datasets: [{
+                            label: 'Income',
+                            data: @json($chartIncome),
+                            borderWidth: 2,
+                            borderColor: '#1C3FAA',
+                            backgroundColor: gradientIncome,
+                            tension: 0.35,
+                            fill: true,
+                            pointBackgroundColor: '#1C3FAA',
+                            pointRadius: 3,
+                            pointHoverRadius: 8,
+                            pointHoverBorderColor: '#fff',
+                            pointHoverBorderWidth: 2,
+                            shadowColor: 'rgba(28,63,170,0.3)',
+                            shadowBlur: 10,
+                            clip: false,
+                        },
+                        {
+                            label: 'Expense',
+                            data: @json($chartExpense),
+                            borderWidth: 2,
+                            borderColor: '#DC2626',
+                            backgroundColor: gradientExpense,
+                            tension: 0.35,
+                            fill: true,
+                            pointBackgroundColor: '#DC2626',
+                            pointRadius: 3,
+                            pointHoverRadius: 8,
+                            pointHoverBorderColor: '#fff',
+                            pointHoverBorderWidth: 2,
+                            clip: false,
+                        }
+                    ]
+                };
+
+                const shadowLine = {
+                    id: 'shadowLine',
+                    beforeDatasetsDraw(chart) {
+                        const {
+                            ctx
+                        } = chart;
+                        chart.data.datasets.forEach((dataset, i) => {
+                            const meta = chart.getDatasetMeta(i);
+                            if (!meta.hidden) {
+                                ctx.save();
+                                ctx.shadowColor = dataset.shadowColor || 'transparent';
+                                ctx.shadowBlur = dataset.shadowBlur || 0;
+                                ctx.shadowOffsetX = 0;
+                                ctx.shadowOffsetY = 4;
+                            }
+                        });
+                    },
+                    afterDatasetsDraw(chart) {
+                        chart.ctx.restore();
+                    }
+                };
+
+                new Chart(ctx, {
+                    type: 'line',
+                    data: chartData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        animations: {
+                            tension: {
+                                duration: 1500,
+                                easing: 'easeOutQuart',
+                                from: 0.5,
+                                to: 0.35,
+                                loop: false
+                            },
+                            y: {
+                                duration: 1200,
+                                easing: 'easeOutCubic'
+                            },
+                            opacity: {
+                                duration: 1200,
+                                easing: 'easeOutCubic',
+                                from: 0,
+                                to: 1
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    color: '#374151',
+                                    font: {
+                                        size: 13,
+                                        weight: '600'
+                                    },
+                                    boxWidth: 20,
+                                    padding: 15
+                                }
+                            },
+                            tooltip: {
+                                usePointStyle: true,
+                                backgroundColor: 'rgba(17,24,39,0.9)',
+                                titleFont: {
+                                    size: 13,
+                                    weight: '600'
+                                },
+                                bodyFont: {
+                                    size: 12
+                                },
+                                cornerRadius: 8,
+                                padding: 10,
+                                displayColors: false,
+                                callbacks: {
+                                    label: function(context) {
+                                        const value = Number(context.parsed.y || 0);
+                                        return `${context.dataset.label}: ${formatRupiah(value)}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    color: '#6B7280',
+                                    font: {
+                                        size: 12
+                                    },
+                                    maxRotation: 0,
+                                    autoSkipPadding: 10
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: '#6B7280',
+                                    font: {
+                                        size: 12
+                                    },
+                                    maxTicksLimit: 5, // ✅ Diubah menjadi maksimal 5 tick
+                                    callback: function(value) {
+                                        // ✅ Disederhanakan: 'value' sudah berupa angka
+                                        return formatRupiah(value);
+                                    }
+                                },
+                                grid: {
+                                    color: '#E5E7EB',
+                                    drawBorder: false
+                                }
+                            }
+                        }
+                    },
+                    plugins: [shadowLine]
+                });
+            });
+        </script>
+    @endif

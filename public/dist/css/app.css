@@ -6600,7 +6600,7 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 .report-chart:before {
   content: "";
   height: 93%;
-  background: linear-gradient(to right, white, #ffffffde, transparent);
+  /* background: linear-gradient(to right, white, #ffffffde, transparent); */
   width: 3rem;
   left: 0;
   top: 0;
@@ -6617,7 +6617,7 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 .report-chart:after {
   content: "";
   height: 93%;
-  background: linear-gradient(to right, transparent, #ffffffde, white);
+  /* background: linear-gradient(to right, transparent, #ffffffde, white); */
   width: 3rem;
   right: 0;
   top: 0;

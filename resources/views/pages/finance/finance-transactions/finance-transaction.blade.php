@@ -45,9 +45,9 @@
                     <th class="whitespace-nowrap">Finance Category</th>
                     <th class="text-center whitespace-nowrap">Finance Account</th>
                     <th class="text-center whitespace-nowrap">Type</th>
+                    <th class="text-center whitespace-nowrap">Amount</th>
                     <th class="text-center whitespace-nowrap">Description</th>
                     <th class="text-center whitespace-nowrap">Date & Time</th>
-                    <th class="text-center whitespace-nowrap">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -64,16 +64,21 @@
                                 @if (!empty($item->financeAccount->logo))
                                     <img src="{{ $item->financeAccount->logo }}"
                                         alt="{{ $item->financeAccount->bank_name }} logo"
-                                        class="w-8 h-8 rounded-4 object-cover">
-                                    <span class="text-gray-700">{{ $item->financeAccount->bank_name }}</span>
+                                        class="w-8 h-8 rounded object-cover">
+                                @else
+                                    <div
+                                        class="w-8 h-8 rounded bg-gray-200 text-gray-700 flex items-center justify-center text-xs font-medium">
+                                        {{ strtoupper(mb_substr($item->financeAccount->bank_name ?? '-', 0, 1)) }}
+                                    </div>
                                 @endif
+                                <span class="text-gray-700">{{ $item->financeAccount->bank_name ?? '-' }}</span>
                             </div>
                         </td>
 
                         <!-- Type -->
                         <td class="text-center">
                             @php
-                                $type = strtolower($item->financeCategory->type ?? '');
+                                $type = strtolower($item->financeType->name ?? '');
                                 if ($type === 'income') {
                                     $badgeBg = 'bg-green-100';
                                     $badgeText = 'text-green-800';
@@ -102,10 +107,35 @@
                             <div class="flex items-center justify-center">
                                 <span
                                     class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ $badgeBg }} {{ $badgeText }}"
-                                    title="{{ ucfirst($item->financeCategory->type) }}">
+                                    title="{{ ucfirst($item->financeType->name ?? '') }}">
                                     <i data-feather="{{ $icon }}" class="w-4 h-4 mr-2"></i>
-                                    {{ ucfirst($item->financeCategory->type) }}
+                                    {{ ucfirst($item->financeType->name ?? '') }}
                                 </span>
+                            </div>
+                        </td>
+
+                        <!-- Amount -->
+                        <td class="text-center">
+                            @php
+                                $amount = $item->amount ?? 0;
+                                $type = strtolower($item->financeType->name ?? '');
+                                if ($type === 'income') {
+                                    $amountClass = 'text-green-600';
+                                } elseif ($type === 'expense') {
+                                    $amountClass = 'text-red-600';
+                                } elseif ($type === 'transfer') {
+                                    $amountClass = 'text-blue-600';
+                                } elseif ($type === 'withdraw') {
+                                    $amountClass = 'text-yellow-600';
+                                } elseif ($type === 'deposit') {
+                                    $amountClass = 'text-indigo-600';
+                                } else {
+                                    $amountClass = 'text-gray-600';
+                                }
+                                $sign = $type === 'expense' ? '- ' : '';
+                            @endphp
+                            <div class="text-lg font-semibold {{ $amountClass }}">
+                                {{ $sign }}Rp {{ number_format($amount, 0, ',', '.') }}
                             </div>
                         </td>
 
@@ -120,7 +150,7 @@
                             @php
                                 $dt = $item->date ? \Carbon\Carbon::parse($item->date) : null;
                             @endphp
-                            <div class="flex flex-col">
+                            <div class="flex flex-col items-center justify-center h-full">
                                 <span class="text-sm font-semibold text-gray-800">
                                     {{ $dt ? $dt->format('d M Y') : '-' }}
                                 </span>
@@ -128,20 +158,6 @@
                                     <i data-feather="clock" class="w-3 h-3 mr-1"></i>
                                     {{ $dt ? $dt->format('H:i') : '-' }}
                                 </span>
-                            </div>
-                        </td>
-
-
-                        <!-- Actions -->
-                        <td class="table-report__action w-56 text-center">
-                            <div class="flex justify-center items-center space-x-3">
-                                <a href="#" class="flex items-center text-blue-600 hover:underline">
-                                    <i data-feather="edit" class="w-4 h-4 mr-1"></i>Edit
-                                </a>
-                                <a href="javascript:;" data-toggle="modal" data-target="#delete-confirmation-modal"
-                                    class="flex items-center text-theme-6 hover:underline">
-                                    <i data-feather="trash-2" class="w-4 h-4 mr-1"></i>Delete
-                                </a>
                             </div>
                         </td>
                     </tr>

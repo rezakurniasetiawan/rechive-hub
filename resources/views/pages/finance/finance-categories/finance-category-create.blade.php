@@ -36,12 +36,15 @@
                         <span class="text-red-600 ml-1" aria-hidden="true">*</span>
                         <span class="sr-only">required</span>
                     </label>
-                    <select class="input w-full border mt-2" name="type" required>
-                        <option value="income">Income (Pemasukan)</option>
+                    <select class="input w-full border mt-2" name="finance_type_id" required>
+                        @foreach ($financeTypes as $type)
+                            <option value="{{ $type->id }}">{{ $type->label }}</option>
+                        @endforeach
+                        {{-- <option value="income">Income (Pemasukan)</option>
                         <option value="expense">Expense (Pengeluaran)</option>
                         <option value="transfer">Transfer (Antar Akun)</option>
                         <option value="withdraw">Withdraw (Ambil Tunai dari Bank)</option>
-                        <option value="deposit">Deposit (Simpan Tunai ke Bank)</option>
+                        <option value="deposit">Deposit (Simpan Tunai ke Bank)</option> --}}
                     </select>
                 </div>
 

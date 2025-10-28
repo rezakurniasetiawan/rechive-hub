@@ -49,6 +49,11 @@
                     <input type="text" class="input w-full border mt-2" name="bank_number"
                         placeholder="e.g., 1234567890" value="{{ $data->bank_number }}">
                 </div>
+                <div class="mt-3">
+                    <label class="font-medium">Account Number</label>
+                    <input type="text" class="input w-full border mt-2" name="balance" placeholder="e.g., 1234567890"
+                        value="{{ $data->balance }}">
+                </div>
 
                 <div class="mt-3">
                     <label class="font-medium">Full Name (Account Owner)</label>

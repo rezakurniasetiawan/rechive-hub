@@ -14,9 +14,8 @@ return new class extends Migration
         Schema::create('finance_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            // type , color, createby
-            $table->string('type')->nullable();
             $table->string('color')->nullable();
+            $table->foreignId('finance_type_id')->constrained('finance_types')->onDelete('cascade');
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });

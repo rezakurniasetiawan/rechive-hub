@@ -63,7 +63,7 @@
                           <!-- Type (improved UI: colored badge with icon) -->
                           <td class="text-center">
                               @php
-                                  $type = strtolower($item->type ?? '');
+                                  $type = strtolower($item->financeType->name ?? '');
                                   if ($type === 'income') {
                                       $badgeBg = 'bg-green-100';
                                       $badgeText = 'text-green-800';
@@ -92,9 +92,9 @@
                               <div class="flex items-center justify-center">
                                   <span
                                       class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ $badgeBg }} {{ $badgeText }}"
-                                      title="{{ ucfirst($item->type) }}">
+                                      title="{{ ucfirst($item->financeType->name ?? '') }}">
                                       <i data-feather="{{ $icon }}" class="w-4 h-4 mr-2"></i>
-                                      {{ ucfirst($item->type) }}
+                                      {{ ucfirst($item->financeType->name ?? '') }}
                                   </span>
                               </div>
                           </td>

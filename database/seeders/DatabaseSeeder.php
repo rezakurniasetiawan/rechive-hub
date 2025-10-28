@@ -15,8 +15,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
+        // User Seeder
         $users = [
             [
                 'name' => 'admin',
@@ -31,6 +30,36 @@ class DatabaseSeeder extends Seeder
                 'email' => $data['email'],
                 'password' => $data['password'],
             ]);
+        }
+        // Finance Type Seeder
+        $financeTypes = [
+            [
+                'name' => 'income',
+                'label' => 'Income (Pemasukan)',
+            ],
+            [
+                'name' => 'expense',
+                'label' => 'Expense (Pengeluaran)',
+            ],
+            [
+                'name' => 'transfer',
+                'label' => 'Transfer (Antar Akun)',
+            ],
+            [
+                'name' => 'withdrawal',
+                'label' => 'Withdrawal (Ambil Tunai dari Bank)',
+            ],
+            [
+                'name' => 'deposit',
+                'label' => 'Deposit (Simpan Tunai ke Bank)',
+            ],
+        ];
+
+        foreach ($financeTypes as $type) {
+            \App\Models\Finance\FinanceType::firstOrCreate(
+                ['name' => $type['name']],
+                ['label' => $type['label']]
+            );
         }
     }
 }

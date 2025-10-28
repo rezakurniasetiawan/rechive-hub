@@ -16,9 +16,13 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/logout', 'actionlogout')->name('auth.actionlogout');
 });
 
+Route::controller(FinanceTransactionController::class)->group(function () {
+    Route::get('/transactions', 'transaction')->name('transactions');
+    Route::post('/transactions/store', 'transactionStore')->name('transactions.store');
+});
+
 // Protected Routes
 Route::middleware('auth:sanctum')->group(function () {
-
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
     // Finance Routes
     Route::prefix('finance')->name('finance.')->group(function () {

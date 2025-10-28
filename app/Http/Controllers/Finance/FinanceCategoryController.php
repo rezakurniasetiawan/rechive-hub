@@ -6,12 +6,17 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Finance\FinanceCategory;
+use App\Models\Finance\FinanceType;
 
 class FinanceCategoryController extends Controller
 {
     public function index()
     {
-        $data = FinanceCategory::all();
+        $data = FinanceCategory::with([
+            'financeType:id,name,label'
+        ])
+            ->orderBy('created_at', 'desc')
+            ->get();
         return view('layouts.app', [
             'content' => view('pages.finance.finance-categories.finance-category', compact('data'))->render()
         ]);
@@ -19,8 +24,9 @@ class FinanceCategoryController extends Controller
 
     public function create()
     {
+        $financeTypes = FinanceType::all();
         return view('layouts.app', [
-            'content' => view('pages.finance.finance-categories.finance-category-create')->render()
+            'content' => view('pages.finance.finance-categories.finance-category-create', compact('financeTypes'))->render()
         ]);
     }
 
@@ -36,6 +42,7 @@ class FinanceCategoryController extends Controller
             'name'        => $request->name,
             'type'        => $request->type,
             'color'       => $request->color,
+            'finance_type_id' => $request->finance_type_id,
             'created_by'  => Auth::id(),
         ]);
 
@@ -64,6 +71,7 @@ class FinanceCategoryController extends Controller
             'name'  => $request->name,
             'type'  => $request->type,
             'color' => $request->color,
+            'finance_type_id' => $request->finance_type_id,
         ]);
 
         return redirect()->route('finance.category.index')->with('success', 'Finance category updated successfully.');
