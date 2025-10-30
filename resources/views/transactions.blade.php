@@ -17,6 +17,25 @@
             overflow: hidden;
         }
 
+        .type-card.selected {
+            background-color: #1C3FAA !important;
+            color: white !important;
+            border-color: #1C3FAA !important;
+            box-shadow: 0 0 10px rgba(28, 63, 170, 0.4);
+            transform: translateY(-3px);
+            transition: all 0.25s ease-in-out;
+        }
+
+
+        .selected {
+            background-color: #1C3FAA !important;
+            color: white !important;
+            text-shadow: 0 0 5px rgba(28, 63, 170, 0.3);
+            border-color: #1C3FAA !important;
+            box-shadow: 0 0 10px rgba(28, 63, 170, 0.3);
+            transition: all 0.2s ease-in-out;
+        }
+
         .step {
             display: none;
             height: calc(100vh - 12rem);
@@ -151,9 +170,16 @@
 
     <!-- HEADER -->
     <header
-        class="p-5 bg-gradient-to-r from-[#1C3FAA] to-[#1e4ccf] text-white text-center font text-xl shadow-md sticky top-0 z-40">
+        class="p-5 bg-gradient-to-r from-[#1C3FAA] to-[#1e4ccf] text-white text-center font text-xl shadow-md sticky top-0 z-40 relative">
         <span class="text-lg">ReChive<span class="font-bold">Hub</span></span> - Transaction
+
+        <!-- 🔄 Tombol Reload -->
+        <button id="reloadBtn"
+            class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white px-3 py-2 rounded-lg text-sm font-medium transition">
+            🔄 Reload
+        </button>
     </header>
+
 
     <!-- STEPPER -->
     <div class="px-6 py-4 bg-white border-b border-gray-200 shadow-sm">
@@ -183,7 +209,7 @@
             <h2 class="text-lg font-semibold mb-6 text-gray-700 text-center">Pilih Jenis Transaksi</h2>
             <div class="grid grid-cols-2 gap-5">
                 @foreach ($financeTypes as $type)
-                    <div class="cursor-pointer border rounded-2xl p-6 text-center bg-white shadow-md hover:shadow-xl hover:border-[#1C3FAA] transition transform hover:-translate-y-1"
+                    <div class="type-card cursor-pointer border rounded-2xl p-6 text-center bg-white text-gray-700 shadow-md transition transform hover:-translate-y-1 hover:bg-[#1C3FAA] hover:text-white hover:border-[#1C3FAA]"
                         data-type="{{ strtolower($type->label) }}" data-id="{{ $type->id }}">
                         <div class="text-5xl mb-3">
                             @if (Str::contains(strtolower($type->label), 'income'))
@@ -194,11 +220,12 @@
                                 🔄
                             @endif
                         </div>
-                        <p class="font-semibold text-gray-700">{{ $type->label }}</p>
+                        <p class="font-semibold">{{ $type->label }}</p>
                     </div>
                 @endforeach
             </div>
         </div>
+
 
         <!-- Step 2 -->
         <div id="step2" class="step">
@@ -290,8 +317,38 @@
         const dots = document.querySelectorAll(".stepper-dot");
         const progressBar = document.getElementById("progress-bar");
         const modal = document.getElementById("successModal");
+        const amountInput = document.getElementById("amountInput");
 
-        // Stepper visual
+        // ✅ Format angka jadi Rupiah
+        function formatRupiah(value) {
+            const number = value.replace(/[^\d]/g, "");
+            return number ? "Rp " + parseInt(number, 10).toLocaleString("id-ID") : "";
+        }
+
+        // ✅ Ambil angka asli (tanpa format)
+        function getCleanNumber(value) {
+            return value.replace(/[^\d]/g, "");
+        }
+
+        // ✅ Listener ketika user mengetik langsung
+        amountInput.addEventListener("input", (e) => {
+            const cursorPos = e.target.selectionStart;
+            const raw = getCleanNumber(e.target.value);
+            e.target.value = formatRupiah(raw);
+            e.target.setSelectionRange(cursorPos, cursorPos);
+        });
+
+        // ✅ Tombol numpad (jika kamu masih pakai)
+        document.querySelectorAll(".num-button").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const clean = getCleanNumber(amountInput.value);
+                const newValue = clean + btn.innerText;
+                amountInput.value = formatRupiah(newValue);
+            });
+        });
+        document.getElementById("clearAmount").onclick = () => (amountInput.value = "");
+
+        // ✅ Stepper visual & kontrol
         function updateStepper() {
             dots.forEach((dot, i) => dot.classList.toggle("active", i <= currentStep));
             progressBar.style.width = `${(currentStep / (steps.length - 1)) * 100}%`;
@@ -306,58 +363,101 @@
             updateStepper();
         }
 
-        // Step 1: pilih tipe transaksi
-        document.querySelectorAll("[data-type]").forEach(el => {
+        // Step 1–3 sama seperti sebelumnya...
+        document.querySelectorAll(".type-card").forEach(el => {
             el.addEventListener("click", () => {
-                document.getElementById("finance_type_id").value = el.dataset.id; // ← gunakan ID dari DB
-                nextStep();
+                // Hapus kelas 'selected' dari semua card
+                document.querySelectorAll(".type-card").forEach(btn => btn.classList.remove("selected"));
+
+                // Tambahkan ke card yang diklik
+                el.classList.add("selected");
+
+                // Simpan ID
+                document.getElementById("finance_type_id").value = el.dataset.id;
             });
         });
 
-        // Step 2: pilih kategori
+
         document.querySelectorAll(".category-btn").forEach(btn => {
             btn.addEventListener("click", () => {
+                document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("selected"));
+                btn.classList.add("selected");
                 document.getElementById("finance_category_id").value = btn.dataset.id;
-                nextStep();
             });
         });
 
-        // Step 3: pilih akun
+
         document.querySelectorAll(".account-btn").forEach(btn => {
             btn.addEventListener("click", () => {
+                document.querySelectorAll(".account-btn").forEach(b => b.classList.remove("selected"));
+                btn.classList.add("selected");
                 document.getElementById("finance_account_id").value = btn.dataset.id;
-                nextStep();
             });
         });
 
-        // Step 4: input jumlah
-        const amountInput = document.getElementById("amountInput");
-        document.querySelectorAll(".num-button").forEach(btn => {
-            btn.addEventListener("click", () => {
-                amountInput.value = (amountInput.value + btn.innerText).replace(/^0+/, '');
-            });
-        });
-        document.getElementById("clearAmount").onclick = () => (amountInput.value = "");
+
+        nextBtn.onclick = nextStep;
 
         function nextStep() {
+            if (currentStep === 0 && !document.getElementById("finance_type_id").value) {
+                return Swal.fire({
+                    icon: "warning",
+                    title: "Pilih Jenis Transaksi",
+                    text: "Kamu harus memilih jenis transaksi terlebih dahulu.",
+                    confirmButtonColor: "#1C3FAA",
+                });
+            }
+            if (currentStep === 1 && !document.getElementById("finance_category_id").value) {
+                return Swal.fire({
+                    icon: "warning",
+                    title: "Pilih Kategori",
+                    text: "Silakan pilih kategori transaksi terlebih dahulu.",
+                    confirmButtonColor: "#1C3FAA",
+                });
+            }
+            if (currentStep === 2 && !document.getElementById("finance_account_id").value) {
+                return Swal.fire({
+                    icon: "warning",
+                    title: "Pilih Akun Keuangan",
+                    text: "Kamu harus memilih akun keuangan untuk transaksi ini.",
+                    confirmButtonColor: "#1C3FAA",
+                });
+            }
+            if (currentStep === 3 && !getCleanNumber(amountInput.value)) {
+                return Swal.fire({
+                    icon: "warning",
+                    title: "Masukkan Jumlah",
+                    text: "Nominal transaksi tidak boleh kosong.",
+                    confirmButtonColor: "#1C3FAA",
+                });
+            }
+
             if (currentStep < steps.length - 1) {
                 currentStep++;
                 showStep(currentStep);
             } else {
-                submitTransaction();
+                Swal.fire({
+                    title: "Yakin ingin menyimpan transaksi?",
+                    text: "Pastikan semua data sudah benar.",
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonColor: "#1C3FAA",
+                    cancelButtonColor: "#9CA3AF",
+                    confirmButtonText: "Ya, Simpan",
+                    cancelButtonText: "Batal"
+                }).then((result) => {
+                    if (result.isConfirmed) submitTransaction();
+                });
             }
         }
 
         async function submitTransaction() {
-            // set hidden fields
-            const cleanAmount = amountInput.value.replace(/[^\d]/g, ''); // hanya angka
+            const cleanAmount = getCleanNumber(amountInput.value);
             document.getElementById("amountHidden").value = cleanAmount;
             document.getElementById("descriptionHidden").value = document.getElementById("descInput").value.trim();
 
             const form = document.getElementById("transactionForm");
             const formData = new FormData(form);
-            // print for debugging
-            console.log("Submitting:", Object.fromEntries(formData.entries()));
 
             try {
                 const res = await fetch(form.action, {
@@ -369,18 +469,26 @@
                     body: formData,
                 });
 
-                console.log("Response status:", res.status);
-
                 if (res.ok) {
                     modal.classList.add("active");
                 } else {
                     const errorText = await res.text();
                     console.error("Error:", errorText);
-                    alert("❌ Gagal menyimpan transaksi!\nPeriksa konsol untuk detail.");
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal Menyimpan",
+                        text: "Terjadi kesalahan saat menyimpan transaksi.",
+                        confirmButtonColor: "#1C3FAA"
+                    });
                 }
             } catch (e) {
                 console.error(e);
-                alert("Terjadi kesalahan koneksi.");
+                Swal.fire({
+                    icon: "error",
+                    title: "Koneksi Gagal",
+                    text: "Tidak dapat terhubung ke server.",
+                    confirmButtonColor: "#1C3FAA"
+                });
             }
         }
 
@@ -390,11 +498,32 @@
             showStep(currentStep);
             document.getElementById("transactionForm").reset();
             document.getElementById("amountInput").value = "";
+            window.location.reload();
         };
 
-        nextBtn.onclick = nextStep;
+        // 🔄 Tombol Reload
+        document.getElementById("reloadBtn").addEventListener("click", () => {
+            Swal.fire({
+                title: "Muat Ulang Halaman?",
+                text: "Semua data yang belum disimpan akan hilang.",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#1C3FAA",
+                cancelButtonColor: "#9CA3AF",
+                confirmButtonText: "Ya, Muat Ulang",
+                cancelButtonText: "Batal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.reload();
+                }
+            });
+        });
+
+
         showStep(currentStep);
     </script>
+
+
 
 </body>
 

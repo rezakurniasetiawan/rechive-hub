@@ -43,7 +43,7 @@
             <thead>
                 <tr>
                     <th class="whitespace-nowrap">Finance Category</th>
-                    <th class="text-center whitespace-nowrap">Finance Account</th>
+                    <th class="whitespace-nowrap">Finance Account</th>
                     <th class="text-center whitespace-nowrap">Type</th>
                     <th class="text-center whitespace-nowrap">Amount</th>
                     <th class="text-center whitespace-nowrap">Description</th>
@@ -59,12 +59,12 @@
                         </td>
 
                         <!-- Finance Account -->
-                        <td class="text-center">
-                            <div class="flex items-center justify-center space-x-2">
+                        <td class="text-left">
+                            <div class="flex items-center justify-start space-x-2">
                                 @if (!empty($item->financeAccount->logo))
                                     <img src="{{ $item->financeAccount->logo }}"
                                         alt="{{ $item->financeAccount->bank_name }} logo"
-                                        class="w-8 h-8 rounded object-cover">
+                                        class="w-16 h-8 rounded object-cover">
                                 @else
                                     <div
                                         class="w-8 h-8 rounded bg-gray-200 text-gray-700 flex items-center justify-center text-xs font-medium">
