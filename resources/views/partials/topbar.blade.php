@@ -6,7 +6,7 @@
        </div>
        <!-- END: Breadcrumb -->
        <!-- BEGIN: Search -->
-       <div class="intro-x relative mr-3 sm:mr-6">
+       {{-- <div class="intro-x relative mr-3 sm:mr-6">
            <div class="search hidden sm:block">
                <input type="text" class="search__input input placeholder-theme-13" placeholder="Search...">
                <i data-feather="search" class="search__icon"></i>
@@ -113,7 +113,7 @@
                    </a>
                </div>
            </div>
-       </div>
+       </div> --}}
        <!-- END: Search -->
        <!-- BEGIN: Notifications -->
        <div class="intro-x dropdown relative mr-auto sm:mr-6">
@@ -124,6 +124,9 @@
                <div class="notification-content__box dropdown-box__content box">
                    <div class="notification-content__title">Notifications</div>
                    <div class="cursor-pointer relative flex items-center ">
+                       <div class="w-full text-center text-gray-600">No new notifications</div>
+                   </div>
+                   {{-- <div class="cursor-pointer relative flex items-center ">
                        <div class="w-12 h-12 flex-none image-fit mr-1">
                            <img alt="Midone Tailwind HTML Admin Template" class="rounded-full"
                                src="{{ asset('dist/images/profile-13.jpg') }}">
@@ -213,7 +216,7 @@
                                printing and typesetting industry. Lorem Ipsum has been the industry&#039;s
                                standard dummy text ever since the 1500</div>
                        </div>
-                   </div>
+                   </div> --}}
                </div>
            </div>
        </div>
@@ -226,10 +229,11 @@
            <div class="dropdown-box mt-10 absolute w-56 top-0 right-0 z-20">
                <div class="dropdown-box__content box bg-theme-38 text-white">
                    <div class="p-4 border-b border-theme-40">
-                       <div class="font-medium">Angelina Jolie</div>
-                       <div class="text-xs text-theme-41">Software Engineer</div>
+                       <div class="font-medium">{{ Auth::user()->name }}</div>
+                       {{-- <div class="font-medium">Angelina Jolie</div> --}}
+                       <div class="text-xs text-theme-41">{{ Auth::user()->email }}</div>
                    </div>
-                   <div class="p-2">
+                   {{-- <div class="p-2">
                        <a href=""
                            class="flex items-center block p-2 transition duration-300 ease-in-out hover:bg-theme-1 rounded-md">
                            <i data-feather="user" class="w-4 h-4 mr-2"></i> Profile </a>
@@ -242,7 +246,7 @@
                        <a href=""
                            class="flex items-center block p-2 transition duration-300 ease-in-out hover:bg-theme-1 rounded-md">
                            <i data-feather="help-circle" class="w-4 h-4 mr-2"></i> Help </a>
-                   </div>
+                   </div> --}}
                    <div class="p-2 border-t border-theme-40">
                        <form action="{{ route('auth.actionlogout') }}" method="post">
                            @csrf

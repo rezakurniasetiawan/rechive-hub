@@ -1,46 +1,50 @@
  <div class="mobile-menu md:hidden">
      <div class="mobile-menu-bar">
          <a href="" class="flex mr-auto">
-             <img alt="Midone Tailwind HTML Admin Template" class="w-6" src="dist/images/logo.svg">
+             <img alt="Rechive Hub" class="w-8" src="{{ asset('dist/images/logo.svg') }}">
          </a>
          <a href="javascript:;" id="mobile-menu-toggler"> <i data-feather="bar-chart-2"
                  class="w-8 h-8 text-white transform -rotate-90"></i> </a>
      </div>
      <ul class="border-t border-theme-24 py-5 hidden">
          <li>
-             <a href="index.html" class="menu menu--active">
+             <a href="{{ route('dashboard') }}"
+                 class="menu  {{ request()->routeIs('dashboard') ? 'menu--active' : '' }}">
                  <div class="menu__icon"> <i data-feather="home"></i> </div>
                  <div class="menu__title"> Dashboard </div>
              </a>
          </li>
          <li>
-             <a href="javascript:;" class="menu">
+             <a href="javascript:;" class="menu {{ request()->routeIs('finance.*') ? 'menu--active menu--open' : '' }}">
                  <div class="menu__icon"> <i data-feather="box"></i> </div>
-                 <div class="menu__title"> Menu Layout <i data-feather="chevron-down" class="menu__sub-icon"></i>
+                 <div class="menu__title"> Finance <i data-feather="chevron-down" class="menu__sub-icon"></i>
                  </div>
              </a>
-             <ul class="">
+             <ul class="{{ request()->routeIs('finance.*') ? 'menu__sub-open' : '' }}">
                  <li>
-                     <a href="index.html" class="menu">
-                         <div class="menu__icon"> <i data-feather="activity"></i> </div>
-                         <div class="menu__title"> Side Menu </div>
+                     <a href="{{ route('finance.account.index') }}"
+                         class="menu {{ request()->routeIs('finance.account.*') ? 'menu--active' : '' }}">
+                         <div class="menu__icon"> <i data-feather="dollar-sign"></i> </div>
+                         <div class="menu__title"> Finance Account </div>
                      </a>
                  </li>
                  <li>
-                     <a href="simple-menu-dashboard.html" class="menu">
-                         <div class="menu__icon"> <i data-feather="activity"></i> </div>
-                         <div class="menu__title"> Simple Menu </div>
+                     <a href="{{ route('finance.category.index') }}"
+                         class="menu {{ request()->routeIs('finance.category.*') ? 'menu--active' : '' }}">
+                         <div class="menu__icon"> <i data-feather="tag"></i> </div>
+                         <div class="menu__title"> Finance Categories </div>
                      </a>
                  </li>
                  <li>
-                     <a href="top-menu-dashboard.html" class="menu">
-                         <div class="menu__icon"> <i data-feather="activity"></i> </div>
-                         <div class="menu__title"> Top Menu </div>
+                     <a href="{{ route('finance.transaction.index') }}"
+                         class="menu {{ request()->routeIs('finance.transaction.*') ? 'menu--active' : '' }}">
+                         <div class="menu__icon"> <i data-feather="repeat"></i> </div>
+                         <div class="menu__title"> Finance Transactions </div>
                      </a>
                  </li>
              </ul>
          </li>
-         <li>
+         {{-- <li>
              <a href="side-menu-inbox.html" class="menu">
                  <div class="menu__icon"> <i data-feather="inbox"></i> </div>
                  <div class="menu__title"> Inbox </div>
@@ -304,8 +308,8 @@
                      </a>
                  </li>
              </ul>
-         </li>
-         <li class="menu__devider my-6"></li>
+         </li> --}}
+         {{-- <li class="menu__devider my-6"></li>
          <li>
              <a href="javascript:;" class="menu">
                  <div class="menu__icon"> <i data-feather="inbox"></i> </div>
@@ -472,6 +476,6 @@
                      </a>
                  </li>
              </ul>
-         </li>
+         </li> --}}
      </ul>
  </div>

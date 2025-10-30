@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Finance\FinanceAccount;
 use App\Models\Finance\FinanceDailyBalance;
 use App\Models\Finance\FinanceWeeklyBalance;
@@ -59,6 +60,12 @@ class DashboardController extends Controller
 
         //========================== Net Flow ==========================// 
         $netFlow = $incomeMonth - $expenseMonth;
+        $netFlowLastMonth = $incomeLastMonth - $expenseLastMonth;
+        if ($netFlowLastMonth == 0) {
+            $netFlowGrowth = $netFlow > 0 ? 100.0 : 0.0;
+        } else {
+            $netFlowGrowth = round((($netFlow - $netFlowLastMonth) / $netFlowLastMonth) * 100, 2);
+        }
 
         //========================== Line Chart Data ==========================// 
         $currentYear = now()->year;
@@ -75,19 +82,22 @@ class DashboardController extends Controller
             $chartExpense[] = isset($balances[$month]) ? (float) $balances[$month]->expense_total : 0;
         }
 
-
         // ====== Render ke view
         return view('layouts.app', [
             'content' => view('pages.dashboard', compact(
+                //General Report
                 'totalBalance',
                 'incomeGrowth',
                 'incomeMonth',
                 'expenseGrowth',
                 'expenseMonth',
                 'netFlow',
+                'netFlowGrowth',
+                'expenseLastMonth',
+                //Chart Data
                 'chartLabels',
                 'chartIncome',
-                'chartExpense'
+                'chartExpense',
             ))->render()
         ]);
     }

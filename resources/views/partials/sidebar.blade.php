@@ -47,7 +47,7 @@
                </ul>
            </li>
            {{-- 🧑‍💼 Pekerjaan & Proyek --}}
-           <li>
+           {{-- <li>
                <a href="javascript:;" class="side-menu">
                    <div class="side-menu__icon"><i data-feather="briefcase"></i></div>
                    <div class="side-menu__title">
@@ -81,10 +81,10 @@
                        </a>
                    </li>
                </ul>
-           </li>
+           </li> --}}
 
            {{-- 📅 Aktivitas Harian --}}
-           <li>
+           {{-- <li>
                <a href="javascript:;" class="side-menu">
                    <div class="side-menu__icon"><i data-feather="calendar"></i></div>
                    <div class="side-menu__title">
@@ -110,10 +110,10 @@
                            <div class="side-menu__title">Daily Journal</div>
                        </a></li>
                </ul>
-           </li>
+           </li> --}}
 
            {{-- 🗒️ Catatan & Dokumentasi --}}
-           <li>
+           {{-- <li>
                <a href="javascript:;" class="side-menu">
                    <div class="side-menu__icon"><i data-feather="book"></i></div>
                    <div class="side-menu__title">
@@ -135,10 +135,10 @@
                            <div class="side-menu__title">Bookmark</div>
                        </a></li>
                </ul>
-           </li>
+           </li> --}}
 
            {{-- 🎯 Rencana & Tujuan Hidup --}}
-           <li>
+           {{-- <li>
                <a href="javascript:;" class="side-menu">
                    <div class="side-menu__icon"><i data-feather="target"></i></div>
                    <div class="side-menu__title">
@@ -160,10 +160,10 @@
                            <div class="side-menu__title">Reflection</div>
                        </a></li>
                </ul>
-           </li>
+           </li> --}}
 
            {{-- 💬 Komunikasi --}}
-           <li>
+           {{-- <li>
                <a href="javascript:;" class="side-menu">
                    <div class="side-menu__icon"><i data-feather="message-circle"></i></div>
                    <div class="side-menu__title">
@@ -185,10 +185,10 @@
                            <div class="side-menu__title">Reminder Bersama</div>
                        </a></li>
                </ul>
-           </li>
+           </li> --}}
 
            {{-- 🌿 Personal Growth --}}
-           <li>
+           {{-- <li>
                <a href="javascript:;" class="side-menu">
                    <div class="side-menu__icon"><i data-feather="heart"></i></div>
                    <div class="side-menu__title">
@@ -210,10 +210,10 @@
                            <div class="side-menu__title">Self Reflection</div>
                        </a></li>
                </ul>
-           </li>
+           </li> --}}
 
            {{-- 🌍 Life Management --}}
-           <li>
+           {{-- <li>
                <a href="javascript:;" class="side-menu">
                    <div class="side-menu__icon"><i data-feather="compass"></i></div>
                    <div class="side-menu__title">
@@ -235,10 +235,10 @@
                            <div class="side-menu__title">Life Metrics</div>
                        </a></li>
                </ul>
-           </li>
+           </li> --}}
 
            {{-- 💡 Knowledge Base --}}
-           <li>
+           {{-- <li>
                <a href="javascript:;" class="side-menu">
                    <div class="side-menu__icon"><i data-feather="archive"></i></div>
                    <div class="side-menu__title">
@@ -260,10 +260,10 @@
                            <div class="side-menu__title">Resource Link</div>
                        </a></li>
                </ul>
-           </li>
+           </li> --}}
 
            {{-- 💾 Data Center --}}
-           <li>
+           {{-- <li>
                <a href="javascript:;" class="side-menu">
                    <div class="side-menu__icon"><i data-feather="database"></i></div>
                    <div class="side-menu__title">
@@ -285,10 +285,10 @@
                            <div class="side-menu__title">System Monitor</div>
                        </a></li>
                </ul>
-           </li>
+           </li> --}}
 
            {{-- 🧭 Relationship & Social --}}
-           <li>
+           {{-- <li>
                <a href="javascript:;" class="side-menu">
                    <div class="side-menu__icon"><i data-feather="users"></i></div>
                    <div class="side-menu__title">
@@ -310,10 +310,10 @@
                            <div class="side-menu__title">Relationship Notes</div>
                        </a></li>
                </ul>
-           </li>
+           </li> --}}
 
            {{-- 🪙 Financial Insight --}}
-           <li>
+           {{-- <li>
                <a href="javascript:;" class="side-menu">
                    <div class="side-menu__icon"><i data-feather="bar-chart-2"></i></div>
                    <div class="side-menu__title">
@@ -335,9 +335,9 @@
                            <div class="side-menu__title">Investment Goals</div>
                        </a></li>
                </ul>
-           </li>
+           </li> --}}
            {{-- ⚙️ Pengaturan --}}
-           <li>
+           {{-- <li>
                <a href="javascript:;" class="side-menu">
                    <div class="side-menu__icon"><i data-feather="settings"></i></div>
                    <div class="side-menu__title">
@@ -367,15 +367,15 @@
                            <div class="side-menu__title">Integrasi</div>
                        </a></li>
                </ul>
-           </li>
+           </li> --}}
 
            {{-- 🧠 Insight (AI) --}}
-           <li>
+           {{-- <li>
                <a href="" class="side-menu">
                    <div class="side-menu__icon"><i data-feather="cpu"></i></div>
                    <div class="side-menu__title">Insight (AI)</div>
                </a>
-           </li>
+           </li> --}}
 
            {{-- <li class="side-nav__devider my-6"></li> --}}
 
