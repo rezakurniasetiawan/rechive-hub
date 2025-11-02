@@ -35,7 +35,7 @@ class FinanceTransactionController extends Controller
     {
         $financeTypes = FinanceType::all();
         $financeAccounts = FinanceAccount::all();
-        $financeCategories = FinanceCategory::all();
+        $financeCategories = FinanceCategory::inRandomOrder()->get();
 
         return view('layouts.app', [
             'content' => view('pages.finance.finance-transactions.finance-transaction-create', compact('financeAccounts', 'financeCategories', 'financeTypes'))->render()
