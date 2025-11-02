@@ -1,173 +1,175 @@
     <div id="main-content" class="grid grid-cols-12 gap-6">
         {{-- Ini dibuka jika ingin menambahkan menu samping kanan --}}
-        {{-- <div class="col-span-12 xxl:col-span-9 grid grid-cols-12 gap-6"> --}}
-        <!-- BEGIN: General Report -->
-        <div class="col-span-12 mt-8">
-            <div class="intro-y flex items-center h-10">
-                <h2 class="text-lg font-medium truncate mr-5">
-                    General Report
-                </h2>
-                <a href="" class="ml-auto flex text-theme-1"> <i data-feather="refresh-ccw" class="w-4 h-4 mr-3"></i>
-                    Reload Data </a>
-            </div>
-            <div class="grid grid-cols-12 gap-6 mt-5">
-                {{-- 💰 Total Balance --}}
-                <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
-                    <div class="report-box zoom-in">
-                        <div class="box p-5">
-                            <div class="flex items-center">
-                                <i data-feather="dollar-sign" class="report-box__icon text-theme-10"></i>
-                                <div class="ml-auto flex items-center space-x-2">
-                                    <div class="report-box__indicator bg-theme-9 tooltip cursor-pointer"
-                                        title="Updated automatically from accounts">
-                                        <i data-feather="refresh-ccw" class="w-4 h-4"></i>
+        <div class="col-span-12 xxl:col-span-9 grid grid-cols-12 gap-6">
+            <!-- BEGIN: General Report -->
+            <div class="col-span-12 mt-8">
+                <div class="intro-y flex items-center h-10">
+                    <h2 class="text-lg font-medium truncate mr-5">
+                        General Report
+                    </h2>
+                    <a href="" class="ml-auto flex text-theme-1"> <i data-feather="refresh-ccw"
+                            class="w-4 h-4 mr-3"></i>
+                        Reload Data </a>
+                </div>
+                <div class="grid grid-cols-12 gap-6 mt-5">
+                    {{-- 💰 Total Balance --}}
+                    <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                        <div class="report-box zoom-in">
+                            <div class="box p-5">
+                                <div class="flex items-center">
+                                    <i data-feather="dollar-sign" class="report-box__icon text-theme-10"></i>
+                                    <div class="ml-auto flex items-center space-x-2">
+                                        <div class="report-box__indicator bg-theme-9 tooltip cursor-pointer"
+                                            title="Updated automatically from accounts">
+                                            <i data-feather="refresh-ccw" class="w-4 h-4"></i>
+                                        </div>
+                                        <button id="toggleBalance"
+                                            class="text-gray-600 hover:text-gray-800 focus:outline-none">
+                                            <i data-feather="eye" class="w-4 h-4"></i>
+                                        </button>
                                     </div>
-                                    <button id="toggleBalance"
-                                        class="text-gray-600 hover:text-gray-800 focus:outline-none">
-                                        <i data-feather="eye" class="w-4 h-4"></i>
-                                    </button>
                                 </div>
-                            </div>
 
-                            <!-- Default tersembunyi -->
-                            <div id="balanceValue" class="text-3xl font-bold leading-8 mt-6 hidden">
-                                Rp{{ number_format($totalBalance ?? 0, 0, ',', '.') }}
-                            </div>
-                            <div id="balanceHidden" class="text-3xl font-bold leading-8 mt-6">
-                                ••••••••
-                            </div>
+                                <!-- Default tersembunyi -->
+                                <div id="balanceValue" class="text-3xl font-bold leading-8 mt-6 hidden">
+                                    Rp{{ number_format($totalBalance ?? 0, 0, ',', '.') }}
+                                </div>
+                                <div id="balanceHidden" class="text-3xl font-bold leading-8 mt-6">
+                                    ••••••••
+                                </div>
 
-                            <div class="text-base text-gray-600 mt-1">Total Balance</div>
+                                <div class="text-base text-gray-600 mt-1">Total Balance</div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        const toggleBtn = document.getElementById('toggleBalance');
-                        const balanceValue = document.getElementById('balanceValue');
-                        const balanceHidden = document.getElementById('balanceHidden');
-                        let isVisible = false; // default false = saldo tersembunyi
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const toggleBtn = document.getElementById('toggleBalance');
+                            const balanceValue = document.getElementById('balanceValue');
+                            const balanceHidden = document.getElementById('balanceHidden');
+                            let isVisible = false; // default false = saldo tersembunyi
 
-                        toggleBtn.addEventListener('click', () => {
-                            isVisible = !isVisible;
+                            toggleBtn.addEventListener('click', () => {
+                                isVisible = !isVisible;
 
-                            if (isVisible) {
-                                // Tampilkan saldo
-                                balanceValue.classList.remove('hidden');
-                                balanceHidden.classList.add('hidden');
-                                toggleBtn.innerHTML = '<i data-feather="eye-off" class="w-4 h-4"></i>';
-                            } else {
-                                // Sembunyikan saldo
-                                balanceValue.classList.add('hidden');
-                                balanceHidden.classList.remove('hidden');
-                                toggleBtn.innerHTML = '<i data-feather="eye" class="w-4 h-4"></i>';
-                            }
+                                if (isVisible) {
+                                    // Tampilkan saldo
+                                    balanceValue.classList.remove('hidden');
+                                    balanceHidden.classList.add('hidden');
+                                    toggleBtn.innerHTML = '<i data-feather="eye-off" class="w-4 h-4"></i>';
+                                } else {
+                                    // Sembunyikan saldo
+                                    balanceValue.classList.add('hidden');
+                                    balanceHidden.classList.remove('hidden');
+                                    toggleBtn.innerHTML = '<i data-feather="eye" class="w-4 h-4"></i>';
+                                }
 
-                            feather.replace(); // render ulang ikon feather
+                                feather.replace(); // render ulang ikon feather
+                            });
                         });
-                    });
-                </script>
+                    </script>
 
 
 
-                {{-- 📈 Income This Month --}}
-                <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
-                    <div class="report-box zoom-in">
-                        <div class="box p-5">
-                            <div class="flex items-center">
-                                <i data-feather="trending-up" class="report-box__icon text-theme-9"></i>
-                                <div class="ml-auto">
-                                    <div class="report-box__indicator bg-theme-9 tooltip cursor-pointer"
-                                        title="Total income this month">
-                                        +{{ $incomeGrowth ?? 0 }}% <i data-feather="chevron-up" class="w-4 h-4"></i>
+                    {{-- 📈 Income This Month --}}
+                    <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                        <div class="report-box zoom-in">
+                            <div class="box p-5">
+                                <div class="flex items-center">
+                                    <i data-feather="trending-up" class="report-box__icon text-theme-9"></i>
+                                    <div class="ml-auto">
+                                        <div class="report-box__indicator bg-theme-9 tooltip cursor-pointer"
+                                            title="Total income this month">
+                                            +{{ $incomeGrowth ?? 0 }}% <i data-feather="chevron-up" class="w-4 h-4"></i>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="text-3xl font-bold leading-8 mt-6">
+                                    Rp{{ number_format($incomeMonth ?? 0, 0, ',', '.') }}
+                                </div>
+                                <div class="text-base text-gray-600 mt-1">Income This Month</div>
                             </div>
-                            <div class="text-3xl font-bold leading-8 mt-6">
-                                Rp{{ number_format($incomeMonth ?? 0, 0, ',', '.') }}
+                        </div>
+                    </div>
+
+                    {{-- 📉 Expense This Month --}}
+                    <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                        <div class="report-box zoom-in">
+                            <div class="box p-5">
+                                <div class="flex items-center">
+                                    <i data-feather="trending-down" class="report-box__icon text-theme-6"></i>
+                                    <div class="ml-auto">
+                                        <div class="report-box__indicator bg-theme-6 tooltip cursor-pointer"
+                                            title="Total expenses this month">
+                                            -{{ $expenseGrowth ?? 0 }}% <i data-feather="chevron-down"
+                                                class="w-4 h-4"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-3xl font-bold leading-8 mt-6">
+                                    Rp{{ number_format($expenseMonth ?? 0, 0, ',', '.') }}
+                                </div>
+                                <div class="text-base text-gray-600 mt-1">Expense This Month</div>
                             </div>
-                            <div class="text-base text-gray-600 mt-1">Income This Month</div>
+                        </div>
+                    </div>
+
+                    {{-- 🔄 Net Flow --}}
+                    <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                        <div class="report-box zoom-in">
+                            <div class="box p-5">
+                                <div class="flex items-center">
+                                    <i data-feather="bar-chart-2" class="report-box__icon text-theme-12"></i>
+                                    <div class="ml-auto">
+                                        <div class="report-box__indicator {{ ($netFlow ?? 0) >= 0 ? 'bg-theme-9' : 'bg-theme-6' }} tooltip cursor-pointer"
+                                            title="Net flow = Income - Expense">
+                                            {{ ($netFlow ?? 0) >= 0 ? '+' : '' }}{{ $netFlowGrowth ?? 0 }}%
+                                            <i data-feather="{{ ($netFlow ?? 0) >= 0 ? 'chevron-up' : 'chevron-down' }}"
+                                                class="w-4 h-4"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-3xl font-bold leading-8 mt-6">
+                                    Rp{{ number_format($netFlow ?? 0, 0, ',', '.') }}
+                                </div>
+                                <div class="text-base text-gray-600 mt-1">Net Flow</div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                {{-- 📉 Expense This Month --}}
-                <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
-                    <div class="report-box zoom-in">
-                        <div class="box p-5">
-                            <div class="flex items-center">
-                                <i data-feather="trending-down" class="report-box__icon text-theme-6"></i>
-                                <div class="ml-auto">
-                                    <div class="report-box__indicator bg-theme-6 tooltip cursor-pointer"
-                                        title="Total expenses this month">
-                                        -{{ $expenseGrowth ?? 0 }}% <i data-feather="chevron-down" class="w-4 h-4"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-3xl font-bold leading-8 mt-6">
-                                Rp{{ number_format($expenseMonth ?? 0, 0, ',', '.') }}
-                            </div>
-                            <div class="text-base text-gray-600 mt-1">Expense This Month</div>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- 🔄 Net Flow --}}
-                <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
-                    <div class="report-box zoom-in">
-                        <div class="box p-5">
-                            <div class="flex items-center">
-                                <i data-feather="bar-chart-2" class="report-box__icon text-theme-12"></i>
-                                <div class="ml-auto">
-                                    <div class="report-box__indicator {{ ($netFlow ?? 0) >= 0 ? 'bg-theme-9' : 'bg-theme-6' }} tooltip cursor-pointer"
-                                        title="Net flow = Income - Expense">
-                                        {{ ($netFlow ?? 0) >= 0 ? '+' : '' }}{{ $netFlowGrowth ?? 0 }}%
-                                        <i data-feather="{{ ($netFlow ?? 0) >= 0 ? 'chevron-up' : 'chevron-down' }}"
-                                            class="w-4 h-4"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-3xl font-bold leading-8 mt-6">
-                                Rp{{ number_format($netFlow ?? 0, 0, ',', '.') }}
-                            </div>
-                            <div class="text-base text-gray-600 mt-1">Net Flow</div>
-                        </div>
-                    </div>
-                </div>
             </div>
-
-        </div>
-        <!-- END: General Report -->
-        <!-- BEGIN: Sales Report -->
-        <div class="col-span-12 lg:col-span-12 mt-8">
-            <div class="intro-y block sm:flex items-center h-10">
-                <h2 class="text-lg font-medium truncate mr-5">
-                    Report
-                </h2>
-                {{-- <div class="sm:ml-auto mt-3 sm:mt-0 relative text-gray-700">
+            <!-- END: General Report -->
+            <!-- BEGIN: Sales Report -->
+            <div class="col-span-12 lg:col-span-12 mt-8">
+                <div class="intro-y block sm:flex items-center h-10">
+                    <h2 class="text-lg font-medium truncate mr-5">
+                        Monthly Expense Report
+                    </h2>
+                    {{-- <div class="sm:ml-auto mt-3 sm:mt-0 relative text-gray-700">
                         <i data-feather="calendar" class="w-4 h-4 z-10 absolute my-auto inset-y-0 ml-3 left-0"></i>
                         <input type="text" data-daterange="true" class="datepicker input w-full sm:w-56 box pl-10">
                     </div> --}}
-            </div>
-            <div class="intro-y box p-5 mt-12 sm:mt-5">
-                <div class="flex flex-col xl:flex-row xl:items-center">
-                    <div class="flex">
-                        <div>
-                            <div class="text-theme-20 text-lg xl:text-xl font-bold">
-                                Rp{{ number_format($expenseMonth ?? 0, 0, ',', '.') }}</div>
-                            <div class="text-gray-600">This Month</div>
-                        </div>
-                        <div class="w-px h-12 border border-r border-dashed border-gray-300 mx-4 xl:mx-6">
-                        </div>
-                        <div>
-                            <div class="text-gray-600 text-lg xl:text-xl font-medium">
-                                Rp{{ number_format($expenseLastMonth ?? 0, 0, ',', '.') }}
+                </div>
+                <div class="intro-y box p-5 mt-12 sm:mt-5">
+                    <div class="flex flex-col xl:flex-row xl:items-center">
+                        <div class="flex">
+                            <div>
+                                <div class="text-theme-20 text-lg xl:text-xl font-bold">
+                                    Rp{{ number_format($expenseMonth ?? 0, 0, ',', '.') }}</div>
+                                <div class="text-gray-600">This Month</div>
                             </div>
-                            <div class="text-gray-600">Last Month</div>
+                            <div class="w-px h-12 border border-r border-dashed border-gray-300 mx-4 xl:mx-6">
+                            </div>
+                            <div>
+                                <div class="text-gray-600 text-lg xl:text-xl font-medium">
+                                    Rp{{ number_format($expenseLastMonth ?? 0, 0, ',', '.') }}
+                                </div>
+                                <div class="text-gray-600">Last Month</div>
+                            </div>
                         </div>
-                    </div>
-                    {{-- <div class="dropdown relative xl:ml-auto mt-5 xl:mt-0">
+                        {{-- <div class="dropdown relative xl:ml-auto mt-5 xl:mt-0">
                             <button
                                 class="dropdown-toggle button font-normal border text-white relative flex items-center text-gray-700">
                                 Filter by Category <i data-feather="chevron-down" class="w-4 h-4 ml-2"></i>
@@ -186,15 +188,27 @@
                                 </div>
                             </div>
                         </div> --}}
-                </div>
-                <div class="report-chart">
-                    <canvas id="report-line-chart-rechive-hub" height="250" class="mt-6"></canvas>
+                    </div>
+                    <div class="report-chart">
+                        <canvas id="report-line-chart-rechive-hub" height="250" class="mt-6"></canvas>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- END: Sales Report -->
-        <!-- BEGIN: Weekly Top Seller -->
-        {{-- <div class="col-span-12 sm:col-span-6 lg:col-span-3 mt-8">
+            <div class="col-span-12 lg:col-span-12 mt-8">
+                <div class="intro-y block sm:flex items-center h-10">
+                    <h2 class="text-lg font-medium truncate mr-5">
+                        Daily Transaction Report
+                    </h2>
+                </div>
+                <div class="intro-y box p-5 mt-12 sm:mt-5">
+                    <div class="report-chart mt-10">
+                        <canvas id="report-bar-chart-daily" height="250" class="mt-6"></canvas>
+                    </div>
+                </div>
+            </div>
+            <!-- END: Sales Report -->
+            <!-- BEGIN: Weekly Top Seller -->
+            <div class="col-span-12 sm:col-span-6 lg:col-span-3 mt-8">
                 <div class="intro-y flex items-center h-10">
                     <h2 class="text-lg font-medium truncate mr-5">
                         Weekly Top Seller
@@ -227,10 +241,10 @@
                         </div>
                     </div>
                 </div>
-            </div> --}}
-        <!-- END: Weekly Top Seller -->
-        <!-- BEGIN: Sales Report -->
-        {{-- <div class="col-span-12 sm:col-span-6 lg:col-span-3 mt-8">
+            </div>
+            <!-- END: Weekly Top Seller -->
+            <!-- BEGIN: Sales Report -->
+            <div class="col-span-12 sm:col-span-6 lg:col-span-3 mt-8">
                 <div class="intro-y flex items-center h-10">
                     <h2 class="text-lg font-medium truncate mr-5">
                         Sales Report
@@ -263,10 +277,10 @@
                         </div>
                     </div>
                 </div>
-            </div> --}}
-        <!-- END: Sales Report -->
-        <!-- BEGIN: Official Store -->
-        {{-- <div class="col-span-12 xl:col-span-8 mt-6">
+            </div>
+            <!-- END: Sales Report -->
+            <!-- BEGIN: Official Store -->
+            <div class="col-span-12 xl:col-span-8 mt-6">
                 <div class="intro-y block sm:flex items-center h-10">
                     <h2 class="text-lg font-medium truncate mr-5">
                         Official Store
@@ -281,10 +295,10 @@
                     <div class="report-maps mt-5 bg-gray-200 rounded-md" data-center="-6.2425342, 106.8626478"
                         data-sources="{{ asset('dist/json/location.json') }}"></div>
                 </div>
-            </div> --}}
-        <!-- END: Official Store -->
-        <!-- BEGIN: Weekly Best Sellers -->
-        {{-- <div class="col-span-12 xl:col-span-4 mt-6">
+            </div>
+            <!-- END: Official Store -->
+            <!-- BEGIN: Weekly Best Sellers -->
+            <div class="col-span-12 xl:col-span-4 mt-6">
                 <div class="intro-y flex items-center h-10">
                     <h2 class="text-lg font-medium truncate mr-5">
                         Weekly Best Sellers
@@ -355,10 +369,10 @@
                         class="intro-y w-full block text-center rounded-md py-4 border border-dotted border-theme-15 text-theme-16">View
                         More</a>
                 </div>
-            </div> --}}
-        <!-- END: Weekly Best Sellers -->
-        <!-- BEGIN: General Report -->
-        {{-- <div class="col-span-12 grid grid-cols-12 gap-6 mt-8">
+            </div>
+            <!-- END: Weekly Best Sellers -->
+            <!-- BEGIN: General Report -->
+            <div class="col-span-12 grid grid-cols-12 gap-6 mt-8">
                 <div class="col-span-12 sm:col-span-6 xxl:col-span-3 intro-y">
                     <div class="mini-report-chart box p-5 zoom-in">
                         <div class="flex items-center">
@@ -417,10 +431,10 @@
                         </div>
                     </div>
                 </div>
-            </div> --}}
-        <!-- END: General Report -->
-        <!-- BEGIN: Weekly Top Seller -->
-        {{-- <div class="col-span-12 mt-6">
+            </div>
+            <!-- END: General Report -->
+            <!-- BEGIN: Weekly Top Seller -->
+            <div class="col-span-12 mt-6">
                 <div class="intro-y block sm:flex items-center h-10">
                     <h2 class="text-lg font-medium truncate mr-5">
                         Weekly Top Seller
@@ -659,10 +673,10 @@
                         <option>50</option>
                     </select>
                 </div>
-            </div> --}}
-        <!-- END: Weekly Top Seller -->
-        {{-- </div> --}}
-        {{-- <div class="col-span-12 xxl:col-span-3 xxl:border-l border-theme-5 -mb-10 pb-10">
+            </div>
+            <!-- END: Weekly Top Seller -->
+        </div>
+        <div class="col-span-12 xxl:col-span-3 xxl:border-l border-theme-5 -mb-10 pb-10">
             <div class="xxl:pl-6 grid grid-cols-12 gap-6">
                 <!-- BEGIN: Transactions -->
                 <div class="col-span-12 md:col-span-6 xl:col-span-4 xxl:col-span-12 mt-3 xxl:mt-8">
@@ -1001,7 +1015,7 @@
                 </div>
                 <!-- END: Schedules -->
             </div>
-        </div> --}}
+        </div>
     </div>
 
     @if (isset($chartLabels))
@@ -1185,6 +1199,141 @@
                         }
                     },
                     plugins: [shadowLine]
+                });
+            });
+        </script>
+    @endif
+
+
+    @if (isset($barLabels))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const ctxBar = document.getElementById('report-bar-chart-daily').getContext('2d');
+                const chartHeight = ctxBar.canvas.clientHeight || 300;
+
+                // 🌈 Gradasi warna batang
+                const gradientIncomeBar = ctxBar.createLinearGradient(0, 0, 0, chartHeight);
+                gradientIncomeBar.addColorStop(0, 'rgba(28, 63, 170, 0.9)');
+                gradientIncomeBar.addColorStop(1, 'rgba(28, 63, 170, 0.3)');
+
+                const gradientExpenseBar = ctxBar.createLinearGradient(0, 0, 0, chartHeight);
+                gradientExpenseBar.addColorStop(0, 'rgba(220, 38, 38, 0.85)');
+                gradientExpenseBar.addColorStop(1, 'rgba(220, 38, 38, 0.3)');
+
+                // 🪙 Format ke Rupiah
+                const formatRupiah = (num) => {
+                    if (isNaN(num)) return 'Rp 0';
+                    return 'Rp ' + Number(num).toLocaleString('id-ID', {
+                        minimumFractionDigits: 0
+                    });
+                };
+
+                const barData = {
+                    labels: @json($barLabels),
+                    datasets: [{
+                            label: 'Income',
+                            data: @json($barIncome),
+                            backgroundColor: gradientIncomeBar,
+                            borderRadius: 6,
+                            borderSkipped: false,
+                            barThickness: 10,
+                        },
+                        {
+                            label: 'Expense',
+                            data: @json($barExpense),
+                            backgroundColor: gradientExpenseBar,
+                            borderRadius: 6,
+                            borderSkipped: false,
+                            barThickness: 10,
+                        }
+                    ]
+                };
+
+                new Chart(ctxBar, {
+                    type: 'bar',
+                    data: barData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        animations: {
+                            y: {
+                                duration: 1000,
+                                easing: 'easeOutCubic'
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    color: '#374151',
+                                    font: {
+                                        size: 13,
+                                        weight: '600'
+                                    },
+                                    boxWidth: 20,
+                                    padding: 15
+                                }
+                            },
+                            tooltip: {
+                                usePointStyle: true,
+                                backgroundColor: 'rgba(17,24,39,0.9)',
+                                titleFont: {
+                                    size: 13,
+                                    weight: '600'
+                                },
+                                bodyFont: {
+                                    size: 12
+                                },
+                                cornerRadius: 8,
+                                padding: 10,
+                                displayColors: false,
+                                callbacks: {
+                                    label: function(context) {
+                                        const value = Number(context.parsed.y || 0);
+                                        return `${context.dataset.label}: ${formatRupiah(value)}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                stacked: false,
+                                ticks: {
+                                    color: '#6B7280',
+                                    font: {
+                                        size: 11
+                                    },
+                                    maxRotation: 0,
+                                    autoSkip: true,
+                                    autoSkipPadding: 6
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: '#6B7280',
+                                    font: {
+                                        size: 12
+                                    },
+                                    callback: function(value) {
+                                        return formatRupiah(value);
+                                    }
+                                },
+                                grid: {
+                                    color: '#E5E7EB',
+                                    drawBorder: false
+                                }
+                            }
+                        }
+                    }
                 });
             });
         </script>
