@@ -16,6 +16,7 @@ class FinanceCategoryController extends Controller
             'financeType:id,name,label'
         ])
             ->orderBy('created_at', 'desc')
+            ->inRandomOrder()
             ->get();
         return view('layouts.app', [
             'content' => view('pages.finance.finance-categories.finance-category', compact('data'))->render()
