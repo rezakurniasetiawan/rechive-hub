@@ -151,7 +151,7 @@ class FinanceTransactionController extends Controller
     {
         $financeTypes = FinanceType::all();
         $financeAccounts = FinanceAccount::all();
-        $financeCategories = FinanceCategory::all();
+        $financeCategories = FinanceCategory::inRandomOrder()->get();
         return view('transactions', compact('financeAccounts', 'financeCategories', 'financeTypes'));
     }
 
