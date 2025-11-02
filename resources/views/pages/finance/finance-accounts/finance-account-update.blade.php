@@ -50,7 +50,7 @@
                         placeholder="e.g., 1234567890" value="{{ $data->bank_number }}">
                 </div>
                 <div class="mt-3">
-                    <label class="font-medium">Account Number</label>
+                    <label class="font-medium">Balance</label>
                     <input type="text" class="input w-full border mt-2" name="balance" placeholder="e.g., 1234567890"
                         value="{{ $data->balance }}">
                 </div>
