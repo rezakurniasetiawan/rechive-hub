@@ -155,6 +155,7 @@ class FinanceTransactionController extends Controller
         return view('transactions', compact('financeAccounts', 'financeCategories', 'financeTypes'));
     }
 
+
     public function transactionStore(Request $request)
     {
         try {
