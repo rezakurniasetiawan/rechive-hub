@@ -4,101 +4,115 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Finance\FinanceAccount;
-use App\Models\Finance\FinanceDailyBalance;
-use App\Models\Finance\FinanceWeeklyBalance;
-use App\Models\Finance\FinanceYearlyBalance;
-use App\Models\Finance\FinanceMonthlyBalance;
+use App\Models\Finance\{
+    FinanceAccount,
+    FinanceDailyBalance,
+    FinanceWeeklyBalance,
+    FinanceYearlyBalance,
+    FinanceMonthlyBalance
+};
 
 class DashboardController extends Controller
 {
     public function dashboard(Request $request)
     {
-        //  ========================= Total Balance ==========================//
+        $currentDate  = now();
+        $currentYear  = $currentDate->year;
+        $currentMonth = $currentDate->month;
+
+        // ========================= Total Balance ========================== //
         $totalBalance = FinanceAccount::sum('balance');
 
-        //  ========================= Income Monthly ==========================//
-        $incomeMonth = FinanceMonthlyBalance::where('year', date('Y'))
-            ->where('month', date('m'))
-            ->sum('income_total');
+        // ========================= Income & Expense (Current Month) ========================== //
+        $monthlyBalance = FinanceMonthlyBalance::where('year', $currentYear)
+            ->where('month', str_pad($currentMonth, 2, '0', STR_PAD_LEFT))
+            ->first();
 
-        // ========================== Income Growth ==========================// 
-        $currentYear = (int) date('Y');
-        $currentMonth = (int) date('m');
-        if ($currentMonth === 1) {
-            $lastMonth = 12;
-            $lastYear = $currentYear - 1;
-        } else {
-            $lastMonth = $currentMonth - 1;
-            $lastYear = $currentYear;
-        }
+        $incomeMonth  = $monthlyBalance->income_total  ?? 0;
+        $expenseMonth = $monthlyBalance->expense_total ?? 0;
 
-        $incomeLastMonth = FinanceMonthlyBalance::where('year', $lastYear)
+        // ========================= Previous Month ========================== //
+        $lastMonth = $currentMonth === 1 ? 12 : $currentMonth - 1;
+        $lastYear  = $currentMonth === 1 ? $currentYear - 1 : $currentYear;
+
+        $lastMonthlyBalance = FinanceMonthlyBalance::where('year', $lastYear)
             ->where('month', str_pad($lastMonth, 2, '0', STR_PAD_LEFT))
-            ->sum('income_total');
-        if ($incomeLastMonth == 0) {
-            $incomeGrowth = $incomeMonth > 0 ? 100.0 : 0.0;
-        } else {
-            $incomeGrowth = round((($incomeMonth - $incomeLastMonth) / $incomeLastMonth) * 100, 2);
-        }
+            ->first();
 
-        // ========================== Expense Monthly ==========================//
-        $expenseMonth = FinanceMonthlyBalance::where('year', date('Y'))
-            ->where('month', date('m'))
-            ->sum('expense_total');
+        $incomeLastMonth  = $lastMonthlyBalance->income_total  ?? 0;
+        $expenseLastMonth = $lastMonthlyBalance->expense_total ?? 0;
 
-        // ========================== Expense Growth ==========================// 
-        $expenseLastMonth = FinanceMonthlyBalance::where('year', $lastYear)
-            ->where('month', str_pad($lastMonth, 2, '0', STR_PAD_LEFT))
-            ->sum('expense_total');
-        if ($expenseLastMonth == 0) {
-            $expenseGrowth = $expenseMonth > 0 ? 100.0 : 0.0;
-        } else {
-            $expenseGrowth = round((($expenseMonth - $expenseLastMonth) / $expenseLastMonth) * 100, 2);
-        }
+        // ========================= Growth Calculations ========================== //
+        $incomeGrowth  = $this->calculateGrowth($incomeMonth, $incomeLastMonth);
+        $expenseGrowth = $this->calculateGrowth($expenseMonth, $expenseLastMonth);
 
-        //========================== Net Flow ==========================// 
-        $netFlow = $incomeMonth - $expenseMonth;
-        $netFlowLastMonth = $incomeLastMonth - $expenseLastMonth;
-        if ($netFlowLastMonth == 0) {
-            $netFlowGrowth = $netFlow > 0 ? 100.0 : 0.0;
-        } else {
-            $netFlowGrowth = round((($netFlow - $netFlowLastMonth) / $netFlowLastMonth) * 100, 2);
-        }
+        // ========================= Net Flow & Growth ========================== //
+        $netFlow       = $incomeMonth - $expenseMonth;
+        $netFlowLast   = $incomeLastMonth - $expenseLastMonth;
+        $netFlowGrowth = $this->calculateGrowth($netFlow, $netFlowLast);
 
-        //========================== Line Chart Data ==========================// 
-        $currentYear = now()->year;
+        // ========================= Line Chart Data (Full Year) ========================== //
         $balances = FinanceMonthlyBalance::where('year', $currentYear)
             ->get(['month', 'income_total', 'expense_total'])
             ->keyBy('month');
-        $chartLabels = [];
-        $chartIncome = [];
+
+        $chartLabels  = [];
+        $chartIncome  = [];
         $chartExpense = [];
-        // Loop 1–12 (bulan penuh)
+
         for ($month = 1; $month <= 12; $month++) {
-            $chartLabels[] = Carbon::create()->month($month)->format('M');
-            $chartIncome[] = isset($balances[$month]) ? (float) $balances[$month]->income_total : 0;
-            $chartExpense[] = isset($balances[$month]) ? (float) $balances[$month]->expense_total : 0;
+            $chartLabels[]  = Carbon::create()->month($month)->format('M');
+            $chartIncome[]  = (float) ($balances[$month]->income_total  ?? 0);
+            $chartExpense[] = (float) ($balances[$month]->expense_total ?? 0);
         }
 
-        // ====== Render ke view
+        // ========================= Bar Chart Data (Current Month by Date) ========================== //
+        $dailyBalances = FinanceDailyBalance::whereYear('date', $currentYear)
+            ->whereMonth('date', $currentMonth)
+            ->get(['date', 'income_total', 'expense_total'])
+            ->keyBy(fn($item) => Carbon::parse($item->date)->day);
+
+        $daysInMonth = $currentDate->daysInMonth;
+        $barLabels   = [];
+        $barIncome   = [];
+        $barExpense  = [];
+
+        for ($day = 1; $day <= $daysInMonth; $day++) {
+            $barLabels[]  = str_pad($day, 2, '0', STR_PAD_LEFT);
+            $barIncome[]  = (float) ($dailyBalances[$day]->income_total  ?? 0);
+            $barExpense[] = (float) ($dailyBalances[$day]->expense_total ?? 0);
+        }
+
+        // ========================= Render View ========================== //
         return view('layouts.app', [
             'content' => view('pages.dashboard', compact(
-                //General Report
                 'totalBalance',
-                'incomeGrowth',
                 'incomeMonth',
-                'expenseGrowth',
+                'incomeGrowth',
                 'expenseMonth',
+                'expenseGrowth',
                 'netFlow',
                 'netFlowGrowth',
                 'expenseLastMonth',
-                //Chart Data
                 'chartLabels',
                 'chartIncome',
                 'chartExpense',
+                'barLabels',
+                'barIncome',
+                'barExpense'
             ))->render()
         ]);
+    }
+
+    /**
+     * Hitung pertumbuhan (growth) dalam persen.
+     */
+    private function calculateGrowth(float $current, float $previous): float
+    {
+        if ($previous == 0) {
+            return $current > 0 ? 100.0 : 0.0;
+        }
+
+        return round((($current - $previous) / $previous) * 100, 2);
     }
 }
