@@ -1,4 +1,4 @@
-name: Publish Website to CPanel
+name: Deploy Laravel App via FTP
 
 on:
   push:
@@ -6,18 +6,44 @@ on:
       - main
 
 jobs:
-  FTP-Deploy-Action:
+  ftp-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # penting supaya git diff tidak gagal
+          fetch-depth: 0        # penting agar git history lengkap
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'     # atau versi PHP yang kamu pakai
+
+      - name: Install dependencies
+        run: |
+          composer install --no-dev --prefer-dist --optimize-autoloader
+          npm install
+          npm run production       # atau build sesuai konfigurasi Laravel kamu
+
+      - name: Clean up untracked/build files
+        run: |
+          git reset --hard
+          git clean -fdx          # menghapus file yang tidak di-track
 
       - name: FTP Deploy
-        uses: SamKirkland/FTP-Deploy-Action@4.0.0
+        uses: SamKirkland/FTP-Deploy-Action@3.1.1
         with:
           ftp-server: ${{ secrets.FTP_SERVER }}
           ftp-username: ${{ secrets.FTP_USERNAME }}
           ftp-password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./
+          local-dir: ./            # root Laravel atau bisa diganti misalnya ./public
+          server-dir: /path/to/your/laravel/root/    # path di hosting cPanel kamu
+          exclude: |
+            **/.git*
+            **/.env
+            **/node_modules/**
+            **/vendor/**
+            **/tests/**
+            storage/
+          git-ftp-args: --all      # optional: upload seluruh file tanpa diff jika perlu
