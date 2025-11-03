@@ -1018,7 +1018,7 @@
         </div>
     </div>
 
-    @if (isset($chartLabels))
+    <!-- @if (isset($chartLabels))
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const ctx = document.getElementById('report-line-chart-rechive-hub').getContext('2d');
@@ -1202,7 +1202,131 @@
                 });
             });
         </script>
-    @endif
+    @endif -->
+
+
+    @if (isset($chartLabels))
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  if ($('#report-line-chart').length) {
+    var ctx = $('#report-line-chart')[0].getContext('2d');
+    var chartHeight = ctx.canvas.clientHeight || 300;
+
+    // 🌈 Gradasi warna untuk area chart
+    var gradientIncome = ctx.createLinearGradient(0, 0, 0, chartHeight);
+    gradientIncome.addColorStop(0, 'rgba(28, 63, 170, 0.4)');
+    gradientIncome.addColorStop(1, 'rgba(28, 63, 170, 0)');
+
+    var gradientExpense = ctx.createLinearGradient(0, 0, 0, chartHeight);
+    gradientExpense.addColorStop(0, 'rgba(220, 38, 38, 0.3)');
+    gradientExpense.addColorStop(1, 'rgba(220, 38, 38, 0)');
+
+    // 💰 Format angka ke Rupiah
+    var formatRupiah = function (num) {
+      if (isNaN(num)) return 'Rp 0';
+      return 'Rp ' + Number(num).toLocaleString('id-ID', { minimumFractionDigits: 0 });
+    };
+
+    // 📊 Data chart dari backend (Laravel)
+    var chartData = {
+      labels: @json($chartLabels),
+      datasets: [
+        {
+          label: 'Income',
+          data: @json($chartIncome),
+          borderWidth: 2,
+          borderColor: '#1C3FAA',
+          backgroundColor: gradientIncome,
+          tension: 0.35,
+          fill: true,
+          pointRadius: 3,
+          pointHoverRadius: 8,
+          pointHoverBorderColor: '#fff',
+          pointHoverBorderWidth: 2,
+          pointBackgroundColor: '#1C3FAA'
+        },
+        {
+          label: 'Expense',
+          data: @json($chartExpense),
+          borderWidth: 2,
+          borderColor: '#DC2626',
+          backgroundColor: gradientExpense,
+          tension: 0.35,
+          fill: true,
+          pointRadius: 3,
+          pointHoverRadius: 8,
+          pointHoverBorderColor: '#fff',
+          pointHoverBorderWidth: 2,
+          pointBackgroundColor: '#DC2626'
+        }
+      ]
+    };
+
+    // ⚙️ Konfigurasi Chart.js
+    var myChart = new chart_js__WEBPACK_IMPORTED_MODULE_1___default.a(ctx, {
+      type: 'line',
+      data: chartData,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+          display: true,
+          position: 'top',
+          labels: {
+            fontColor: '#374151',
+            fontSize: 13,
+            boxWidth: 20,
+            padding: 15
+          }
+        },
+        tooltips: {
+          backgroundColor: 'rgba(17,24,39,0.9)',
+          titleFontSize: 13,
+          bodyFontSize: 12,
+          cornerRadius: 8,
+          xPadding: 10,
+          yPadding: 10,
+          displayColors: false,
+          callbacks: {
+            label: function (tooltipItem, data) {
+              var datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
+              var value = Number(tooltipItem.yLabel) || 0;
+              return datasetLabel + ': ' + formatRupiah(value);
+            }
+          }
+        },
+        scales: {
+          xAxes: [{
+            ticks: {
+              fontSize: 12,
+              fontColor: '#6B7280'
+            },
+            gridLines: { display: false }
+          }],
+          yAxes: [{
+            ticks: {
+              beginAtZero: true,
+              fontSize: 12,
+              fontColor: '#6B7280',
+              maxTicksLimit: 5,
+              callback: function (value) { return formatRupiah(value); }
+            },
+            gridLines: {
+              color: '#E5E7EB',
+              zeroLineColor: '#E5E7EB',
+              borderDash: [2, 2],
+              zeroLineBorderDash: [2, 2],
+              drawBorder: false
+            }
+          }]
+        }
+      }
+    });
+  }
+});
+</script>
+@endif
+
 
 
     @if (isset($barLabels))
