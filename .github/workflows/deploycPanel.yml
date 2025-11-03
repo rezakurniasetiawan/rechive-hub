@@ -13,37 +13,36 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0        # penting agar git history lengkap
+          fetch-depth: 0
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'     # atau versi PHP yang kamu pakai
+          php-version: '8.2'
+          extensions: mbstring, bcmath, intl, pdo_mysql, fileinfo, gd
 
       - name: Install dependencies
         run: |
           composer install --no-dev --prefer-dist --optimize-autoloader
-          npm install
-          npm run production       # atau build sesuai konfigurasi Laravel kamu
+          npm ci
+          npm run build
 
-      - name: Clean up untracked/build files
+      - name: Clean workspace
         run: |
           git reset --hard
-          git clean -fdx          # menghapus file yang tidak di-track
+          git clean -fdx
 
-      - name: FTP Deploy
+      - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@3.1.1
         with:
           ftp-server: ${{ secrets.FTP_SERVER }}
           ftp-username: ${{ secrets.FTP_USERNAME }}
           ftp-password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./            # root Laravel atau bisa diganti misalnya ./public
-          server-dir: /path/to/your/laravel/root/    # path di hosting cPanel kamu
+          local-dir: ./           # atau ./public jika hanya upload hasil build
           exclude: |
-            **/.git*
-            **/.env
-            **/node_modules/**
             **/vendor/**
-            **/tests/**
+            **/node_modules/**
             storage/
-          git-ftp-args: --all      # optional: upload seluruh file tanpa diff jika perlu
+            tests/
+            .git*
+            .env
