@@ -15,18 +15,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          extensions: mbstring, bcmath, intl, pdo_mysql, fileinfo, gd
-
-      - name: Install dependencies & build
-        run: |
-          composer install --no-dev --prefer-dist --optimize-autoloader
-          npm ci
-          npm run build
-
       - name: Deploy Laravel to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:
@@ -41,4 +29,3 @@ jobs:
             storage/
             tests/
             .git*
-            .env
