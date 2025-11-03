@@ -28,7 +28,6 @@ jobs:
           local-dir: ./               # Root Laravel project
           server-dir: /public_html/   # Sesuaikan dengan folder di hosting
           exclude: |
-            **/vendor/**
             **/node_modules/**
             storage/
             tests/
