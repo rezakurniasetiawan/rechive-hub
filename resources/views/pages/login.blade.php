@@ -52,7 +52,7 @@
                     <div class="-intro-x text-white font-medium text-4xl leading-tight mt-10">
                         Masuk ke ReChive Hub
                         <br>
-                        Atur keuangan dan kehidupan bersama.
+                        Atur keuangan dan kehidupan bersama sampai tua.
                     </div>
                     <div class="-intro-x mt-5 text-lg text-white">Kelola anggaran, aktivitas, dan catatan penting dalam
                         satu tempat.</div>
