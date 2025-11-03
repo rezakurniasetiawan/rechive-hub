@@ -24,7 +24,7 @@ class FinanceTransactionController extends Controller
             'financeType:id,name,label'
         ])
             ->orderBy('date', 'desc')
-            ->get();
+            ->paginate(10);
         return view('layouts.app', [
             'content' => view('pages.finance.finance-transactions.finance-transaction', compact('data'))->render()
         ]);
@@ -33,7 +33,7 @@ class FinanceTransactionController extends Controller
 
     public function create()
     {
-        $financeTypes = FinanceType::all();
+        $financeTypes = FinanceType::whereRaw('LOWER(name) IN (?, ?)', ['income', 'expense'])->get();
         $financeAccounts = FinanceAccount::all();
         $financeCategories = FinanceCategory::inRandomOrder()->get();
 
@@ -149,7 +149,7 @@ class FinanceTransactionController extends Controller
     // Transsaction
     public function transaction()
     {
-        $financeTypes = FinanceType::all();
+        $financeTypes = FinanceType::whereRaw('LOWER(name) IN (?, ?)', ['income', 'expense'])->get();
         $financeAccounts = FinanceAccount::all();
         $financeCategories = FinanceCategory::inRandomOrder()->get();
         return view('transactions', compact('financeAccounts', 'financeCategories', 'financeTypes'));

@@ -119,9 +119,12 @@
                             <label class="font-medium text-gray-800">
                                 Amount <span class="text-red-600 ml-1">*</span>
                             </label>
-                            <input type="number" name="amount" class="input w-full border mt-2 rounded-lg text-sm"
-                                step="0.01" placeholder="Enter amount (e.g., 500000)" required>
+                            <input type="text" id="amount_display"
+                                class="input w-full border mt-2 rounded-lg text-sm"
+                                placeholder="Masukkan jumlah (contoh: 500.000)" autocomplete="off" required>
+                            <input type="hidden" name="amount" id="amount" required>
                         </div>
+
 
                         {{-- Date --}}
                         <div>
@@ -159,6 +162,28 @@
 
 <!-- ✅ JS Logic -->
 <script>
+    // === Format Rupiah saat mengetik ===
+    const amountInput = document.getElementById('amount_display');
+    const hiddenAmount = document.getElementById('amount');
+
+    amountInput.addEventListener('input', function(e) {
+        let value = this.value.replace(/[^\d]/g, ''); // hapus semua non-digit
+        if (value === '') {
+            this.value = '';
+            hiddenAmount.value = '';
+            return;
+        }
+
+        // Format ke rupiah
+        this.value = formatRupiah(value);
+
+        // Simpan ke input hidden tanpa format (integer)
+        hiddenAmount.value = parseInt(value, 10);
+    });
+
+    function formatRupiah(angka) {
+        return 'Rp ' + angka.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
     document.addEventListener('DOMContentLoaded', function() {
         // Step 1 → Step 2
         document.querySelectorAll('.finance-type-card').forEach(card => {

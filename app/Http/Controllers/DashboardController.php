@@ -83,6 +83,17 @@ class DashboardController extends Controller
             $barExpense[] = (float) ($dailyBalances[$day]->expense_total ?? 0);
         }
 
+        // ========================= Last 5 Transactions ========================== //
+        $lastTransaction = \App\Models\Finance\FinanceTransaction::with([
+            'financeAccount:id,bank_name,logo',
+            'financeCategory:id,name',
+            'financeType:id,name,label'
+        ])
+            ->orderBy('date', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get();
+
         // ========================= Render View ========================== //
         return view('layouts.app', [
             'content' => view('pages.dashboard', compact(
@@ -99,7 +110,8 @@ class DashboardController extends Controller
                 'chartExpense',
                 'barLabels',
                 'barIncome',
-                'barExpense'
+                'barExpense',
+                'lastTransaction'
             ))->render()
         ]);
     }

@@ -44,6 +44,13 @@
                            <div class="side-menu__title"> Finance Transactions </div>
                        </a>
                    </li>
+                   <li>
+                       <a href="{{ route('finance.fundtransfer.index') }}"
+                           class="side-menu {{ request()->routeIs('finance.fundtransfer.*') ? 'side-menu--active' : '' }}">
+                           <div class="side-menu__icon"> <i data-feather="corner-up-right"></i> </div>
+                           <div class="side-menu__title"> Fund Transfer </div>
+                       </a>
+                   </li>
                </ul>
            </li>
            {{-- 🧑‍💼 Pekerjaan & Proyek --}}

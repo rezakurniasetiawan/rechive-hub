@@ -682,76 +682,34 @@
                 <div class="col-span-12 md:col-span-6 xl:col-span-4 xxl:col-span-12 mt-3 xxl:mt-8">
                     <div class="intro-x flex items-center h-10">
                         <h2 class="text-lg font-medium truncate mr-5">
-                            Transactions
+                            Last Transactions
                         </h2>
                     </div>
                     <div class="mt-5">
-                        <div class="intro-x">
-                            <div class="box px-5 py-3 mb-3 flex items-center zoom-in">
-                                <div class="w-10 h-10 flex-none image-fit rounded-full overflow-hidden">
-                                    <img alt="Midone Tailwind HTML Admin Template"
-                                        src="{{ asset('dist/images/profile-14.jpg') }}">
+                        @foreach ($lastTransaction as $transaction)
+                            <div class="intro-x">
+                                <div class="box px-5 py-3 mb-3 flex items-center zoom-in">
+                                    <div class="w-12 h-10 flex-none image-fit rounded-md overflow-hidden">
+                                        <img alt="Logo" src="{{ $transaction->financeAccount->logo }}">
+                                    </div>
+                                    <div class="ml-4 mr-auto">
+                                        <div class="font-medium">{{ $transaction->description }}</div>
+                                        <div class="text-gray-600 text-xs">
+                                            {{ $transaction->date ? \Carbon\Carbon::parse($transaction->date)->format('d M Y') : '-' }}
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="{{ $transaction->type === 'income' ? 'text-theme-9' : 'text-theme-6' }}">
+                                        @if ($transaction->type === 'income')
+                                            + Rp{{ number_format($transaction->amount ?? 0, 0, ',', '.') }}
+                                        @else
+                                            - Rp{{ number_format($transaction->amount ?? 0, 0, ',', '.') }}
+                                        @endif
+                                    </div>
                                 </div>
-                                <div class="ml-4 mr-auto">
-                                    <div class="font-medium">Leonardo DiCaprio</div>
-                                    <div class="text-gray-600 text-xs">6 August 2022</div>
-                                </div>
-                                <div class="text-theme-9">+$23</div>
                             </div>
-                        </div>
-                        <div class="intro-x">
-                            <div class="box px-5 py-3 mb-3 flex items-center zoom-in">
-                                <div class="w-10 h-10 flex-none image-fit rounded-full overflow-hidden">
-                                    <img alt="Midone Tailwind HTML Admin Template"
-                                        src="{{ asset('dist/images/profile-10.jpg') }}">
-                                </div>
-                                <div class="ml-4 mr-auto">
-                                    <div class="font-medium">Tom Cruise</div>
-                                    <div class="text-gray-600 text-xs">21 July 2020</div>
-                                </div>
-                                <div class="text-theme-9">+$83</div>
-                            </div>
-                        </div>
-                        <div class="intro-x">
-                            <div class="box px-5 py-3 mb-3 flex items-center zoom-in">
-                                <div class="w-10 h-10 flex-none image-fit rounded-full overflow-hidden">
-                                    <img alt="Midone Tailwind HTML Admin Template"
-                                        src="{{ asset('dist/images/profile-12.jpg') }}">
-                                </div>
-                                <div class="ml-4 mr-auto">
-                                    <div class="font-medium">Al Pacino</div>
-                                    <div class="text-gray-600 text-xs">5 January 2021</div>
-                                </div>
-                                <div class="text-theme-9">+$199</div>
-                            </div>
-                        </div>
-                        <div class="intro-x">
-                            <div class="box px-5 py-3 mb-3 flex items-center zoom-in">
-                                <div class="w-10 h-10 flex-none image-fit rounded-full overflow-hidden">
-                                    <img alt="Midone Tailwind HTML Admin Template"
-                                        src="{{ asset('dist/images/profile-6.jpg') }}">
-                                </div>
-                                <div class="ml-4 mr-auto">
-                                    <div class="font-medium">Russell Crowe</div>
-                                    <div class="text-gray-600 text-xs">22 April 2020</div>
-                                </div>
-                                <div class="text-theme-9">+$43</div>
-                            </div>
-                        </div>
-                        <div class="intro-x">
-                            <div class="box px-5 py-3 mb-3 flex items-center zoom-in">
-                                <div class="w-10 h-10 flex-none image-fit rounded-full overflow-hidden">
-                                    <img alt="Midone Tailwind HTML Admin Template"
-                                        src="{{ asset('dist/images/profile-15.jpg') }}">
-                                </div>
-                                <div class="ml-4 mr-auto">
-                                    <div class="font-medium">Al Pacino</div>
-                                    <div class="text-gray-600 text-xs">8 October 2022</div>
-                                </div>
-                                <div class="text-theme-9">+$112</div>
-                            </div>
-                        </div>
-                        <a href=""
+                        @endforeach
+                        <a href="{{ route('finance.transaction.index') }}"
                             class="intro-x w-full block text-center rounded-md py-3 border border-dotted border-theme-15 text-theme-16">View
                             More</a>
                     </div>

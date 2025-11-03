@@ -6,7 +6,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Finance\{
     FinanceAccountController,
     FinanceCategoryController,
-    FinanceTransactionController
+    FinanceTransactionController,
+    FundTransferController
 };
 
 // Auth Routes
@@ -51,6 +52,12 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/update/{id}', 'update')->name('update');
             Route::post('/edit/{id}', 'edit')->name('edit');
             Route::delete('/delete/{id}', 'destroy')->name('destroy');
+        });
+        // Fund Transfer Routes
+        Route::prefix('fundtransfer')->name('fundtransfer.')->controller(FundTransferController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/store', 'store')->name('store');
         });
     });
 });

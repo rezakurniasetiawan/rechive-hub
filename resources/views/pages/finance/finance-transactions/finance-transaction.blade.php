@@ -27,14 +27,14 @@
             </div>
         </div>
 
-        <div class="hidden md:block mx-auto text-gray-600">Showing 1 to 10 of 150 entries</div>
+        {{-- <div class="hidden md:block mx-auto text-gray-600">Showing 1 to 10 of 150 entries</div> --}}
 
-        <div class="w-full sm:w-auto mt-3 sm:mt-0 sm:ml-auto md:ml-0">
+        {{-- <div class="w-full sm:w-auto mt-3 sm:mt-0 sm:ml-auto md:ml-0">
             <div class="w-56 relative text-gray-700">
                 <input type="text" class="input w-56 box pr-10 placeholder-theme-13" placeholder="Search...">
                 <i class="w-4 h-4 absolute my-auto inset-y-0 mr-3 right-0 text-gray-400" data-feather="search"></i>
             </div>
-        </div>
+        </div> --}}
     </div>
 
     <!-- BEGIN: Data List -->
@@ -168,24 +168,12 @@
     <!-- END: Data List -->
 
     <!-- BEGIN: Pagination -->
-    <div class="intro-y col-span-12 flex flex-wrap sm:flex-row sm:flex-no-wrap items-center mt-4">
-        <ul class="pagination">
-            <li><a class="pagination__link" href=""><i class="w-4 h-4" data-feather="chevrons-left"></i></a></li>
-            <li><a class="pagination__link" href=""><i class="w-4 h-4" data-feather="chevron-left"></i></a></li>
-            <li><a class="pagination__link pagination__link--active" href="">1</a></li>
-            <li><a class="pagination__link" href="">2</a></li>
-            <li><a class="pagination__link" href="">3</a></li>
-            <li><a class="pagination__link" href=""><i class="w-4 h-4" data-feather="chevron-right"></i></a></li>
-            <li><a class="pagination__link" href=""><i class="w-4 h-4" data-feather="chevrons-right"></i></a>
-            </li>
-        </ul>
-
-        <select class="w-20 input box mt-3 sm:mt-0 ml-auto">
-            <option>10</option>
-            <option>25</option>
-            <option>35</option>
-            <option>50</option>
-        </select>
+    <div class="intro-y col-span-12 flex items-center mt-4">
+        <div class="w-full flex justify-center sm:justify-end">
+            <div class="mt-5">
+                {{ $data->links('pagination::tailwind') }}
+            </div>
+        </div>
     </div>
     <!-- END: Pagination -->
 </div>
