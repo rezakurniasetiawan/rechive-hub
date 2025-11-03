@@ -678,7 +678,7 @@
         </div>
         <div class="col-span-12 xxl:col-span-3 xxl:border-l border-theme-5 -mb-10 pb-10">
             <div class="xxl:pl-6 grid grid-cols-12 gap-6">
-                <!-- BEGIN: Transactions -->
+                <!-- BEGIN: Transactions Nws -->
                 <div class="col-span-12 md:col-span-6 xl:col-span-4 xxl:col-span-12 mt-3 xxl:mt-8">
                     <div class="intro-x flex items-center h-10">
                         <h2 class="text-lg font-medium truncate mr-5">
