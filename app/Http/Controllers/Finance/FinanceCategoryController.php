@@ -53,8 +53,9 @@ class FinanceCategoryController extends Controller
     public function update($id)
     {
         $data = FinanceCategory::findOrFail($id);
+        $financeTypes = FinanceType::all();
         return view('layouts.app', [
-            'content' => view('pages.finance.finance-categories.finance-category-update', compact('data'))->render()
+            'content' => view('pages.finance.finance-categories.finance-category-update', compact('data', 'financeTypes'))->render()
         ]);
     }
 

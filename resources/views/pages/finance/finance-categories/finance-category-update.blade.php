@@ -33,17 +33,10 @@
                     <label class="font-medium">
                         Type
                     </label>
-                    <select class="input w-full border mt-2" name="type">
-                        <option value="income" {{ $data->type === 'income' ? 'selected' : '' }}>Income (Pemasukan)
-                        </option>
-                        <option value="expense" {{ $data->type === 'expense' ? 'selected' : '' }}>Expense (Pengeluaran)
-                        </option>
-                        <option value="transfer" {{ $data->type === 'transfer' ? 'selected' : '' }}>Transfer (Antar
-                            Akun)</option>
-                        <option value="withdraw" {{ $data->type === 'withdraw' ? 'selected' : '' }}>Withdraw (Ambil
-                            Tunai dari Bank)</option>
-                        <option value="deposit" {{ $data->type === 'deposit' ? 'selected' : '' }}>Deposit (Simpan Tunai
-                            ke Bank)</option>
+                    <select class="input w-full border mt-2" name="finance_type_id" required>
+                        @foreach ($financeTypes as $type)
+                            <option value="{{ $type->id }}">{{ $type->label }}</option>
+                        @endforeach
                     </select>
                 </div>
 
