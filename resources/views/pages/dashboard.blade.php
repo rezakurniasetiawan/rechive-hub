@@ -142,7 +142,7 @@
             </div>
             <!-- END: General Report -->
             <!-- BEGIN: Sales Report -->
-            <div class="col-span-12 lg:col-span-9 mt-8">
+            <div class="col-span-12 lg:col-span-7 mt-8">
                 <div class="intro-y block sm:flex items-center h-10">
                     <h2 class="text-lg font-medium truncate mr-5">
                         Monthly Expense Report
@@ -194,12 +194,12 @@
                     </div>
                 </div>
             </div>
-            <div class="col-span-12 sm:col-span-6 lg:col-span-3 mt-8">
+            <div class="col-span-12 sm:col-span-6 lg:col-span-5 mt-8">
                 <div class="intro-y flex items-center h-10">
                     <h2 class="text-lg font-medium truncate mr-5">
-                        Weekly Top Seller
+                        Top Monthly Expense Categories
                     </h2>
-                    <a href="" class="ml-auto text-theme-1 truncate">See all</a>
+                    {{-- <a href="" class="ml-auto text-theme-1 truncate">See all</a> --}}
                 </div>
                 <div class="intro-y box p-5 mt-5">
                     {{-- <canvas class="mt-3" id="report-pie-chart-rechive-hub" height="280"></canvas> --}}
