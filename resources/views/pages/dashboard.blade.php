@@ -197,7 +197,7 @@
             <div class="col-span-12 sm:col-span-6 lg:col-span-5 mt-8">
                 <div class="intro-y flex items-center h-10">
                     <h2 class="text-lg font-medium truncate mr-5">
-                        Top Monthly Expense Categories
+                        Monthly Expense Categories
                     </h2>
                     {{-- <a href="" class="ml-auto text-theme-1 truncate">See all</a> --}}
                 </div>
