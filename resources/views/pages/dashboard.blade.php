@@ -229,6 +229,68 @@
                     </div> --}}
                 </div>
             </div>
+            <!-- BEGIN: General Report -->
+            <div class="col-span-12 grid grid-cols-12 gap-6 mt-8">
+                <div class="col-span-12 sm:col-span-6 xxl:col-span-3 intro-y">
+                    <div class="mini-report-chart box p-5 zoom-in">
+                        <div class="flex items-center">
+                            <div class="w-2/4 flex-none">
+                                <div class="text-lg font-medium truncate">Target Sales</div>
+                                <div class="text-gray-600 mt-1">300 Sales</div>
+                            </div>
+                            <div class="flex-none ml-auto relative">
+                                <canvas id="report-donut-chart-1" width="90" height="90"></canvas>
+                                <div
+                                    class="font-medium absolute w-full h-full flex items-center justify-center top-0 left-0">
+                                    20%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-span-12 sm:col-span-6 xxl:col-span-3 intro-y">
+                    <div class="mini-report-chart box p-5 zoom-in">
+                        <div class="flex">
+                            <div class="text-lg font-medium truncate mr-3">Social Media</div>
+                            <div
+                                class="py-1 px-2 rounded-full text-xs bg-gray-200 text-gray-600 cursor-pointer ml-auto truncate">
+                                320 Followers</div>
+                        </div>
+                        <div class="mt-4">
+                            <canvas class="simple-line-chart-1 -ml-1" height="60"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-span-12 sm:col-span-6 xxl:col-span-3 intro-y">
+                    <div class="mini-report-chart box p-5 zoom-in">
+                        <div class="flex items-center">
+                            <div class="w-2/4 flex-none">
+                                <div class="text-lg font-medium truncate">New Products</div>
+                                <div class="text-gray-600 mt-1">1450 Products</div>
+                            </div>
+                            <div class="flex-none ml-auto relative">
+                                <canvas id="report-donut-chart-2" width="90" height="90"></canvas>
+                                <div
+                                    class="font-medium absolute w-full h-full flex items-center justify-center top-0 left-0">
+                                    45%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-span-12 sm:col-span-6 xxl:col-span-3 intro-y">
+                    <div class="mini-report-chart box p-5 zoom-in">
+                        <div class="flex">
+                            <div class="text-lg font-medium truncate mr-3">Posted Ads</div>
+                            <div
+                                class="py-1 px-2 rounded-full text-xs bg-gray-200 text-gray-600 cursor-pointer ml-auto truncate">
+                                180 Campaign</div>
+                        </div>
+                        <div class="mt-4">
+                            <canvas class="simple-line-chart-1 -ml-1" height="60"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END: General Report -->
             <div class="col-span-12 lg:col-span-12 mt-8">
                 <div class="intro-y block sm:flex items-center h-10">
                     <h2 class="text-lg font-medium truncate mr-5">
@@ -243,7 +305,7 @@
             </div>
             <!-- END: Sales Report -->
             <!-- BEGIN: Weekly Top Seller -->
-            <div class="col-span-12 sm:col-span-6 lg:col-span-3 mt-8">
+            {{-- <div class="col-span-12 sm:col-span-6 lg:col-span-3 mt-8">
                 <div class="intro-y flex items-center h-10">
                     <h2 class="text-lg font-medium truncate mr-5">
                         Weekly Top Seller
@@ -276,10 +338,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <!-- END: Weekly Top Seller -->
             <!-- BEGIN: Sales Report -->
-            <div class="col-span-12 sm:col-span-6 lg:col-span-3 mt-8">
+            {{-- <div class="col-span-12 sm:col-span-6 lg:col-span-3 mt-8">
                 <div class="intro-y flex items-center h-10">
                     <h2 class="text-lg font-medium truncate mr-5">
                         Sales Report
@@ -312,10 +374,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <!-- END: Sales Report -->
             <!-- BEGIN: Official Store -->
-            <div class="col-span-12 xl:col-span-8 mt-6">
+            {{-- <div class="col-span-12 xl:col-span-8 mt-6">
                 <div class="intro-y block sm:flex items-center h-10">
                     <h2 class="text-lg font-medium truncate mr-5">
                         Official Store
@@ -330,7 +392,7 @@
                     <div class="report-maps mt-5 bg-gray-200 rounded-md" data-center="-6.2425342, 106.8626478"
                         data-sources="{{ asset('dist/json/location.json') }}"></div>
                 </div>
-            </div>
+            </div> --}}
             <!-- END: Official Store -->
             <!-- BEGIN: Weekly Best Sellers -->
             <div class="col-span-12 xl:col-span-4 mt-6">
@@ -406,310 +468,7 @@
                 </div>
             </div>
             <!-- END: Weekly Best Sellers -->
-            <!-- BEGIN: General Report -->
-            <div class="col-span-12 grid grid-cols-12 gap-6 mt-8">
-                <div class="col-span-12 sm:col-span-6 xxl:col-span-3 intro-y">
-                    <div class="mini-report-chart box p-5 zoom-in">
-                        <div class="flex items-center">
-                            <div class="w-2/4 flex-none">
-                                <div class="text-lg font-medium truncate">Target Sales</div>
-                                <div class="text-gray-600 mt-1">300 Sales</div>
-                            </div>
-                            <div class="flex-none ml-auto relative">
-                                <canvas id="report-donut-chart-1" width="90" height="90"></canvas>
-                                <div
-                                    class="font-medium absolute w-full h-full flex items-center justify-center top-0 left-0">
-                                    20%</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-span-12 sm:col-span-6 xxl:col-span-3 intro-y">
-                    <div class="mini-report-chart box p-5 zoom-in">
-                        <div class="flex">
-                            <div class="text-lg font-medium truncate mr-3">Social Media</div>
-                            <div
-                                class="py-1 px-2 rounded-full text-xs bg-gray-200 text-gray-600 cursor-pointer ml-auto truncate">
-                                320 Followers</div>
-                        </div>
-                        <div class="mt-4">
-                            <canvas class="simple-line-chart-1 -ml-1" height="60"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-span-12 sm:col-span-6 xxl:col-span-3 intro-y">
-                    <div class="mini-report-chart box p-5 zoom-in">
-                        <div class="flex items-center">
-                            <div class="w-2/4 flex-none">
-                                <div class="text-lg font-medium truncate">New Products</div>
-                                <div class="text-gray-600 mt-1">1450 Products</div>
-                            </div>
-                            <div class="flex-none ml-auto relative">
-                                <canvas id="report-donut-chart-2" width="90" height="90"></canvas>
-                                <div
-                                    class="font-medium absolute w-full h-full flex items-center justify-center top-0 left-0">
-                                    45%</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-span-12 sm:col-span-6 xxl:col-span-3 intro-y">
-                    <div class="mini-report-chart box p-5 zoom-in">
-                        <div class="flex">
-                            <div class="text-lg font-medium truncate mr-3">Posted Ads</div>
-                            <div
-                                class="py-1 px-2 rounded-full text-xs bg-gray-200 text-gray-600 cursor-pointer ml-auto truncate">
-                                180 Campaign</div>
-                        </div>
-                        <div class="mt-4">
-                            <canvas class="simple-line-chart-1 -ml-1" height="60"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- END: General Report -->
-            <!-- BEGIN: Weekly Top Seller -->
-            <div class="col-span-12 mt-6">
-                <div class="intro-y block sm:flex items-center h-10">
-                    <h2 class="text-lg font-medium truncate mr-5">
-                        Weekly Top Seller
-                    </h2>
-                    <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
-                        <button class="button box flex items-center text-gray-700"> <i data-feather="file-text"
-                                class="hidden sm:block w-4 h-4 mr-2"></i> Export to
-                            Excel </button>
-                        <button class="ml-3 button box flex items-center text-gray-700"> <i data-feather="file-text"
-                                class="hidden sm:block w-4 h-4 mr-2"></i> Export to
-                            PDF </button>
-                    </div>
-                </div>
-                <div class="intro-y overflow-auto lg:overflow-visible mt-8 sm:mt-0">
-                    <table class="table table-report sm:mt-2">
-                        <thead>
-                            <tr>
-                                <th class="whitespace-no-wrap">IMAGES</th>
-                                <th class="whitespace-no-wrap">PRODUCT NAME</th>
-                                <th class="text-center whitespace-no-wrap">STOCK</th>
-                                <th class="text-center whitespace-no-wrap">STATUS</th>
-                                <th class="text-center whitespace-no-wrap">ACTIONS</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="intro-x">
-                                <td class="w-40">
-                                    <div class="flex">
-                                        <div class="w-10 h-10 image-fit zoom-in">
-                                            <img alt="Midone Tailwind HTML Admin Template"
-                                                class="tooltip rounded-full"
-                                                src="{{ asset('dist/images/preview-2.jpg') }}"
-                                                title="Uploaded at 6 August 2022">
-                                        </div>
-                                        <div class="w-10 h-10 image-fit zoom-in -ml-5">
-                                            <img alt="Midone Tailwind HTML Admin Template"
-                                                class="tooltip rounded-full"
-                                                src="{{ asset('dist/images/preview-8.jpg') }}"
-                                                title="Uploaded at 1 May 2021">
-                                        </div>
-                                        <div class="w-10 h-10 image-fit zoom-in -ml-5">
-                                            <img alt="Midone Tailwind HTML Admin Template"
-                                                class="tooltip rounded-full"
-                                                src="{{ asset('dist/images/preview-11.jpg') }}"
-                                                title="Uploaded at 10 October 2020">
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <a href="" class="font-medium whitespace-no-wrap">Apple MacBook
-                                        Pro 13</a>
-                                    <div class="text-gray-600 text-xs whitespace-no-wrap">PC &amp; Laptop
-                                    </div>
-                                </td>
-                                <td class="text-center">77</td>
-                                <td class="w-40">
-                                    <div class="flex items-center justify-center text-theme-9"> <i
-                                            data-feather="check-square" class="w-4 h-4 mr-2"></i> Active
-                                    </div>
-                                </td>
-                                <td class="table-report__action w-56">
-                                    <div class="flex justify-center items-center">
-                                        <a class="flex items-center mr-3" href=""> <i
-                                                data-feather="check-square" class="w-4 h-4 mr-1"></i> Edit
-                                        </a>
-                                        <a class="flex items-center text-theme-6" href=""> <i
-                                                data-feather="trash-2" class="w-4 h-4 mr-1"></i> Delete </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="intro-x">
-                                <td class="w-40">
-                                    <div class="flex">
-                                        <div class="w-10 h-10 image-fit zoom-in">
-                                            <img alt="Midone Tailwind HTML Admin Template"
-                                                class="tooltip rounded-full"
-                                                src="{{ asset('dist/images/preview-7.jpg') }}"
-                                                title="Uploaded at 21 July 2020">
-                                        </div>
-                                        <div class="w-10 h-10 image-fit zoom-in -ml-5">
-                                            <img alt="Midone Tailwind HTML Admin Template"
-                                                class="tooltip rounded-full"
-                                                src="{{ asset('dist/images/preview-13.jpg') }}"
-                                                title="Uploaded at 31 December 2021">
-                                        </div>
-                                        <div class="w-10 h-10 image-fit zoom-in -ml-5">
-                                            <img alt="Midone Tailwind HTML Admin Template"
-                                                class="tooltip rounded-full"
-                                                src="{{ asset('dist/images/preview-2.jpg') }}"
-                                                title="Uploaded at 9 September 2020">
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <a href="" class="font-medium whitespace-no-wrap">Dell XPS 13</a>
-                                    <div class="text-gray-600 text-xs whitespace-no-wrap">PC &amp; Laptop
-                                    </div>
-                                </td>
-                                <td class="text-center">100</td>
-                                <td class="w-40">
-                                    <div class="flex items-center justify-center text-theme-9"> <i
-                                            data-feather="check-square" class="w-4 h-4 mr-2"></i> Active
-                                    </div>
-                                </td>
-                                <td class="table-report__action w-56">
-                                    <div class="flex justify-center items-center">
-                                        <a class="flex items-center mr-3" href=""> <i
-                                                data-feather="check-square" class="w-4 h-4 mr-1"></i> Edit
-                                        </a>
-                                        <a class="flex items-center text-theme-6" href=""> <i
-                                                data-feather="trash-2" class="w-4 h-4 mr-1"></i> Delete </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="intro-x">
-                                <td class="w-40">
-                                    <div class="flex">
-                                        <div class="w-10 h-10 image-fit zoom-in">
-                                            <img alt="Midone Tailwind HTML Admin Template"
-                                                class="tooltip rounded-full"
-                                                src="{{ asset('dist/images/preview-9.jpg') }}"
-                                                title="Uploaded at 5 January 2021">
-                                        </div>
-                                        <div class="w-10 h-10 image-fit zoom-in -ml-5">
-                                            <img alt="Midone Tailwind HTML Admin Template"
-                                                class="tooltip rounded-full"
-                                                src="{{ asset('dist/images/preview-6.jpg') }}"
-                                                title="Uploaded at 18 November 2021">
-                                        </div>
-                                        <div class="w-10 h-10 image-fit zoom-in -ml-5">
-                                            <img alt="Midone Tailwind HTML Admin Template"
-                                                class="tooltip rounded-full"
-                                                src="{{ asset('dist/images/preview-13.jpg') }}"
-                                                title="Uploaded at 1 June 2021">
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <a href="" class="font-medium whitespace-no-wrap">Oppo Find X2
-                                        Pro</a>
-                                    <div class="text-gray-600 text-xs whitespace-no-wrap">Smartphone &amp;
-                                        Tablet</div>
-                                </td>
-                                <td class="text-center">50</td>
-                                <td class="w-40">
-                                    <div class="flex items-center justify-center text-theme-9"> <i
-                                            data-feather="check-square" class="w-4 h-4 mr-2"></i> Active
-                                    </div>
-                                </td>
-                                <td class="table-report__action w-56">
-                                    <div class="flex justify-center items-center">
-                                        <a class="flex items-center mr-3" href=""> <i
-                                                data-feather="check-square" class="w-4 h-4 mr-1"></i> Edit
-                                        </a>
-                                        <a class="flex items-center text-theme-6" href=""> <i
-                                                data-feather="trash-2" class="w-4 h-4 mr-1"></i> Delete </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="intro-x">
-                                <td class="w-40">
-                                    <div class="flex">
-                                        <div class="w-10 h-10 image-fit zoom-in">
-                                            <img alt="Midone Tailwind HTML Admin Template"
-                                                class="tooltip rounded-full"
-                                                src="{{ asset('dist/images/preview-11.jpg') }}"
-                                                title="Uploaded at 22 April 2020">
-                                        </div>
-                                        <div class="w-10 h-10 image-fit zoom-in -ml-5">
-                                            <img alt="Midone Tailwind HTML Admin Template"
-                                                class="tooltip rounded-full"
-                                                src="{{ asset('dist/images/preview-10.jpg') }}"
-                                                title="Uploaded at 12 December 2020">
-                                        </div>
-                                        <div class="w-10 h-10 image-fit zoom-in -ml-5">
-                                            <img alt="Midone Tailwind HTML Admin Template"
-                                                class="tooltip rounded-full"
-                                                src="{{ asset('dist/images/preview-12.jpg') }}"
-                                                title="Uploaded at 7 May 2020">
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <a href="" class="font-medium whitespace-no-wrap">Apple MacBook
-                                        Pro 13</a>
-                                    <div class="text-gray-600 text-xs whitespace-no-wrap">PC &amp; Laptop
-                                    </div>
-                                </td>
-                                <td class="text-center">50</td>
-                                <td class="w-40">
-                                    <div class="flex items-center justify-center text-theme-9"> <i
-                                            data-feather="check-square" class="w-4 h-4 mr-2"></i> Active
-                                    </div>
-                                </td>
-                                <td class="table-report__action w-56">
-                                    <div class="flex justify-center items-center">
-                                        <a class="flex items-center mr-3" href=""> <i
-                                                data-feather="check-square" class="w-4 h-4 mr-1"></i> Edit
-                                        </a>
-                                        <a class="flex items-center text-theme-6" href=""> <i
-                                                data-feather="trash-2" class="w-4 h-4 mr-1"></i> Delete </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="intro-y flex flex-wrap sm:flex-row sm:flex-no-wrap items-center mt-3">
-                    <ul class="pagination">
-                        <li>
-                            <a class="pagination__link" href=""> <i class="w-4 h-4"
-                                    data-feather="chevrons-left"></i> </a>
-                        </li>
-                        <li>
-                            <a class="pagination__link" href=""> <i class="w-4 h-4"
-                                    data-feather="chevron-left"></i> </a>
-                        </li>
-                        <li> <a class="pagination__link" href="">...</a> </li>
-                        <li> <a class="pagination__link" href="">1</a> </li>
-                        <li> <a class="pagination__link pagination__link--active" href="">2</a> </li>
-                        <li> <a class="pagination__link" href="">3</a> </li>
-                        <li> <a class="pagination__link" href="">...</a> </li>
-                        <li>
-                            <a class="pagination__link" href=""> <i class="w-4 h-4"
-                                    data-feather="chevron-right"></i> </a>
-                        </li>
-                        <li>
-                            <a class="pagination__link" href=""> <i class="w-4 h-4"
-                                    data-feather="chevrons-right"></i> </a>
-                        </li>
-                    </ul>
-                    <select class="w-20 input box mt-3 sm:mt-0">
-                        <option>10</option>
-                        <option>25</option>
-                        <option>35</option>
-                        <option>50</option>
-                    </select>
-                </div>
-            </div>
-            <!-- END: Weekly Top Seller -->
+
         </div>
         <div class="col-span-12 xxl:col-span-3 xxl:border-l border-theme-5 -mb-10 pb-10">
             <div class="xxl:pl-6 grid grid-cols-12 gap-6">
@@ -751,7 +510,7 @@
                 </div>
                 <!-- END: Transactions -->
                 <!-- BEGIN: Recent Activities -->
-                <div class="col-span-12 md:col-span-6 xl:col-span-4 xxl:col-span-12 mt-3">
+                {{-- <div class="col-span-12 md:col-span-6 xl:col-span-4 xxl:col-span-12 mt-3">
                     <div class="intro-x flex items-center h-10">
                         <h2 class="text-lg font-medium truncate mr-5">
                             Recent Activities
@@ -845,7 +604,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
                 <!-- END: Recent Activities -->
                 <!-- BEGIN: Important Notes -->
                 <div
@@ -1150,9 +909,9 @@
                                 padding: 10,
                                 displayColors: false,
                                 callbacks: {
-                                    label: function(context) {
-                                        const value = Number(context.parsed.y || 0);
-                                        return `${context.dataset.label}: ${formatRupiah(value)}`;
+                                    label: function(tooltipItem) {
+                                        return numeral(tooltipItem.parsed.y).format('$0,0.00');
+
                                     }
                                 }
                             }
