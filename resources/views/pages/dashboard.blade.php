@@ -142,7 +142,7 @@
             </div>
             <!-- END: General Report -->
             <!-- BEGIN: Sales Report -->
-            <div class="col-span-12 lg:col-span-12 mt-8">
+            <div class="col-span-12 lg:col-span-9 mt-8">
                 <div class="intro-y block sm:flex items-center h-10">
                     <h2 class="text-lg font-medium truncate mr-5">
                         Monthly Expense Report
@@ -192,6 +192,41 @@
                     <div class="report-chart">
                         <canvas id="report-line-chart-rechive-hub" height="250" class="mt-6"></canvas>
                     </div>
+                </div>
+            </div>
+            <div class="col-span-12 sm:col-span-6 lg:col-span-3 mt-8">
+                <div class="intro-y flex items-center h-10">
+                    <h2 class="text-lg font-medium truncate mr-5">
+                        Weekly Top Seller
+                    </h2>
+                    <a href="" class="ml-auto text-theme-1 truncate">See all</a>
+                </div>
+                <div class="intro-y box p-5 mt-5">
+                    {{-- <canvas class="mt-3" id="report-pie-chart-rechive-hub" height="280"></canvas> --}}
+                    <canvas id="report-pie-chart-rechive-hub" height="280"></canvas>
+                    {{-- <div class="mt-8">
+                        <div class="flex items-center">
+                            <div class="w-2 h-2 bg-theme-11 rounded-full mr-3"></div>
+                            <span class="truncate">17 - 30 Years old</span>
+                            <div class="h-px flex-1 border border-r border-dashed border-gray-300 mx-3 xl:hidden">
+                            </div>
+                            <span class="font-medium xl:ml-auto">62%</span>
+                        </div>
+                        <div class="flex items-center mt-4">
+                            <div class="w-2 h-2 bg-theme-1 rounded-full mr-3"></div>
+                            <span class="truncate">31 - 50 Years old</span>
+                            <div class="h-px flex-1 border border-r border-dashed border-gray-300 mx-3 xl:hidden">
+                            </div>
+                            <span class="font-medium xl:ml-auto">33%</span>
+                        </div>
+                        <div class="flex items-center mt-4">
+                            <div class="w-2 h-2 bg-theme-12 rounded-full mr-3"></div>
+                            <span class="truncate">>= 50 Years old</span>
+                            <div class="h-px flex-1 border border-r border-dashed border-gray-300 mx-3 xl:hidden">
+                            </div>
+                            <span class="font-medium xl:ml-auto">10%</span>
+                        </div>
+                    </div> --}}
                 </div>
             </div>
             <div class="col-span-12 lg:col-span-12 mt-8">
@@ -1288,6 +1323,116 @@
                                 grid: {
                                     color: '#E5E7EB',
                                     drawBorder: false
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
+    @endif
+
+
+    @if (isset($expenseLabels) && count($expenseLabels) > 0)
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const pieLabels = @json($expenseLabels);
+                const pieData = @json($expenseData);
+                const pieColors = @json($expenseColors);
+                const chartElement = document.getElementById('report-pie-chart-rechive-hub');
+
+                if (!chartElement || !pieLabels?.length || !pieData?.length) {
+                    console.warn('❌ Pie chart tidak dibuat karena data atau elemen tidak valid.');
+                    return;
+                }
+
+                chartElement.style.width = '100%';
+                chartElement.style.height = '325px';
+                chartElement.style.maxHeight = '400px';
+
+                const ctxPie = chartElement.getContext('2d');
+
+                // --- PERBAIKAN FORMAT RUPIAH ---
+                const rupiahFormatter = new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                });
+
+                const formatRupiah = (num) => {
+                    if (isNaN(num)) return 'Rp 0';
+                    return rupiahFormatter.format(num);
+                };
+                // --- SELESAI PERBAIKAN ---
+
+                new Chart(ctxPie, {
+                    type: 'pie',
+                    data: {
+                        labels: pieLabels,
+                        datasets: [{
+                            data: pieData,
+                            backgroundColor: pieColors,
+                            hoverBackgroundColor: pieColors.map(c => c.replace('0.8', '1')),
+                            borderWidth: 4,
+                            borderColor: '#fff',
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: {
+                            animateRotate: true,
+                            animateScale: true,
+                            duration: 1200,
+                            easing: 'easeOutCubic'
+                        },
+                        plugins: {
+                            title: {
+                                // --- 1. JUDUL CHART (SUDAH DI-HIDDEN) ---
+                                display: false,
+                                text: 'Ringkasan Pengeluaran Bulanan',
+                                font: {
+                                    size: 18,
+                                    weight: '600'
+                                },
+                                color: '#1C3FAA',
+                                padding: {
+                                    top: 10,
+                                    bottom: 20
+                                }
+                            },
+                            legend: {
+                                // --- 2. LEGEND (DI-HIDDEN SESUAI PERMINTAAN BARU) ---
+                                display: false, // <-- DIUBAH MENJADI FALSE
+                                position: 'bottom',
+                                labels: {
+                                    usePointStyle: true,
+                                    padding: 16,
+                                    color: '#374151',
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(17,24,39,0.9)',
+                                titleFont: {
+                                    size: 13,
+                                    weight: '600'
+                                },
+                                bodyFont: {
+                                    size: 12
+                                },
+                                cornerRadius: 8,
+                                padding: 10,
+                                displayColors: true,
+                                callbacks: {
+                                    label: (context) => {
+                                        const value = context.raw || 0;
+                                        // --- 3. FORMAT RUPIAH (SUDAH DIPERBAIKI) ---
+                                        return `${context.label}: ${formatRupiah(value)}`;
+                                    }
                                 }
                             }
                         }

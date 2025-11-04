@@ -9,7 +9,8 @@ use App\Models\Finance\{
     FinanceDailyBalance,
     FinanceWeeklyBalance,
     FinanceYearlyBalance,
-    FinanceMonthlyBalance
+    FinanceMonthlyBalance,
+    FinanceTransaction
 };
 
 class DashboardController extends Controller
@@ -84,7 +85,7 @@ class DashboardController extends Controller
         }
 
         // ========================= Last 5 Transactions ========================== //
-        $lastTransaction = \App\Models\Finance\FinanceTransaction::with([
+        $lastTransaction = FinanceTransaction::with([
             'financeAccount:id,bank_name,logo',
             'financeCategory:id,name',
             'financeType:id,name,label'
@@ -93,6 +94,28 @@ class DashboardController extends Controller
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();
+
+        // ========================= Expense by Category (Pie Chart) ========================== //
+        $expenseByCategoryData = FinanceTransaction::selectRaw('finance_category_id, SUM(amount) as total_expense')
+            ->where('finance_type_id', 2) // 2 = Expense
+            ->whereYear('date', $currentYear)
+            ->whereMonth('date', $currentMonth)
+            ->groupBy('finance_category_id')
+            ->with('financeCategory:id,name,color')
+            ->get();
+
+        $expenseLabels = $expenseByCategoryData->map(function ($item) {
+            return optional($item->financeCategory)->name ?? 'Tanpa Kategori';
+        })->toArray();
+
+        $expenseData = $expenseByCategoryData->map(function ($item) {
+            return (float) $item->total_expense;
+        })->toArray();
+
+        $expenseColors = $expenseByCategoryData->map(function ($item) {
+            return optional($item->financeCategory)->color ?? '#CCCCCC';
+        })->toArray();
+
 
         // ========================= Render View ========================== //
         return view('layouts.app', [
@@ -111,7 +134,10 @@ class DashboardController extends Controller
                 'barLabels',
                 'barIncome',
                 'barExpense',
-                'lastTransaction'
+                'lastTransaction',
+                'expenseLabels',
+                'expenseData',
+                'expenseColors'
             ))->render()
         ]);
     }
