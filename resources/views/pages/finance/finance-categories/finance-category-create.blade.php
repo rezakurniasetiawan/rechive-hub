@@ -36,11 +36,16 @@
                         <span class="text-red-600 ml-1" aria-hidden="true">*</span>
                         <span class="sr-only">required</span>
                     </label>
-                    <select class="input w-full border mt-2" name="finance_type_id" required>
+                    <select data-hide-search="true" class="select2 w-full" name="finance_type_id" required>
                         @foreach ($financeTypes as $type)
                             <option value="{{ $type->id }}">{{ $type->label }}</option>
                         @endforeach
                     </select>
+                    {{-- <select class="input w-full border mt-2" name="finance_type_id" required>
+                        @foreach ($financeTypes as $type)
+                            <option value="{{ $type->id }}">{{ $type->label }}</option>
+                        @endforeach
+                    </select> --}}
                 </div>
 
 

@@ -14,6 +14,12 @@
     </h2>
 </div>
 
+<style>
+    .select2-container {
+        width: 100% !important;
+    }
+</style>
+
 <div class="grid grid-cols-12 mt-6">
     <div class="intro-y col-span-12 lg:col-span-10 lg:col-start-2">
         <div class="intro-y box p-6 rounded-xl shadow-sm border border-gray-100 bg-white">
@@ -103,13 +109,14 @@
                         <label class="font-medium text-gray-800">
                             Finance Category <span class="text-red-600 ml-1">*</span>
                         </label>
-                        <select id="finance_category_id" name="finance_category_id"
-                            class="w-full mt-2 border-gray-300 rounded-lg text-sm" required>
-                            <option value="">-- Select Category --</option>
-                            @foreach ($financeCategories as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                            @endforeach
-                        </select>
+                        <div class="mt-2">
+                            <select class="select2 w-full" name="finance_category_id">
+                                <option value="">-- Select Category --</option>
+                                @foreach ($financeCategories as $item)
+                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
 
                     {{-- Two Columns --}}
@@ -221,20 +228,11 @@
                 });
             });
         });
+    });
 
-        // Tom Select (Category)
-        new TomSelect('#finance_category_id', {
-            create: false,
-            sortField: {
-                field: 'text',
-                direction: 'asc'
-            },
-            placeholder: 'Search or select a category...',
-            maxOptions: 100,
-        });
+    $('.select2').select2({
+        placeholder: 'Search or select a category...',
+        width: '100%',
+        dropdownAutoWidth: true
     });
 </script>
-
-<!-- ✅ Tom Select CSS -->
-<link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>

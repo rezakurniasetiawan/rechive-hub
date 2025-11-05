@@ -33,8 +33,7 @@
                     <label class="font-medium">
                         Type
                     </label>
-                    <select class="input w-full border mt-2" name="finance_type_id" value="{{ $data->finance_type_id }}"
-                        required>
+                    <select data-hide-search="true" class="select2 w-full" name="finance_type_id" required>
                         @foreach ($financeTypes as $type)
                             <option value="{{ $type->id }}"
                                 {{ $data->finance_type_id === $type->id ? 'selected' : '' }}>{{ $type->label }}
