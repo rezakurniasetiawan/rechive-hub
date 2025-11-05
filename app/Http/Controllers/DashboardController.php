@@ -117,6 +117,17 @@ class DashboardController extends Controller
         })->toArray();
 
 
+        // Today's expenses transaction excluded length
+        $todayExpensesCount = FinanceTransaction::where('finance_type_id', 2)
+            ->whereDate('date', $currentDate->toDateString())
+            ->count();
+
+        // Month Excluded length
+        $monthExpensesCount = FinanceTransaction::where('finance_type_id', 2)
+            ->whereMonth('date', $currentMonth)
+            ->count();
+
+
         // ========================= Render View ========================== //
         return view('layouts.app', [
             'content' => view('pages.dashboard', compact(
@@ -137,7 +148,9 @@ class DashboardController extends Controller
                 'lastTransaction',
                 'expenseLabels',
                 'expenseData',
-                'expenseColors'
+                'expenseColors',
+                'todayExpensesCount',
+                'monthExpensesCount'
             ))->render()
         ]);
     }
