@@ -35,7 +35,7 @@
                 <div class="flex items-center">
                     <label class="w-1/3 font-medium text-gray-700">From Account <span
                             class="text-red-500">*</span></label>
-                    <select name="from_account_id" class="w-2/3 border-gray-300 rounded-lg px-3 py-2 border" required>
+                    <select class="select2 w-2/3" name="finance_category_id">
                         <option value="">-- Select Source Account --</option>
                         @foreach ($accounts as $acc)
                             <option value="{{ $acc->id }}"
@@ -50,7 +50,7 @@
                 <div class="flex items-center">
                     <label class="w-1/3 font-medium text-gray-700">To Account <span
                             class="text-red-500">*</span></label>
-                    <select name="to_account_id" class="w-2/3 border-gray-300 rounded-lg px-3 py-2 border" required>
+                    <select name="to_account_id" class="select2 w-2/3" required>
                         <option value="">-- Select Destination Account --</option>
                         @foreach ($accounts as $acc)
                             <option value="{{ $acc->id }}"
@@ -77,7 +77,7 @@
                 <div class="flex items-center">
                     <label class="w-1/3 font-medium text-gray-700">Transfer Date <span
                             class="text-red-500">*</span></label>
-                    <input type="date" name="date" value="{{ old('date') }}"
+                    <input type="date" name="date" value="{{ old('date') ?? date('Y-m-d') }}"
                         class="w-2/3 border-gray-300 rounded-lg px-3 py-2 border" required>
                 </div>
 
