@@ -447,6 +447,30 @@
                         </div>
                     </div>
                 </div>
+                {{-- Button Sortcuts --}}
+                <div class="col-span-12 md:col-span-6 xl:col-span-4 xxl:col-span-12">
+                    <h2 class="text-lg font-medium truncate mr-5">
+                        Shortcuts
+                    </h2>
+                    <div class="grid grid-cols-3 gap-3 mt-3">
+                        <a href="{{ route('finance.transaction.create') }}"
+                            class="intro-x flex flex-col items-center justify-center px-3 py-5 bg-theme-1 text-white rounded-md">
+                            <i data-feather="plus-circle" class="w-8 h-8 mb-2"></i>
+                            <div class="text-center text-sm">Add Transaction</div>
+                        </a>
+                        <a href="{{ route('finance.account.index') }}"
+                            class="intro-x flex flex-col items-center justify-center px-3 py-5 bg-theme-9 text-white rounded-md">
+                            <i data-feather="credit-card" class="w-8 h-8 mb-2"></i>
+                            <div class="text-center text-sm">Accounts</div>
+                        </a>
+                        <a href="{{ route('finance.category.index') }}"
+                            class="intro-x flex flex-col items-center justify-center px-3 py-5 bg-theme-6 text-white rounded-md">
+                            <i data-feather="tag" class="w-8 h-8 mb-2"></i>
+                            <div class="text-center text-sm">Categories</div>
+                        </a>
+                    </div>
+                </div>
+
                 <!-- BEGIN: Transactions Nws -->
                 <div class="col-span-12 md:col-span-6 xl:col-span-4 xxl:col-span-12 mt-3">
                     <div class="intro-x flex items-center h-10">

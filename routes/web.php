@@ -9,11 +9,14 @@ use App\Http\Controllers\Finance\{
     FinanceTransactionController,
     FundTransferController
 };
+use App\Http\Controllers\User\UserController;
 
 // Auth Routes
 Route::controller(AuthController::class)->group(function () {
     Route::get('/', 'login')->name('login');
     Route::post('/login', 'actionlogin')->name('auth.actionlogin');
+    // auth.actionloginpin
+    Route::post('/login/pin', 'actionloginpin')->name('auth.actionloginpin');
     Route::post('/logout', 'actionlogout')->name('auth.actionlogout');
 });
 
@@ -59,5 +62,14 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/create', 'create')->name('create');
             Route::post('/store', 'store')->name('store');
         });
+    });
+
+
+    Route::controller(UserController::class)->group(function () {
+        Route::get('/users', 'index')->name('users.index');
+        Route::get('/users/create', 'create')->name('users.create');
+        Route::post('/users/store', 'store')->name('users.store');
+        Route::get('/users/update/{id}', 'edit')->name('users.edit');
+        Route::post('/users/edit/{id}', 'update')->name('users.update');
     });
 });

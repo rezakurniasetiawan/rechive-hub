@@ -53,7 +53,14 @@
                    </li>
                </ul>
            </li>
-           {{-- 🧑‍💼 Pekerjaan & Proyek --}}
+           {{-- User --}}
+           <li>
+               <a href="{{ route('users.index') }}"
+                   class="side-menu  {{ request()->routeIs('users.*') ? 'side-menu--active' : '' }}">
+                   <div class="side-menu__icon"> <i data-feather="users"></i> </div>
+                   <div class="side-menu__title"> Users </div>
+               </a>
+           </li> {{-- 🧑‍💼 Pekerjaan & Proyek --}}
            {{-- <li>
                <a href="javascript:;" class="side-menu">
                    <div class="side-menu__icon"><i data-feather="briefcase"></i></div>

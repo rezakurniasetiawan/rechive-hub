@@ -1,0 +1,58 @@
+<div class="intro-y flex items-center mt-8">
+    <a onclick="history.back()" class="button text-white bg-theme-1 shadow-md mr-2 inline-flex items-center"
+        aria-label="Back">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Back
+    </a>
+
+    <h2 class="text-lg font-medium mr-auto">
+        Create New User
+    </h2>
+</div>
+
+<div class="grid grid-cols-12 gap-6 mt-5">
+    <div class="intro-y col-span-12 lg:col-span-6">
+        <!-- BEGIN: User Form -->
+        <div class="intro-y box p-5">
+            <form action="{{ route('users.store') }}" method="POST">
+                @csrf
+
+                <!-- Name Field -->
+                <div class="mt-3">
+                    <label class="font-medium">Name <span class="text-red-600 ml-1" aria-hidden="true">*</span>
+                        <span class="sr-only">required</span></label>
+                    <input type="text" name="name" class="input w-full border mt-2" placeholder="Full Name"
+                        required>
+                </div>
+
+                <!-- Email Field -->
+                <div class="mt-3">
+                    <label class="font-medium">Email <span class="text-red-600 ml-1" aria-hidden="true">*</span>
+                        <span class="sr-only">required</span></label>
+                    <input type="email" name="email" class="input w-full border mt-2" placeholder="Email" required>
+                </div>
+
+
+                <!-- Password Field -->
+                <div class="mt-3">
+                    <label class="font-medium">Password <span class="text-red-600 ml-1" aria-hidden="true">*</span>
+                        <span class="sr-only">required</span></label>
+                    <input type="password" name="password" class="input w-full border mt-2" placeholder="Password"
+                        required>
+                </div>
+
+                <!-- Buttons -->
+                <div class="mt-5 text-right">
+                    <button type="button" onclick="history.back()"
+                        class="button w-24 border text-gray-700 mr-1">Cancel</button>
+                    <button type="submit" class="button w-24 bg-theme-1 text-white">Save</button>
+                </div>
+            </form>
+        </div>
+        <!-- END: Finance Category Form -->
+    </div>
+</div>
