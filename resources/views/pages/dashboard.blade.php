@@ -1220,7 +1220,7 @@
 
                 if (data.registered) {
                     section.innerHTML = `
-                <div class="intro-x mt-8 p-6 bg-success/10 border border-success/30 rounded-2xl shadow-sm text-center transition-all">
+               <div class="intro-x mt-8 p-6 bg-white border border-success/30 rounded-2xl shadow-sm text-center transition-all">
                     <div class="flex flex-col items-center space-y-3">
                         <div class="text-green-600 text-4xl">✅</div>
                         <p class="text-green-700 font-semibold text-lg">
