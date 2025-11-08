@@ -122,6 +122,10 @@ class DashboardController extends Controller
             ->whereDate('date', $currentDate->toDateString())
             ->count();
 
+        $todayExpensesTotal = FinanceTransaction::where('finance_type_id', 2)
+            ->whereDate('date', $currentDate->toDateString())
+            ->sum('amount');
+
         // Month Excluded length
         $monthExpensesCount = FinanceTransaction::where('finance_type_id', 2)
             ->whereMonth('date', $currentMonth)
@@ -150,7 +154,8 @@ class DashboardController extends Controller
                 'expenseData',
                 'expenseColors',
                 'todayExpensesCount',
-                'monthExpensesCount'
+                'monthExpensesCount',
+                'todayExpensesTotal'
             ))->render()
         ]);
     }
