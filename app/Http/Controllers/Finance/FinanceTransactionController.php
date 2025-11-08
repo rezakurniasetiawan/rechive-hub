@@ -16,19 +16,54 @@ use App\Models\Finance\FinanceMonthlyBalance;
 
 class FinanceTransactionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->input('search');
+        $categoryId = $request->input('category');
+
+        // Ambil semua kategori untuk dropdown filter
+        $categories = FinanceCategory::all();
+
+        // Query utama FinanceTransaction
         $data = FinanceTransaction::with([
             'financeAccount:id,bank_name,logo',
             'financeCategory:id,name',
             'financeType:id,name,label'
         ])
+            ->when($search, function ($query, $search) {
+                // Group agar OR tidak keluar dari konteks utama
+                $query->where(function ($q) use ($search) {
+                    $q->whereHas('financeAccount', function ($sub) use ($search) {
+                        $sub->where('bank_name', 'like', "%{$search}%");
+                    })
+                        ->orWhereHas('financeCategory', function ($sub) use ($search) {
+                            $sub->where('name', 'like', "%{$search}%");
+                        })
+                        ->orWhereHas('financeType', function ($sub) use ($search) {
+                            $sub->where('name', 'like', "%{$search}%");
+                        })
+                        ->orWhere('description', 'like', "%{$search}%")
+                        ->orWhere('amount', 'like', "%{$search}%");
+                });
+            })
+            ->when($categoryId, function ($query, $categoryId) {
+                // Filter berdasarkan kategori
+                $query->where('finance_category_id', $categoryId);
+            })
             ->orderBy('date', 'desc')
-            ->paginate(10);
+            ->paginate(10)
+            ->appends(['search' => $search, 'category' => $categoryId]); // bawa parameter saat pindah halaman
+
         return view('layouts.app', [
-            'content' => view('pages.finance.finance-transactions.finance-transaction', compact('data'))->render()
+            'content' => view('pages.finance.finance-transactions.finance-transaction', compact(
+                'data',
+                'categories',
+                'search',
+                'categoryId'
+            ))->render()
         ]);
     }
+
 
 
     public function create()

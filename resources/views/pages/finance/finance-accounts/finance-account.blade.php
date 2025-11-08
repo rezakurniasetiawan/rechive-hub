@@ -24,13 +24,17 @@
                   </div>
               </div>
           </div>
-          <div class="hidden md:block mx-auto text-gray-600">Showing 1 to 10 of 150 entries</div>
+          <div class="hidden md:block mx-auto text-gray-600"></div>
           <div class="w-full sm:w-auto mt-3 sm:mt-0 sm:ml-auto md:ml-0">
-              <div class="w-56 relative text-gray-700">
-                  <input type="text" class="input w-56 box pr-10 placeholder-theme-13" placeholder="Search...">
-                  <i class="w-4 h-4 absolute my-auto inset-y-0 mr-3 right-0" data-feather="search"></i>
-              </div>
+              <form action="{{ route('finance.account.index') }}" method="GET" class="w-56 relative text-gray-700">
+                  <input type="text" name="search" value="{{ request('search') }}"
+                      class="input w-56 box pr-10 placeholder-theme-13" placeholder="Search...">
+                  <button type="submit" class="absolute my-auto inset-y-0 mr-3 right-0 text-gray-500">
+                      <i data-feather="search" class="w-4 h-4"></i>
+                  </button>
+              </form>
           </div>
+
       </div> <!-- BEGIN: Data List -->
       <div class="intro-y col-span-12 overflow-auto lg:overflow-visible">
           <table class="table table-report -mt-2">
@@ -125,39 +129,6 @@
           </table>
       </div>
       <!-- END: Data List -->
-      <!-- BEGIN: Pagination -->
-      <div class="intro-y col-span-12 flex flex-wrap sm:flex-row sm:flex-no-wrap items-center">
-          <ul class="pagination">
-              <li>
-                  <a class="pagination__link" href=""> <i class="w-4 h-4" data-feather="chevrons-left"></i>
-                  </a>
-              </li>
-              <li>
-                  <a class="pagination__link" href=""> <i class="w-4 h-4" data-feather="chevron-left"></i>
-                  </a>
-              </li>
-              <li> <a class="pagination__link" href="">...</a> </li>
-              <li> <a class="pagination__link" href="">1</a> </li>
-              <li> <a class="pagination__link pagination__link--active" href="">2</a> </li>
-              <li> <a class="pagination__link" href="">3</a> </li>
-              <li> <a class="pagination__link" href="">...</a> </li>
-              <li>
-                  <a class="pagination__link" href=""> <i class="w-4 h-4" data-feather="chevron-right"></i>
-                  </a>
-              </li>
-              <li>
-                  <a class="pagination__link" href=""> <i class="w-4 h-4" data-feather="chevrons-right"></i>
-                  </a>
-              </li>
-          </ul>
-          <select class="w-20 input box mt-3 sm:mt-0">
-              <option>10</option>
-              <option>25</option>
-              <option>35</option>
-              <option>50</option>
-          </select>
-      </div>
-      <!-- END: Pagination -->
   </div>
   <!-- BEGIN: Delete Confirmation Modal -->
   <div class="modal" id="delete-confirmation-modal">
@@ -169,8 +140,7 @@
                   be undone.</div>
           </div>
           <div class="px-5 pb-8 text-center">
-              <button type="button" data-dismiss="modal"
-                  class="button w-24 border text-gray-700 mr-1">Cancel</button>
+              <button type="button" data-dismiss="modal" class="button w-24 border text-gray-700 mr-1">Cancel</button>
               <button type="button" class="button w-24 bg-theme-6 text-white">Delete</button>
           </div>
       </div>

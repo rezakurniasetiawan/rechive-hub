@@ -9,9 +9,12 @@ use Illuminate\Support\Facades\Auth;
 
 class FinanceAccountController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $data = FinanceAccount::all();
+        $search = $request->input('search');
+        $data = FinanceAccount::when($search, function ($query, $search) {
+            return $query->where('bank_name', 'like', '%' . $search . '%');
+        })->get();
         return view('layouts.app', [
             'content' => view('pages.finance.finance-accounts.finance-account', compact('data'))->render()
         ]);

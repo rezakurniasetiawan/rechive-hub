@@ -27,14 +27,46 @@
             </div>
         </div>
 
-        {{-- <div class="hidden md:block mx-auto text-gray-600">Showing 1 to 10 of 150 entries</div> --}}
+        <div class="hidden md:block mx-auto text-gray-600"></div>
 
-        {{-- <div class="w-full sm:w-auto mt-3 sm:mt-0 sm:ml-auto md:ml-0">
-            <div class="w-56 relative text-gray-700">
-                <input type="text" class="input w-56 box pr-10 placeholder-theme-13" placeholder="Search...">
-                <i class="w-4 h-4 absolute my-auto inset-y-0 mr-3 right-0 text-gray-400" data-feather="search"></i>
-            </div>
-        </div> --}}
+        <div class="w-full sm:w-auto mt-3 sm:mt-0 sm:ml-auto md:ml-0 flex items-center space-x-2">
+            {{-- Filter & Search --}}
+            <form id="filterForm" action="{{ route('finance.transaction.index') }}" method="GET"
+                class="flex items-center space-x-2">
+                {{-- Dropdown Kategori --}}
+                <div class="relative">
+                    <select name="category" id="categoryFilter"
+                        class="input box pr-8 w-40 appearance-none cursor-pointer text-gray-700 focus:border-theme-1">
+                        <option value="">All Categories</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}"
+                                {{ request('category') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <i class="w-4 h-4 absolute my-auto inset-y-0 right-0 mr-3 text-gray-500"
+                        data-feather="chevron-down"></i>
+                </div>
+
+                {{-- Search Input --}}
+                <div class="w-56 relative text-gray-700">
+                    <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
+                        class="input w-56 box pr-10 placeholder-theme-13" placeholder="Search...">
+                    <i data-feather="search"
+                        class="w-4 h-4 absolute my-auto inset-y-0 mr-3 right-0 text-gray-500 pointer-events-none"></i>
+                </div>
+            </form>
+
+            {{-- Reset Filter --}}
+            @if (request('search') || request('category'))
+                <button type="button" onclick="window.location.href='{{ route('finance.transaction.index') }}'"
+                    class="button w-24 bg-theme-1 text-white">Reset</button>
+                {{-- <a href="{{ route('finance.transaction.index') }}"
+                    class="text-sm text-gray-500 hover:text-theme-1">Reset</a> --}}
+            @endif
+        </div>
+
     </div>
 
     <!-- BEGIN: Data List -->
@@ -195,3 +227,26 @@
     </div>
 </div>
 <!-- END: Delete Confirmation Modal -->
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('filterForm');
+        const category = document.getElementById('categoryFilter');
+        const search = document.getElementById('searchInput');
+        let debounceTimer;
+
+        // 🔹 Auto submit saat kategori diubah
+        category.addEventListener('change', () => {
+            form.submit();
+        });
+
+        // 🔹 Auto search dengan delay 500ms
+        search.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                form.submit();
+            }, 500);
+        });
+    });
+</script>
