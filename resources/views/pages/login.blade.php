@@ -44,10 +44,10 @@
                         <div class="intro-x mt-8">
                             <input type="text" name="email"
                                 class="intro-x login__input input input--lg border border-gray-300 block"
-                                placeholder="Email" value="admin@gmail.com">
+                                placeholder="Email">
                             <input type="password" name="password"
                                 class="intro-x login__input input input--lg border border-gray-300 block mt-4"
-                                placeholder="Password" value="password">
+                                placeholder="Password">
                         </div>
 
                         <div class="intro-x flex text-gray-700 text-xs sm:text-sm mt-4">
