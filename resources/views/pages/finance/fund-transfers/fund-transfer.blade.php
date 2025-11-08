@@ -35,7 +35,7 @@
                 <div class="flex items-center">
                     <label class="w-1/3 font-medium text-gray-700">From Account <span
                             class="text-red-500">*</span></label>
-                    <select class="select2 w-2/3" name="finance_category_id">
+                    <select class="select2 w-2/3" name="from_account_id">
                         <option value="">-- Select Source Account --</option>
                         @foreach ($accounts as $acc)
                             <option value="{{ $acc->id }}"

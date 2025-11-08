@@ -42,9 +42,9 @@ class AuthController extends Controller
      */
     private function redirectAfterLogin(Request $request)
     {
-        if ($this->isMobile($request)) {
-            return redirect()->route('transactions');
-        }
+        // if ($this->isMobile($request)) {
+        //     return redirect()->route('transactions');
+        // }
 
         return redirect()->route('dashboard');
     }
