@@ -455,8 +455,8 @@
                                         </div>
                                     </div>
                                     <div
-                                        class="{{ $transaction->type === 'income' ? 'text-theme-9' : 'text-theme-6' }}">
-                                        @if ($transaction->type === 'income')
+                                        class="{{ $transaction->financeType->name === 'income' ? 'text-theme-9' : 'text-theme-6' }}">
+                                        @if ($transaction->financeType->name === 'income')
                                             + Rp{{ number_format($transaction->amount ?? 0, 0, ',', '.') }}
                                         @else
                                             - Rp{{ number_format($transaction->amount ?? 0, 0, ',', '.') }}
