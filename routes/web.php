@@ -10,6 +10,7 @@ use App\Http\Controllers\Finance\{
     FundTransferController
 };
 use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\WebAuthnController;
 
 // Auth Routes
 Route::controller(AuthController::class)->group(function () {
@@ -20,8 +21,16 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/logout', 'actionlogout')->name('auth.actionlogout');
 });
 
+Route::get('/webauthn/login-challenge', [WebAuthnController::class, 'loginChallenge']);
+Route::post('/webauthn/verify-login', [WebAuthnController::class, 'verifyLogin']);
+
 // Protected Routes
 Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('/webauthn/register-challenge', [WebAuthnController::class, 'registerChallenge']);
+    Route::post('/webauthn/register-credential', [WebAuthnController::class, 'registerCredential']);
+    Route::get('/webauthn/check-registration', [WebAuthnController::class, 'checkRegistration']);
+
     Route::controller(FinanceTransactionController::class)->group(function () {
         Route::get('/transactions', 'transaction')->name('transactions');
         Route::post('/transactions/store', 'transactionStore')->name('transactions.store');

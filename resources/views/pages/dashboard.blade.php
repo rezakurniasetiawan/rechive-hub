@@ -471,6 +471,10 @@
                     </div>
                 </div>
 
+                <div id="biometric-section" class="mt-6 text-center">
+                    <button id="register-bio" class="btn btn-primary">Daftarkan Biometrik</button>
+                </div>
+
                 <!-- BEGIN: Transactions Nws -->
                 <div class="col-span-12 md:col-span-6 xl:col-span-4 xxl:col-span-12 mt-3">
                     <div class="intro-x flex items-center h-10">
@@ -1199,3 +1203,96 @@
             });
         </script>
     @endif
+
+    <script>
+        async function checkBiometric() {
+            const res = await fetch('/webauthn/check-registration');
+            const data = await res.json();
+
+            const section = document.getElementById('biometric-section');
+            if (data.registered) {
+                section.innerHTML = `
+            <div class="p-4 bg-green-50 border border-green-200 rounded-md">
+                <p class="text-green-700 font-medium">Biometrik sudah terdaftar ✅</p>
+                <button id="register-bio" class="mt-3 btn btn-outline-primary">Perbarui Biometrik</button>
+            </div>
+        `;
+            } else {
+                section.innerHTML = `
+            <button id="register-bio" class="btn btn-primary">Daftarkan Biometrik</button>
+        `;
+            }
+
+            // Re-attach listener setelah render ulang
+            attachRegisterEvent();
+        }
+
+        function attachRegisterEvent() {
+            const btn = document.getElementById('register-bio');
+            if (!btn) return;
+
+            btn.addEventListener('click', async () => {
+                const res = await fetch('/webauthn/register-challenge');
+                const {
+                    challenge,
+                    user
+                } = await res.json();
+
+                const publicKey = {
+                    challenge: Uint8Array.from(atob(challenge), c => c.charCodeAt(0)),
+                    rp: {
+                        name: "RechiveHub"
+                    },
+                    user: {
+                        id: Uint8Array.from(atob(user.id), c => c.charCodeAt(0)),
+                        name: user.name,
+                        displayName: user.displayName,
+                    },
+                    pubKeyCredParams: [{
+                            type: "public-key",
+                            alg: -7
+                        }, // ES256
+                        {
+                            type: "public-key",
+                            alg: -257
+                        }, // RS256
+                    ],
+                    authenticatorSelection: {
+                        userVerification: "required"
+                    },
+                    timeout: 60000,
+                    attestation: "direct",
+                };
+
+
+                const credential = await navigator.credentials.create({
+                    publicKey
+                });
+
+                await fetch('/webauthn/register-credential', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        id: credential.id,
+                        rawId: btoa(String.fromCharCode(...new Uint8Array(credential.rawId))),
+                        response: {
+                            attestationObject: btoa(String.fromCharCode(...new Uint8Array(
+                                credential.response.attestationObject))),
+                            clientDataJSON: btoa(String.fromCharCode(...new Uint8Array(
+                                credential.response.clientDataJSON))),
+                        },
+                        type: credential.type,
+                    })
+                });
+
+                alert('Biometrik berhasil didaftarkan!');
+                checkBiometric();
+            });
+        }
+
+        // Jalankan saat halaman selesai dimuat
+        checkBiometric();
+    </script>

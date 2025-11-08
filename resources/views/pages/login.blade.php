@@ -86,38 +86,37 @@
         const loginForm = document.getElementById('login-form');
 
         fingerprintBtn.addEventListener('click', async () => {
-            // Cek dukungan
-            if (!window.PublicKeyCredential) {
-                alert('Browser ini tidak mendukung autentikasi sidik jari / biometrik.');
-                return;
-            }
+            const res = await fetch('/webauthn/login-challenge');
+            const {
+                challenge
+            } = await res.json();
 
-            try {
-                // ✅ Challenge harus berupa random Uint8Array
-                const challenge = new Uint8Array(32);
-                window.crypto.getRandomValues(challenge);
+            const publicKey = {
+                challenge: Uint8Array.from(atob(challenge), c => c.charCodeAt(0)),
+                timeout: 60000,
+                userVerification: "required",
+            };
 
-                const publicKey = {
-                    challenge: challenge,
-                    timeout: 60000,
-                    userVerification: "preferred",
-                    // Di tahap nyata, "allowCredentials" berisi credential ID user dari server
-                };
+            const assertion = await navigator.credentials.get({
+                publicKey
+            });
 
-                const credential = await navigator.credentials.get({
-                    publicKey
-                });
-
-                if (credential) {
-                    // Untuk demo: lanjutkan login form biasa
-                    alert("✅ Autentikasi sidik jari berhasil!");
-                    loginForm.submit();
-                } else {
-                    alert("❌ Autentikasi dibatalkan.");
-                }
-            } catch (err) {
-                console.error(err);
-                alert("Gagal menggunakan autentikasi biometrik.\n" + err.message);
+            const result = await fetch('/webauthn/verify-login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    id: assertion.id,
+                    rawId: btoa(String.fromCharCode(...new Uint8Array(assertion.rawId))),
+                })
+            });
+            const data = await result.json();
+            if (data.success) {
+                window.location.href = '/dashboard';
+            } else {
+                alert('Login gagal: ' + data.message);
             }
         });
     </script>
