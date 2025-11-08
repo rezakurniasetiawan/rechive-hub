@@ -470,10 +470,16 @@
                         </a>
                     </div>
                 </div>
-
-                <div id="biometric-section" class="mt-6 text-center">
-                    <button id="register-bio" class="btn btn-primary">Daftarkan Biometrik</button>
+                <div class="col-span-12 md:col-span-6 xl:col-span-4 xxl:col-span-12 mt-3">
+                    <div class="intro-x flex items-center h-10">
+                        <h2 class="text-lg font-medium truncate mr-5">
+                            Biometric
+                        </h2>
+                    </div>
+                    <div id="biometric-section" class="mt-6"></div>
                 </div>
+
+
 
                 <!-- BEGIN: Transactions Nws -->
                 <div class="col-span-12 md:col-span-6 xl:col-span-4 xxl:col-span-12 mt-3">
@@ -1203,28 +1209,59 @@
             });
         </script>
     @endif
-
     <script>
+        document.addEventListener("DOMContentLoaded", checkBiometric);
+
         async function checkBiometric() {
-            const res = await fetch('/webauthn/check-registration');
-            const data = await res.json();
+            try {
+                const res = await fetch('/webauthn/check-registration');
+                const data = await res.json();
+                const section = document.getElementById('biometric-section');
 
-            const section = document.getElementById('biometric-section');
-            if (data.registered) {
-                section.innerHTML = `
-            <div class="p-4 bg-green-50 border border-green-200 rounded-md">
-                <p class="text-green-700 font-medium">Biometrik sudah terdaftar ✅</p>
-                <button id="register-bio" class="mt-3 btn btn-outline-primary">Perbarui Biometrik</button>
-            </div>
-        `;
-            } else {
-                section.innerHTML = `
-            <button id="register-bio" class="btn btn-primary">Daftarkan Biometrik</button>
-        `;
+                if (data.registered) {
+                    section.innerHTML = `
+                <div class="intro-x mt-8 p-6 bg-green-50 border border-green-300 rounded-2xl shadow-sm text-center transition-all">
+                    <div class="flex flex-col items-center space-y-3">
+                        <div class="text-green-600 text-4xl">✅</div>
+                        <p class="text-green-700 font-semibold text-lg">
+                            Biometrik sudah terdaftar
+                        </p>
+                        <p class="text-gray-600 text-sm">
+                            Kamu dapat memperbarui data biometrik kapan saja.
+                        </p>
+                        <button id="register-bio"
+                            class="btn btn-outline-primary mt-4 px-6 py-2 rounded-xl border-2 border-primary text-primary hover:bg-primary hover:text-white transition">
+                            🔄 Perbarui Biometrik
+                        </button>
+                    </div>
+                </div>
+            `;
+                } else {
+                    section.innerHTML = `
+                <div class="intro-x mt-8 text-center">
+                    <div class="p-6 bg-white border border-gray-200 rounded-2xl shadow-sm">
+                        <div class="flex flex-col items-center space-y-3">
+                            <div class="text-4xl text-primary">🔐</div>
+                            <p class="text-gray-700 font-medium">
+                                Belum ada biometrik terdaftar
+                            </p>
+                            <p class="text-gray-500 text-sm">
+                                Daftarkan sidik jari atau face ID untuk login cepat & aman.
+                            </p>
+                            <button id="register-bio"
+                                class="btn btn-primary mt-4 px-6 py-2 rounded-xl shadow-md hover:shadow-lg transition">
+                                ✳️ Daftarkan Biometrik
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+                }
+
+                attachRegisterEvent();
+            } catch (err) {
+                console.error("Gagal memeriksa status biometrik:", err);
             }
-
-            // Re-attach listener setelah render ulang
-            attachRegisterEvent();
         }
 
         function attachRegisterEvent() {
@@ -1232,67 +1269,92 @@
             if (!btn) return;
 
             btn.addEventListener('click', async () => {
-                const res = await fetch('/webauthn/register-challenge');
-                const {
-                    challenge,
-                    user
-                } = await res.json();
+                if (!window.PublicKeyCredential) {
+                    return alert("Browser ini tidak mendukung autentikasi biometrik / WebAuthn.");
+                }
 
-                const publicKey = {
-                    challenge: Uint8Array.from(atob(challenge), c => c.charCodeAt(0)),
-                    rp: {
-                        name: "RechiveHub"
-                    },
-                    user: {
-                        id: Uint8Array.from(atob(user.id), c => c.charCodeAt(0)),
-                        name: user.name,
-                        displayName: user.displayName,
-                    },
-                    pubKeyCredParams: [{
-                            type: "public-key",
-                            alg: -7
-                        }, // ES256
-                        {
-                            type: "public-key",
-                            alg: -257
-                        }, // RS256
-                    ],
-                    authenticatorSelection: {
-                        userVerification: "required"
-                    },
-                    timeout: 60000,
-                    attestation: "direct",
-                };
+                try {
+                    btn.disabled = true;
+                    btn.classList.add('opacity-70', 'cursor-not-allowed');
+                    btn.textContent = "Memproses...";
 
+                    const res = await fetch('/webauthn/register-challenge');
+                    const {
+                        challenge,
+                        user
+                    } = await res.json();
 
-                const credential = await navigator.credentials.create({
-                    publicKey
-                });
+                    const publicKey = {
+                        challenge: Uint8Array.from(atob(challenge), c => c.charCodeAt(0)),
+                        rp: {
+                            name: "RechiveHub",
+                            id: window.location.hostname,
+                        },
+                        user: {
+                            id: Uint8Array.from(atob(user.id), c => c.charCodeAt(0)),
+                            name: user.name,
+                            displayName: user.displayName,
+                        },
+                        pubKeyCredParams: [{
+                                type: "public-key",
+                                alg: -7
+                            }, // ES256
+                            {
+                                type: "public-key",
+                                alg: -257
+                            }, // RS256
+                        ],
+                        authenticatorSelection: {
+                            userVerification: "preferred",
+                            authenticatorAttachment: "platform",
+                        },
+                        timeout: 60000,
+                        attestation: "none",
+                    };
 
-                await fetch('/webauthn/register-credential', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
+                    const credential = await navigator.credentials.create({
+                        publicKey
+                    });
+
+                    const body = {
                         id: credential.id,
                         rawId: btoa(String.fromCharCode(...new Uint8Array(credential.rawId))),
                         response: {
-                            attestationObject: btoa(String.fromCharCode(...new Uint8Array(
-                                credential.response.attestationObject))),
-                            clientDataJSON: btoa(String.fromCharCode(...new Uint8Array(
-                                credential.response.clientDataJSON))),
+                            attestationObject: btoa(String.fromCharCode(...new Uint8Array(credential
+                                .response.attestationObject))),
+                            clientDataJSON: btoa(String.fromCharCode(...new Uint8Array(credential.response
+                                .clientDataJSON))),
                         },
                         type: credential.type,
-                    })
-                });
+                    };
 
-                alert('Biometrik berhasil didaftarkan!');
-                checkBiometric();
+                    const saveRes = await fetch('/webauthn/register-credential', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        },
+                        body: JSON.stringify(body),
+                    });
+
+                    if (!saveRes.ok) throw new Error("Gagal menyimpan credential");
+                    alert('✅ Biometrik berhasil didaftarkan!');
+                    checkBiometric();
+
+                } catch (err) {
+                    console.error("❌ Error registrasi biometrik:", err);
+                    if (err.name === "SecurityError") {
+                        alert("Domain tidak valid. Gunakan HTTPS atau 'localhost'.");
+                    } else if (err.name === "NotAllowedError") {
+                        alert("Aksi dibatalkan atau perangkat tidak mendukung biometrik.");
+                    } else {
+                        alert("Terjadi kesalahan: " + err.message);
+                    }
+                } finally {
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-70', 'cursor-not-allowed');
+                    btn.textContent = "Daftarkan Biometrik";
+                }
             });
         }
-
-        // Jalankan saat halaman selesai dimuat
-        checkBiometric();
     </script>
