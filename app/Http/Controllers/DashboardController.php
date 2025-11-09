@@ -131,6 +131,26 @@ class DashboardController extends Controller
             ->whereMonth('date', $currentMonth)
             ->count();
 
+        // ========================= Monthly Expenses (For Grid 4x4) ========================== //
+        $monthlyExpenses = FinanceTransaction::selectRaw('YEAR(date) as year, MONTH(date) as month, COUNT(*) as count, SUM(amount) as total')
+            ->whereHas('financeType', fn($q) => $q->where('name', 'expense'))
+            ->whereYear('date', $currentYear)
+            ->groupBy('year', 'month')
+            ->orderBy('month', 'asc')
+            ->get()
+            ->keyBy('month');
+
+        // Siapkan data 12 bulan (biar tetap muncul meski tidak ada transaksi)
+        $monthlyExpensesData = [];
+        for ($month = 1; $month <= 12; $month++) {
+            $item = $monthlyExpenses[$month] ?? null;
+            $monthlyExpensesData[] = [
+                'month'  => Carbon::create()->month($month)->format('F'),
+                'count'  => $item->count ?? 0,
+                'amount' => $item->total ?? 0,
+            ];
+        }
+
 
         // ========================= Render View ========================== //
         return view('layouts.app', [
@@ -155,7 +175,8 @@ class DashboardController extends Controller
                 'expenseColors',
                 'todayExpensesCount',
                 'monthExpensesCount',
-                'todayExpensesTotal'
+                'todayExpensesTotal',
+                'monthlyExpensesData'
             ))->render()
         ]);
     }

@@ -18,51 +18,80 @@ class FinanceTransactionController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->input('search');
-        $categoryId = $request->input('category');
+        // 🔍 Ambil parameter pencarian & filter
+        $search      = trim($request->input('search'));
+        $categoryId  = $request->input('category');
 
-        // Ambil semua kategori untuk dropdown filter
-        $categories = FinanceCategory::all();
+        // 📂 Ambil semua kategori untuk dropdown filter
+        $categories = FinanceCategory::select('id', 'name')->orderBy('name')->get();
 
-        // Query utama FinanceTransaction
-        $data = FinanceTransaction::with([
+        // 📊 Query utama transaksi keuangan
+        $query = FinanceTransaction::with([
             'financeAccount:id,bank_name,logo',
             'financeCategory:id,name',
-            'financeType:id,name,label'
-        ])
-            ->when($search, function ($query, $search) {
-                // Group agar OR tidak keluar dari konteks utama
-                $query->where(function ($q) use ($search) {
-                    $q->whereHas('financeAccount', function ($sub) use ($search) {
-                        $sub->where('bank_name', 'like', "%{$search}%");
-                    })
-                        ->orWhereHas('financeCategory', function ($sub) use ($search) {
-                            $sub->where('name', 'like', "%{$search}%");
-                        })
-                        ->orWhereHas('financeType', function ($sub) use ($search) {
-                            $sub->where('name', 'like', "%{$search}%");
-                        })
-                        ->orWhere('description', 'like', "%{$search}%")
-                        ->orWhere('amount', 'like', "%{$search}%");
-                });
-            })
-            ->when($categoryId, function ($query, $categoryId) {
-                // Filter berdasarkan kategori
-                $query->where('finance_category_id', $categoryId);
-            })
-            ->orderBy('date', 'desc')
-            ->paginate(10)
-            ->appends(['search' => $search, 'category' => $categoryId]); // bawa parameter saat pindah halaman
+            'financeType:id,name,label',
+        ]);
 
+        // 🔎 Filter pencarian global
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->whereHas(
+                    'financeAccount',
+                    fn($sub) =>
+                    $sub->where('bank_name', 'like', "%{$search}%")
+                )
+                    ->orWhereHas(
+                        'financeCategory',
+                        fn($sub) =>
+                        $sub->where('name', 'like', "%{$search}%")
+                    )
+                    ->orWhereHas(
+                        'financeType',
+                        fn($sub) =>
+                        $sub->where('name', 'like', "%{$search}%")
+                    )
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhere('amount', 'like', "%{$search}%");
+            });
+        }
+
+        // 🏷️ Filter kategori (jika dipilih)
+        if (!empty($categoryId)) {
+            $query->where('finance_category_id', $categoryId);
+        }
+
+        // 🔢 Pagination data transaksi
+        $data = $query->orderBy('date', 'desc')
+            ->paginate(10)
+            ->appends([
+                'search'   => $search,
+                'category' => $categoryId,
+            ]);
+
+        // 💰 Summary (semua waktu)
+        $totalIncome = FinanceTransaction::whereHas('financeType', fn($q) => $q->where('name', 'income'))
+            ->sum('amount');
+        $totalExpense = FinanceTransaction::whereHas('financeType', fn($q) => $q->where('name', 'expense'))
+            ->sum('amount');
+        $totalTransfer = FinanceTransaction::whereHas('financeType', fn($q) => $q->where('name', 'transfer'))
+            ->sum('amount');
+        $netBalance = $totalIncome - $totalExpense;
+
+        // 📄 Render ke view
         return view('layouts.app', [
             'content' => view('pages.finance.finance-transactions.finance-transaction', compact(
                 'data',
                 'categories',
                 'search',
-                'categoryId'
+                'categoryId',
+                'totalIncome',
+                'totalExpense',
+                'totalTransfer',
+                'netBalance'
             ))->render()
         ]);
     }
+
 
 
 

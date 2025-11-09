@@ -70,7 +70,46 @@
     </div>
 
     <!-- BEGIN: Data List -->
+
     <div class="intro-y col-span-12 overflow-auto lg:overflow-visible mt-5">
+        <div class="col-span-12 mt-2 mb-2">
+            <div class="intro-y flex items-center h-10 mb-4">
+                <h2 class="text-lg font-semibold text-gray-800">
+                    Financial Overview
+                </h2>
+            </div>
+
+            <!-- GRID 4 SUMMARY BOX -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div
+                    class="box p-6 text-center shadow-md border-l-4 border-theme-9 hover:shadow-lg transition duration-300">
+                    <div class="text-base font-semibold text-theme-9">Total Income</div>
+                    <div class="text-gray-600 mt-1 text-sm">{{ number_format($totalIncome, 0, ',', '.') }}</div>
+                </div>
+
+                <div
+                    class="box p-6 text-center shadow-md border-l-4 border-theme-6 hover:shadow-lg transition duration-300">
+                    <div class="text-base font-semibold text-theme-6">Total Expenses</div>
+                    <div class="text-gray-600 mt-1 text-sm">{{ number_format($totalExpense, 0, ',', '.') }}</div>
+                </div>
+
+                <div
+                    class="box p-6 text-center shadow-md border-l-4 border-theme-1 hover:shadow-lg transition duration-300">
+                    <div class="text-base font-semibold text-theme-1">Total Transfers</div>
+                    <div class="text-gray-600 mt-1 text-sm">{{ number_format($totalTransfer, 0, ',', '.') }}</div>
+                </div>
+
+                <div
+                    class="box p-6 text-center shadow-md border-l-4 border-theme-12 hover:shadow-lg transition duration-300">
+                    <div class="text-base font-semibold text-theme-12">Net Balance</div>
+                    <div class="text-gray-600 mt-1 text-sm font-bold">
+                        {{ number_format($netBalance, 0, ',', '.') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <table class="table table-report">
             <thead>
                 <tr>

@@ -264,6 +264,41 @@
                         <canvas id="report-bar-chart-daily" height="250" class="mt-6"></canvas>
                     </div>
                 </div>
+                <div class="col-span-12 mt-6">
+                    <div class="intro-y flex items-center h-10 mb-4">
+                        <h2 class="text-lg font-medium text-gray-800 dark:text-gray-200">
+                            Monthly Expenses
+                        </h2>
+                    </div>
+
+                    <!-- GRID 4x4 -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        @foreach ($monthlyExpensesData as $data)
+                            <div
+                                class="intro-y box p-5 text-center border border-slate-200 dark:border-darkmode-400 hover:shadow-md transition duration-200">
+                                <div class="text-base font-semibold text-slate-800 dark:text-slate-100">
+                                    {{ $data['month'] }}
+                                </div>
+                                <div class="text-gray-500 text-sm mt-2">
+                                    {{ $data['count'] }} Transactions
+                                </div>
+                                <div class="text-lg font-bold text-theme-9 mt-3">
+                                    Rp {{ number_format($data['amount'], 0, ',', '.') }}
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="col-span-12 md:col-span-6 xl:col-span-4 xxl:col-span-12 mt-3">
+                <div class="intro-x flex items-center h-10">
+                    <h2 class="text-lg font-medium truncate mr-5">
+                        Biometric
+                    </h2>
+                </div>
+                <div id="biometric-section" class="mt-6"></div>
             </div>
             <!-- END: Sales Report -->
             <!-- BEGIN: Weekly Top Seller -->
@@ -357,78 +392,8 @@
             </div> --}}
             <!-- END: Official Store -->
             <!-- BEGIN: Weekly Best Sellers -->
-            <div class="col-span-12 xl:col-span-4 mt-6">
-                <div class="intro-y flex items-center h-10">
-                    <h2 class="text-lg font-medium truncate mr-5">
-                        Weekly Best Sellers
-                    </h2>
-                </div>
-                <div class="mt-5">
-                    <div class="intro-y">
-                        <div class="box px-4 py-4 mb-3 flex items-center zoom-in">
-                            <div class="w-10 h-10 flex-none image-fit rounded-md overflow-hidden">
-                                <img alt="Midone Tailwind HTML Admin Template"
-                                    src="{{ asset('dist/images/profile-14.jpg') }}">
-                            </div>
-                            <div class="ml-4 mr-auto">
-                                <div class="font-medium">Leonardo DiCaprio</div>
-                                <div class="text-gray-600 text-xs">6 August 2022</div>
-                            </div>
-                            <div
-                                class="py-1 px-2 rounded-full text-xs bg-theme-9 text-white cursor-pointer font-medium">
-                                137 Sales</div>
-                        </div>
-                    </div>
-                    <div class="intro-y">
-                        <div class="box px-4 py-4 mb-3 flex items-center zoom-in">
-                            <div class="w-10 h-10 flex-none image-fit rounded-md overflow-hidden">
-                                <img alt="Midone Tailwind HTML Admin Template"
-                                    src="{{ asset('dist/images/profile-10.jpg') }}">
-                            </div>
-                            <div class="ml-4 mr-auto">
-                                <div class="font-medium">Tom Cruise</div>
-                                <div class="text-gray-600 text-xs">21 July 2020</div>
-                            </div>
-                            <div
-                                class="py-1 px-2 rounded-full text-xs bg-theme-9 text-white cursor-pointer font-medium">
-                                137 Sales</div>
-                        </div>
-                    </div>
-                    <div class="intro-y">
-                        <div class="box px-4 py-4 mb-3 flex items-center zoom-in">
-                            <div class="w-10 h-10 flex-none image-fit rounded-md overflow-hidden">
-                                <img alt="Midone Tailwind HTML Admin Template"
-                                    src="{{ asset('dist/images/profile-12.jpg') }}">
-                            </div>
-                            <div class="ml-4 mr-auto">
-                                <div class="font-medium">Al Pacino</div>
-                                <div class="text-gray-600 text-xs">5 January 2021</div>
-                            </div>
-                            <div
-                                class="py-1 px-2 rounded-full text-xs bg-theme-9 text-white cursor-pointer font-medium">
-                                137 Sales</div>
-                        </div>
-                    </div>
-                    <div class="intro-y">
-                        <div class="box px-4 py-4 mb-3 flex items-center zoom-in">
-                            <div class="w-10 h-10 flex-none image-fit rounded-md overflow-hidden">
-                                <img alt="Midone Tailwind HTML Admin Template"
-                                    src="{{ asset('dist/images/profile-6.jpg') }}">
-                            </div>
-                            <div class="ml-4 mr-auto">
-                                <div class="font-medium">Russell Crowe</div>
-                                <div class="text-gray-600 text-xs">22 April 2020</div>
-                            </div>
-                            <div
-                                class="py-1 px-2 rounded-full text-xs bg-theme-9 text-white cursor-pointer font-medium">
-                                137 Sales</div>
-                        </div>
-                    </div>
-                    <a href=""
-                        class="intro-y w-full block text-center rounded-md py-4 border border-dotted border-theme-15 text-theme-16">View
-                        More</a>
-                </div>
-            </div>
+
+
             <!-- END: Weekly Best Sellers -->
 
         </div>
@@ -470,14 +435,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="col-span-12 md:col-span-6 xl:col-span-4 xxl:col-span-12 mt-3">
-                    <div class="intro-x flex items-center h-10">
-                        <h2 class="text-lg font-medium truncate mr-5">
-                            Biometric
-                        </h2>
-                    </div>
-                    <div id="biometric-section" class="mt-6"></div>
-                </div>
+
 
 
 
