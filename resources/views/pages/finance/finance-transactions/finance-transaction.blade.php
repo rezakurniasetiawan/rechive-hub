@@ -73,10 +73,16 @@
 
     <div class="intro-y col-span-12 overflow-auto lg:overflow-visible mt-5">
         <div class="col-span-12 mt-2 mb-2">
-            <div class="intro-y flex items-center h-10 mb-4">
-                <h2 class="text-lg font-semibold text-gray-800">
-                    Financial Overview
-                </h2>
+            <div class="intro-y flex flex-col sm:flex-row sm:items-center sm:justify-between h-auto mb-4">
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-800">
+                        Financial Overview
+                    </h2>
+                    <p class="text-sm text-gray-500 mt-1">
+                        The data in this system has been recorded since <span class="font-medium text-gray-700">November
+                            2025</span>.
+                    </p>
+                </div>
             </div>
 
             <!-- GRID 4 SUMMARY BOX -->
