@@ -101,7 +101,7 @@
 
                 <div
                     class="box p-6 text-center shadow-md border-l-4 border-theme-1 hover:shadow-lg transition duration-300">
-                    <div class="text-base font-semibold text-theme-1">Total Transfers</div>
+                    <div class="text-base font-semibold text-theme-1">Total Fund Transfers</div>
                     <div class="text-gray-600 mt-1 text-sm">{{ number_format($totalTransfer, 0, ',', '.') }}</div>
                 </div>
 
