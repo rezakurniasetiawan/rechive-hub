@@ -35,21 +35,15 @@ class FinanceTransactionController extends Controller
         // 🔎 Filter pencarian global
         if (!empty($search)) {
             $query->where(function ($q) use ($search) {
-                $q->whereHas(
-                    'financeAccount',
-                    fn($sub) =>
-                    $sub->where('bank_name', 'like', "%{$search}%")
-                )
-                    ->orWhereHas(
-                        'financeCategory',
-                        fn($sub) =>
-                        $sub->where('name', 'like', "%{$search}%")
-                    )
-                    ->orWhereHas(
-                        'financeType',
-                        fn($sub) =>
-                        $sub->where('name', 'like', "%{$search}%")
-                    )
+                $q->whereHas('financeAccount', function ($sub) use ($search) {
+                    $sub->where('bank_name', 'like', "%{$search}%");
+                })
+                    ->orWhereHas('financeCategory', function ($sub) use ($search) {
+                        $sub->where('name', 'like', "%{$search}%");
+                    })
+                    ->orWhereHas('financeType', function ($sub) use ($search) {
+                        $sub->where('name', 'like', "%{$search}%");
+                    })
                     ->orWhere('description', 'like', "%{$search}%")
                     ->orWhere('amount', 'like', "%{$search}%");
             });
@@ -68,14 +62,21 @@ class FinanceTransactionController extends Controller
                 'category' => $categoryId,
             ]);
 
-        // 💰 Summary (semua waktu)
-        $totalIncome = FinanceTransaction::whereHas('financeType', fn($q) => $q->where('name', 'income'))
-            ->sum('amount');
-        $totalExpense = FinanceTransaction::whereHas('financeType', fn($q) => $q->where('name', 'expense'))
-            ->sum('amount');
-        $totalTransfer = FinanceTransaction::whereHas('financeType', fn($q) => $q->where('name', 'transfer'))
-            ->sum('amount');
-        $netBalance = $totalIncome - $totalExpense;
+        // 💰 Summary global dari FinanceMonthlyBalance (lebih ringan)
+        $summary = \App\Models\Finance\FinanceMonthlyBalance::selectRaw('
+        SUM(income_total) as total_income,
+        SUM(expense_total) as total_expense
+        ')->first();
+
+        //FundTransfer
+        $transfer = \App\Models\Finance\FundTransfer::selectRaw('
+        SUM(amount) as total_transfer
+        ')->first();
+
+        $totalIncome   = $summary->total_income   ?? 0;
+        $totalExpense  = $summary->total_expense  ?? 0;
+        $totalTransfer = $transfer->total_transfer ?? 0;
+        $netBalance    = $totalIncome - $totalExpense;
 
         // 📄 Render ke view
         return view('layouts.app', [
@@ -91,6 +92,7 @@ class FinanceTransactionController extends Controller
             ))->render()
         ]);
     }
+
 
 
 
