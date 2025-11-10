@@ -950,16 +950,21 @@
                 const ctxBar = document.getElementById('report-bar-chart-daily').getContext('2d');
                 const chartHeight = ctxBar.canvas.clientHeight || 400;
 
-                // 🌈 Gradasi warna batang
-                const gradientIncomeBar = ctxBar.createLinearGradient(0, 0, 0, chartHeight);
-                gradientIncomeBar.addColorStop(0, 'rgba(28, 63, 170, 0.9)');
-                gradientIncomeBar.addColorStop(1, 'rgba(28, 63, 170, 0.2)');
+                // 🌈 Gradasi untuk line mode
+                const gradientIncome = ctxBar.createLinearGradient(0, 0, 0, chartHeight);
+                gradientIncome.addColorStop(0, 'rgba(28, 63, 170, 0.4)');
+                gradientIncome.addColorStop(1, 'rgba(28, 63, 170, 0)');
 
-                const gradientExpenseBar = ctxBar.createLinearGradient(0, 0, 0, chartHeight);
-                gradientExpenseBar.addColorStop(0, 'rgba(220, 38, 38, 0.85)');
-                gradientExpenseBar.addColorStop(1, 'rgba(220, 38, 38, 0.2)');
 
-                // 🪙 Format Rupiah (versi fix untuk semua tipe data)
+                const gradientExpense = ctxBar.createLinearGradient(0, 0, 0, chartHeight);
+                gradientExpense.addColorStop(0, 'rgba(220, 38, 38, 0.3)');
+                gradientExpense.addColorStop(1, 'rgba(220, 38, 38, 0)');
+
+                // 🎨 Warna solid untuk bar mode
+                const solidIncome = '#1C3FAA';
+                const solidExpense = '#DC2626';
+
+                // 🪙 Format Rupiah
                 const formatRupiah = (num) => {
                     if (num === null || num === undefined || isNaN(num)) return 'Rp 0';
                     const number = parseFloat(num);
@@ -969,67 +974,57 @@
                     });
                 };
 
+                // 🔢 Format singkat (Ribu / Juta / Miliar)
                 const formatSingkatID = (num) => {
-                    if (num >= 1000000000) return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + ' Miliar';
-                    if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + ' Juta';
-                    if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + ' Ribu';
+                    if (num >= 1_000_000_000) return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, '') +
+                        ' Miliar';
+                    if (num >= 1_000_000) return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + ' Juta';
+                    if (num >= 1_000) return (num / 1_000).toFixed(1).replace(/\.0$/, '') + ' Ribu';
                     return num.toString();
                 };
 
                 let currentType = 'bar';
 
-                // 📊 Data Chart
+                // 📊 Data awal
                 const chartData = {
                     labels: @json($barLabels),
                     datasets: [{
                             label: 'Income',
                             data: @json($barIncome),
-                            borderWidth: currentType === 'line' ? 2 : 0,
-                            borderColor: '#1C3FAA',
-                            backgroundColor: gradientIncomeBar,
-                            tension: 0.35,
-                            fill: true,
+                            backgroundColor: solidIncome,
+                            borderColor: solidIncome,
+                            borderWidth: 0,
                             pointBackgroundColor: '#1C3FAA',
                             pointRadius: 3,
-                            pointHoverRadius: 8,
-                            pointHoverBorderColor: '#fff',
-                            pointHoverBorderWidth: 2,
-                            shadowColor: 'rgba(28,63,170,0.3)',
-                            shadowBlur: 10,
-                            clip: false,
+                            fill: true,
+                            tension: 0.35,
                         },
                         {
                             label: 'Expense',
                             data: @json($barExpense),
-                            borderWidth: currentType === 'line' ? 2 : 0,
-                            borderColor: '#DC2626',
-                            backgroundColor: gradientExpenseBar,
-                            tension: 0.35,
-                            fill: true,
+                            backgroundColor: solidExpense,
+                            borderColor: solidExpense,
+                            borderWidth: 0,
                             pointBackgroundColor: '#DC2626',
                             pointRadius: 3,
-                            pointHoverRadius: 8,
-                            pointHoverBorderColor: '#fff',
-                            pointHoverBorderWidth: 2,
-                            clip: false,
+                            fill: true,
+                            tension: 0.35,
                         }
                     ]
                 };
 
-                // ⚙️ Opsi Chart
+                // ⚙️ Opsi chart
                 const chartOptions = {
                     responsive: true,
                     maintainAspectRatio: false,
-                    tooltips: { // ✅ Chart.js v2.9.3 pakai `tooltips`, bukan `plugins.tooltip`
+                    tooltips: {
                         enabled: true,
                         mode: 'index',
                         intersect: false,
                         backgroundColor: 'rgba(17, 24, 39, 0.95)',
                         titleFontSize: 14,
                         titleFontStyle: 'bold',
-                        titleFontColor: '#fff',
                         bodyFontSize: 13,
-                        bodyFontColor: '#fff',
                         cornerRadius: 8,
                         xPadding: 14,
                         yPadding: 14,
@@ -1066,8 +1061,6 @@
                             ticks: {
                                 fontColor: '#6B7280',
                                 fontSize: 12,
-                                fontStyle: '500',
-                                maxRotation: 0,
                                 autoSkip: true,
                                 autoSkipPadding: 10
                             },
@@ -1080,18 +1073,13 @@
                                 beginAtZero: true,
                                 fontColor: '#6B7280',
                                 fontSize: 11,
-                                fontStyle: '500',
                                 maxTicksLimit: 6,
                                 padding: 10,
-                                callback: function(value) {
-                                    return formatSingkatID(
-                                        value); // ✅ Gunakan format singkat (K, M)
-                                }
+                                callback: (value) => formatSingkatID(value)
                             },
                             gridLines: {
                                 color: 'rgba(229, 231, 235, 0.8)',
-                                drawBorder: false,
-                                lineWidth: 1
+                                drawBorder: false
                             }
                         }]
                     },
@@ -1103,17 +1091,34 @@
                     }
                 };
 
-                // 📈 Chart awal
+                // 🧩 Inisialisasi chart pertama (bar)
                 let currentChart = new Chart(ctxBar, {
                     type: currentType,
                     data: chartData,
                     options: chartOptions
                 });
 
-                // 🔁 Fungsi ganti chart
+                // 🔁 Fungsi toggle chart
                 function switchChart(newType) {
                     if (currentType === newType) return;
                     currentType = newType;
+
+                    chartData.datasets.forEach(ds => {
+                        if (newType === 'line') {
+                            // Line mode → gradasi + border
+                            ds.borderWidth = 2;
+                            ds.fill = true;
+                            ds.backgroundColor = ds.label === 'Income' ? gradientIncome : gradientExpense;
+                            ds.borderColor = ds.label === 'Income' ? '#1C3FAA' : '#DC2626';
+                        } else {
+                            // Bar mode → warna solid
+                            ds.borderWidth = 0;
+                            ds.fill = true;
+                            ds.backgroundColor = ds.label === 'Income' ? solidIncome : solidExpense;
+                            ds.borderColor = ds.label === 'Income' ? solidIncome : solidExpense;
+                        }
+                    });
+
                     currentChart.destroy();
                     currentChart = new Chart(ctxBar, {
                         type: newType,
@@ -1127,23 +1132,25 @@
                 const lineBtn = document.getElementById('lineChartBtn');
 
                 barBtn.addEventListener('click', () => {
-                    barBtn.classList.remove('bg-transparent', 'text-gray-700');
-                    barBtn.classList.add('bg-blue-600', 'text-white');
-                    lineBtn.classList.remove('bg-blue-600', 'text-white');
-                    lineBtn.classList.add('bg-transparent', 'text-gray-700');
+                    barBtn.classList.replace('bg-transparent', 'bg-blue-600');
+                    barBtn.classList.replace('text-gray-700', 'text-white');
+                    lineBtn.classList.replace('bg-blue-600', 'bg-transparent');
+                    lineBtn.classList.replace('text-white', 'text-gray-700');
                     switchChart('bar');
                 });
 
                 lineBtn.addEventListener('click', () => {
-                    lineBtn.classList.remove('bg-transparent', 'text-gray-700');
-                    lineBtn.classList.add('bg-blue-600', 'text-white');
-                    barBtn.classList.remove('bg-blue-600', 'text-white');
-                    barBtn.classList.add('bg-transparent', 'text-gray-700');
+                    lineBtn.classList.replace('bg-transparent', 'bg-blue-600');
+                    lineBtn.classList.replace('text-gray-700', 'text-white');
+                    barBtn.classList.replace('bg-blue-600', 'bg-transparent');
+                    barBtn.classList.replace('text-white', 'text-gray-700');
                     switchChart('line');
                 });
             });
         </script>
     @endif
+
+
 
 
 
