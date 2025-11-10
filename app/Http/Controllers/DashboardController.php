@@ -132,9 +132,16 @@ class DashboardController extends Controller
             ->count();
 
         // ========================= Monthly Expenses (For Grid 4x4) ========================== //
-        $monthlyExpenses = FinanceTransaction::selectRaw('YEAR(date) as year, MONTH(date) as month, COUNT(*) as count, SUM(amount) as total')
-            ->whereHas('financeType', fn($q) => $q->where('name', 'expense'))
+        $monthlyExpenses = FinanceTransaction::selectRaw('
+                YEAR(date) as year, 
+                MONTH(date) as month, 
+                SUM(CASE WHEN finance_type_id = 1 THEN amount ELSE 0 END) as income_amount,
+                SUM(CASE WHEN finance_type_id = 2 THEN amount ELSE 0 END) as expense_amount,
+                COUNT(CASE WHEN finance_type_id = 1 THEN 1 END) as income_count,
+                COUNT(CASE WHEN finance_type_id = 2 THEN 1 END) as expense_count
+            ')
             ->whereYear('date', $currentYear)
+            ->whereIn('finance_type_id', [1, 2]) // 1 = Income, 2 = Expense
             ->groupBy('year', 'month')
             ->orderBy('month', 'asc')
             ->get()
@@ -145,9 +152,11 @@ class DashboardController extends Controller
         for ($month = 1; $month <= 12; $month++) {
             $item = $monthlyExpenses[$month] ?? null;
             $monthlyExpensesData[] = [
-                'month'  => Carbon::create()->month($month)->format('F'),
-                'count'  => $item->count ?? 0,
-                'amount' => $item->total ?? 0,
+                'month'          => Carbon::create()->month($month)->format('F'),
+                'income_count'   => $item->income_count ?? 0,
+                'expense_count'  => $item->expense_count ?? 0,
+                'income_amount'  => $item->income_amount ?? 0,
+                'expense_amount' => $item->expense_amount ?? 0,
             ];
         }
 

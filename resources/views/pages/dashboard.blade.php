@@ -258,32 +258,103 @@
                     <h2 class="text-lg font-medium truncate mr-5">
                         Daily Transaction Report
                     </h2>
+
+                    <!-- 🔘 Toggle Chart Type -->
+                    <div class="ml-auto flex items-center space-x-3">
+                        <div class="inline-flex rounded-lg border border-gray-200 bg-white p-1 shadow-sm">
+                            <button id="barChartBtn"
+                                class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-semibold transition-all duration-200 ease-in-out hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1">
+                                <i data-feather="bar-chart-2" class="w-4 h-4 inline-block mr-1.5"></i>
+                                Bar
+                            </button>
+                            <button id="lineChartBtn"
+                                class="px-4 py-2 bg-transparent text-gray-700 rounded-md text-sm font-semibold transition-all duration-200 ease-in-out hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-1">
+                                <i data-feather="trending-up" class="w-4 h-4 inline-block mr-1.5"></i>
+                                Line
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="intro-y box p-5 mt-12 sm:mt-5">
                     <div class="report-chart mt-10">
-                        <canvas id="report-bar-chart-daily" height="250" class="mt-6"></canvas>
+                        <canvas id="report-bar-chart-daily" height="325" class="mt-6"></canvas>
                     </div>
                 </div>
                 <div class="col-span-12 mt-6">
                     <div class="intro-y flex items-center h-10 mb-4">
                         <h2 class="text-lg font-medium text-gray-800 dark:text-gray-200">
-                            Monthly Expenses
+                            Annual Report
                         </h2>
                     </div>
 
                     <!-- GRID 4x4 -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         @foreach ($monthlyExpensesData as $data)
+                            @php
+                                $netFlow = ($data['income_amount'] ?? 0) - ($data['expense_amount'] ?? $data['amount']);
+                                $isProfit = $netFlow >= 0;
+                            @endphp
                             <div
-                                class="intro-y box p-5 text-center border border-slate-200 dark:border-darkmode-400 hover:shadow-md transition duration-200">
-                                <div class="text-base font-semibold text-slate-800 dark:text-slate-100">
-                                    {{ $data['month'] }}
+                                class="intro-y box p-5 border border-slate-200 dark:border-darkmode-400 hover:shadow-lg transition duration-300 rounded-xl">
+                                <!-- Header with Icon and Month -->
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div
+                                            class="w-10 h-10 flex items-center justify-center {{ $isProfit ? 'bg-green-100' : 'bg-red-100' }} rounded-full">
+                                            <i data-feather="{{ $isProfit ? 'trending-up' : 'trending-down' }}"
+                                                class="w-5 h-5 {{ $isProfit ? 'text-green-600' : 'text-red-600' }}"></i>
+                                        </div>
+                                        <div class="text-base font-semibold text-slate-800 dark:text-slate-100">
+                                            {{ $data['month'] }}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="text-gray-500 text-sm mt-2">
-                                    {{ $data['count'] }} Transactions
+
+                                <!-- Expense Section -->
+                                <div class="mb-4 pb-4 border-b border-slate-200 dark:border-darkmode-400">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-xs text-gray-500 flex items-center">
+                                            <i data-feather="arrow-down-circle" class="w-3 h-3 mr-1 text-red-500"></i>
+                                            Expense
+                                        </span>
+                                        <span class="text-xs text-gray-500">
+                                            {{ $data['expense_count'] ?? $data['count'] }} Transactions
+                                        </span>
+                                    </div>
+                                    <div class="text-lg font-bold text-red-600">
+                                        Rp {{ number_format($data['expense_amount'] ?? $data['amount'], 0, ',', '.') }}
+                                    </div>
                                 </div>
-                                <div class="text-lg font-bold text-theme-9 mt-3">
-                                    Rp {{ number_format($data['amount'], 0, ',', '.') }}
+
+                                <!-- Income Section -->
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-xs text-gray-500 flex items-center">
+                                            <i data-feather="arrow-up-circle" class="w-3 h-3 mr-1 text-green-500"></i>
+                                            Income
+                                        </span>
+                                        <span class="text-xs text-gray-500">
+                                            {{ $data['income_count'] ?? 0 }} Transactions
+                                        </span>
+                                    </div>
+                                    <div class="text-lg font-bold text-green-600">
+                                        Rp {{ number_format($data['income_amount'] ?? 0, 0, ',', '.') }}
+                                    </div>
+                                </div>
+
+                                <!-- Net Flow Indicator -->
+                                <div class="mt-4 pt-4 border-t border-slate-200 dark:border-darkmode-400">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs text-gray-500 flex items-center">
+                                            <i data-feather="bar-chart-2" class="w-3 h-3 mr-1"></i>
+                                            Net Flow
+                                        </span>
+                                        <span
+                                            class="text-sm font-semibold {{ $isProfit ? 'text-green-600' : 'text-red-600' }}">
+                                            {{ $isProfit ? '+' : '' }}Rp
+                                            {{ number_format(abs($netFlow), 0, ',', '.') }}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
@@ -760,6 +831,15 @@
                     });
                 };
 
+                // 📏 Format singkat untuk label sumbu-Y
+                const formatSingkatID = (num) => {
+                    if (num >= 1000000000) return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + ' Miliar';
+                    if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + ' Juta';
+                    if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + ' Ribu';
+                    return num.toString();
+                };
+
+
                 const chartData = {
                     labels: @json($chartLabels),
                     datasets: [{
@@ -777,7 +857,6 @@
                             pointHoverBorderWidth: 2,
                             shadowColor: 'rgba(28,63,170,0.3)',
                             shadowBlur: 10,
-                            clip: false,
                         },
                         {
                             label: 'Expense',
@@ -792,31 +871,8 @@
                             pointHoverRadius: 8,
                             pointHoverBorderColor: '#fff',
                             pointHoverBorderWidth: 2,
-                            clip: false,
                         }
                     ]
-                };
-
-                const shadowLine = {
-                    id: 'shadowLine',
-                    beforeDatasetsDraw(chart) {
-                        const {
-                            ctx
-                        } = chart;
-                        chart.data.datasets.forEach((dataset, i) => {
-                            const meta = chart.getDatasetMeta(i);
-                            if (!meta.hidden) {
-                                ctx.save();
-                                ctx.shadowColor = dataset.shadowColor || 'transparent';
-                                ctx.shadowBlur = dataset.shadowBlur || 0;
-                                ctx.shadowOffsetX = 0;
-                                ctx.shadowOffsetY = 4;
-                            }
-                        });
-                    },
-                    afterDatasetsDraw(chart) {
-                        chart.ctx.restore();
-                    }
                 };
 
                 new Chart(ctx, {
@@ -825,232 +881,60 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        interaction: {
+                        tooltips: {
                             mode: 'index',
-                            intersect: false
-                        },
-                        animations: {
-                            tension: {
-                                duration: 1500,
-                                easing: 'easeOutQuart',
-                                from: 0.5,
-                                to: 0.35,
-                                loop: false
-                            },
-                            y: {
-                                duration: 1200,
-                                easing: 'easeOutCubic'
-                            },
-                            opacity: {
-                                duration: 1200,
-                                easing: 'easeOutCubic',
-                                from: 0,
-                                to: 1
+                            intersect: false,
+                            backgroundColor: 'rgba(17,24,39,0.9)',
+                            titleFontSize: 13,
+                            titleFontStyle: '600',
+                            bodyFontSize: 12,
+                            cornerRadius: 8,
+                            xPadding: 10,
+                            yPadding: 10,
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return formatRupiah(tooltipItem.yLabel);
+                                }
                             }
                         },
-                        plugins: {
-                            legend: {
-                                display: true,
-                                position: 'top',
-                                labels: {
-                                    color: '#374151',
-                                    font: {
-                                        size: 13,
-                                        weight: '600'
-                                    },
-                                    boxWidth: 20,
-                                    padding: 15
-                                }
-                            },
-                            tooltip: {
-                                usePointStyle: true,
-                                backgroundColor: 'rgba(17,24,39,0.9)',
-                                titleFont: {
-                                    size: 13,
-                                    weight: '600'
-                                },
-                                bodyFont: {
-                                    size: 12
-                                },
-                                cornerRadius: 8,
-                                padding: 10,
-                                displayColors: false,
-                                callbacks: {
-                                    label: function(tooltipItem) {
-                                        return numeral(tooltipItem.parsed.y).format('$0,0.00');
-
-                                    }
-                                }
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                fontColor: '#374151',
+                                fontSize: 13,
+                                fontStyle: '600',
+                                boxWidth: 20,
+                                padding: 15
                             }
                         },
                         scales: {
-                            x: {
+                            xAxes: [{
                                 ticks: {
-                                    color: '#6B7280',
-                                    font: {
-                                        size: 12
-                                    },
-                                    maxRotation: 0,
-                                    autoSkipPadding: 10
+                                    fontColor: '#6B7280',
+                                    fontSize: 12,
+                                    autoSkipPadding: 10,
                                 },
-                                grid: {
+                                gridLines: {
                                     display: false
                                 }
-                            },
-                            y: {
-                                beginAtZero: true,
+                            }],
+                            yAxes: [{
                                 ticks: {
-                                    color: '#6B7280',
-                                    font: {
-                                        size: 12
-                                    },
-                                    maxTicksLimit: 5, // ✅ Diubah menjadi maksimal 5 tick
+                                    beginAtZero: true,
+                                    fontColor: '#6B7280',
+                                    fontSize: 12,
+                                    maxTicksLimit: 5,
                                     callback: function(value) {
-                                        // ✅ Disederhanakan: 'value' sudah berupa angka
-                                        return formatRupiah(value);
+                                        return formatSingkatID(
+                                            value); // ✅ Gunakan format singkat (K, M)
                                     }
                                 },
-                                grid: {
+                                gridLines: {
                                     color: '#E5E7EB',
                                     drawBorder: false
                                 }
-                            }
-                        }
-                    },
-                    plugins: [shadowLine]
-                });
-            });
-        </script>
-    @endif
-
-
-    @if (isset($barLabels))
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const ctxBar = document.getElementById('report-bar-chart-daily').getContext('2d');
-                const chartHeight = ctxBar.canvas.clientHeight || 300;
-
-                // 🌈 Gradasi warna batang
-                const gradientIncomeBar = ctxBar.createLinearGradient(0, 0, 0, chartHeight);
-                gradientIncomeBar.addColorStop(0, 'rgba(28, 63, 170, 0.9)');
-                gradientIncomeBar.addColorStop(1, 'rgba(28, 63, 170, 0.3)');
-
-                const gradientExpenseBar = ctxBar.createLinearGradient(0, 0, 0, chartHeight);
-                gradientExpenseBar.addColorStop(0, 'rgba(220, 38, 38, 0.85)');
-                gradientExpenseBar.addColorStop(1, 'rgba(220, 38, 38, 0.3)');
-
-                // 🪙 Format ke Rupiah
-                const formatRupiah = (num) => {
-                    if (isNaN(num)) return 'Rp 0';
-                    return 'Rp ' + Number(num).toLocaleString('id-ID', {
-                        minimumFractionDigits: 0
-                    });
-                };
-
-                const barData = {
-                    labels: @json($barLabels),
-                    datasets: [{
-                            label: 'Income',
-                            data: @json($barIncome),
-                            backgroundColor: gradientIncomeBar,
-                            borderRadius: 6,
-                            borderSkipped: false,
-                            barThickness: 10,
-                        },
-                        {
-                            label: 'Expense',
-                            data: @json($barExpense),
-                            backgroundColor: gradientExpenseBar,
-                            borderRadius: 6,
-                            borderSkipped: false,
-                            barThickness: 10,
-                        }
-                    ]
-                };
-
-                new Chart(ctxBar, {
-                    type: 'bar',
-                    data: barData,
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        interaction: {
-                            mode: 'index',
-                            intersect: false
-                        },
-                        animations: {
-                            y: {
-                                duration: 1000,
-                                easing: 'easeOutCubic'
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: true,
-                                position: 'top',
-                                labels: {
-                                    color: '#374151',
-                                    font: {
-                                        size: 13,
-                                        weight: '600'
-                                    },
-                                    boxWidth: 20,
-                                    padding: 15
-                                }
-                            },
-                            tooltip: {
-                                usePointStyle: true,
-                                backgroundColor: 'rgba(17,24,39,0.9)',
-                                titleFont: {
-                                    size: 13,
-                                    weight: '600'
-                                },
-                                bodyFont: {
-                                    size: 12
-                                },
-                                cornerRadius: 8,
-                                padding: 10,
-                                displayColors: false,
-                                callbacks: {
-                                    label: function(context) {
-                                        const value = Number(context.parsed.y || 0);
-                                        return `${context.dataset.label}: ${formatRupiah(value)}`;
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                stacked: false,
-                                ticks: {
-                                    color: '#6B7280',
-                                    font: {
-                                        size: 11
-                                    },
-                                    maxRotation: 0,
-                                    autoSkip: true,
-                                    autoSkipPadding: 6
-                                },
-                                grid: {
-                                    display: false
-                                }
-                            },
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    color: '#6B7280',
-                                    font: {
-                                        size: 12
-                                    },
-                                    callback: function(value) {
-                                        return formatRupiah(value);
-                                    }
-                                },
-                                grid: {
-                                    color: '#E5E7EB',
-                                    drawBorder: false
-                                }
-                            }
+                            }]
                         }
                     }
                 });
@@ -1059,11 +943,216 @@
     @endif
 
 
+
+    @if (isset($barLabels))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const ctxBar = document.getElementById('report-bar-chart-daily').getContext('2d');
+                const chartHeight = ctxBar.canvas.clientHeight || 400;
+
+                // 🌈 Gradasi warna batang
+                const gradientIncomeBar = ctxBar.createLinearGradient(0, 0, 0, chartHeight);
+                gradientIncomeBar.addColorStop(0, 'rgba(28, 63, 170, 0.9)');
+                gradientIncomeBar.addColorStop(1, 'rgba(28, 63, 170, 0.2)');
+
+                const gradientExpenseBar = ctxBar.createLinearGradient(0, 0, 0, chartHeight);
+                gradientExpenseBar.addColorStop(0, 'rgba(220, 38, 38, 0.85)');
+                gradientExpenseBar.addColorStop(1, 'rgba(220, 38, 38, 0.2)');
+
+                // 🪙 Format Rupiah (versi fix untuk semua tipe data)
+                const formatRupiah = (num) => {
+                    if (num === null || num === undefined || isNaN(num)) return 'Rp 0';
+                    const number = parseFloat(num);
+                    return 'Rp ' + number.toLocaleString('id-ID', {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                    });
+                };
+
+                const formatSingkatID = (num) => {
+                    if (num >= 1000000000) return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + ' Miliar';
+                    if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + ' Juta';
+                    if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + ' Ribu';
+                    return num.toString();
+                };
+
+                let currentType = 'bar';
+
+                // 📊 Data Chart
+                const chartData = {
+                    labels: @json($barLabels),
+                    datasets: [{
+                            label: 'Income',
+                            data: @json($barIncome),
+                            borderWidth: currentType === 'line' ? 2 : 0,
+                            borderColor: '#1C3FAA',
+                            backgroundColor: gradientIncomeBar,
+                            tension: 0.35,
+                            fill: true,
+                            pointBackgroundColor: '#1C3FAA',
+                            pointRadius: 3,
+                            pointHoverRadius: 8,
+                            pointHoverBorderColor: '#fff',
+                            pointHoverBorderWidth: 2,
+                            shadowColor: 'rgba(28,63,170,0.3)',
+                            shadowBlur: 10,
+                            clip: false,
+                        },
+                        {
+                            label: 'Expense',
+                            data: @json($barExpense),
+                            borderWidth: currentType === 'line' ? 2 : 0,
+                            borderColor: '#DC2626',
+                            backgroundColor: gradientExpenseBar,
+                            tension: 0.35,
+                            fill: true,
+                            pointBackgroundColor: '#DC2626',
+                            pointRadius: 3,
+                            pointHoverRadius: 8,
+                            pointHoverBorderColor: '#fff',
+                            pointHoverBorderWidth: 2,
+                            clip: false,
+                        }
+                    ]
+                };
+
+                // ⚙️ Opsi Chart
+                const chartOptions = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    tooltips: { // ✅ Chart.js v2.9.3 pakai `tooltips`, bukan `plugins.tooltip`
+                        enabled: true,
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(17, 24, 39, 0.95)',
+                        titleFontSize: 14,
+                        titleFontStyle: 'bold',
+                        titleFontColor: '#fff',
+                        bodyFontSize: 13,
+                        bodyFontColor: '#fff',
+                        cornerRadius: 8,
+                        xPadding: 14,
+                        yPadding: 14,
+                        displayColors: true,
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                return '📅 ' + tooltipItems[0].xLabel;
+                            },
+                            label: function(tooltipItem, data) {
+                                const datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
+                                const value = tooltipItem.yLabel || 0;
+                                const icon = datasetLabel === 'Income' ? '💰' : '💸';
+                                return `${icon} ${datasetLabel}: ${formatRupiah(value)}`;
+                            }
+                        }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        align: 'end',
+                        labels: {
+                            fontColor: '#1F2937',
+                            fontSize: 14,
+                            fontStyle: '600',
+                            boxWidth: 20,
+                            boxHeight: 12,
+                            padding: 15,
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            ticks: {
+                                fontColor: '#6B7280',
+                                fontSize: 12,
+                                fontStyle: '500',
+                                maxRotation: 0,
+                                autoSkip: true,
+                                autoSkipPadding: 10
+                            },
+                            gridLines: {
+                                display: false
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                fontColor: '#6B7280',
+                                fontSize: 11,
+                                fontStyle: '500',
+                                maxTicksLimit: 6,
+                                padding: 10,
+                                callback: function(value) {
+                                    return formatSingkatID(
+                                        value); // ✅ Gunakan format singkat (K, M)
+                                }
+                            },
+                            gridLines: {
+                                color: 'rgba(229, 231, 235, 0.8)',
+                                drawBorder: false,
+                                lineWidth: 1
+                            }
+                        }]
+                    },
+                    layout: {
+                        padding: {
+                            top: 10,
+                            bottom: 10
+                        }
+                    }
+                };
+
+                // 📈 Chart awal
+                let currentChart = new Chart(ctxBar, {
+                    type: currentType,
+                    data: chartData,
+                    options: chartOptions
+                });
+
+                // 🔁 Fungsi ganti chart
+                function switchChart(newType) {
+                    if (currentType === newType) return;
+                    currentType = newType;
+                    currentChart.destroy();
+                    currentChart = new Chart(ctxBar, {
+                        type: newType,
+                        data: chartData,
+                        options: chartOptions
+                    });
+                }
+
+                // 🎚️ Tombol toggle
+                const barBtn = document.getElementById('barChartBtn');
+                const lineBtn = document.getElementById('lineChartBtn');
+
+                barBtn.addEventListener('click', () => {
+                    barBtn.classList.remove('bg-transparent', 'text-gray-700');
+                    barBtn.classList.add('bg-blue-600', 'text-white');
+                    lineBtn.classList.remove('bg-blue-600', 'text-white');
+                    lineBtn.classList.add('bg-transparent', 'text-gray-700');
+                    switchChart('bar');
+                });
+
+                lineBtn.addEventListener('click', () => {
+                    lineBtn.classList.remove('bg-transparent', 'text-gray-700');
+                    lineBtn.classList.add('bg-blue-600', 'text-white');
+                    barBtn.classList.remove('bg-blue-600', 'text-white');
+                    barBtn.classList.add('bg-transparent', 'text-gray-700');
+                    switchChart('line');
+                });
+            });
+        </script>
+    @endif
+
+
+
+
     @if (isset($expenseLabels) && count($expenseLabels) > 0)
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const pieLabels = @json($expenseLabels);
-                const pieData = @json($expenseData);
+                const pieData = @json($expenseData).map(v => Number(v)); // pastikan angka
                 const pieColors = @json($expenseColors);
                 const chartElement = document.getElementById('report-pie-chart-rechive-hub');
 
@@ -1078,7 +1167,7 @@
 
                 const ctxPie = chartElement.getContext('2d');
 
-                // --- PERBAIKAN FORMAT RUPIAH ---
+                // --- FORMAT RUPIAH UNTUK INDONESIA ---
                 const rupiahFormatter = new Intl.NumberFormat('id-ID', {
                     style: 'currency',
                     currency: 'IDR',
@@ -1087,10 +1176,10 @@
                 });
 
                 const formatRupiah = (num) => {
-                    if (isNaN(num)) return 'Rp 0';
-                    return rupiahFormatter.format(num);
+                    const val = Number(num);
+                    if (isNaN(val)) return 'Rp 0';
+                    return rupiahFormatter.format(val);
                 };
-                // --- SELESAI PERBAIKAN ---
 
                 new Chart(ctxPie, {
                     type: 'pie',
@@ -1109,56 +1198,24 @@
                         maintainAspectRatio: false,
                         animation: {
                             animateRotate: true,
-                            animateScale: true,
-                            duration: 1200,
-                            easing: 'easeOutCubic'
+                            animateScale: true
                         },
-                        plugins: {
-                            title: {
-                                // --- 1. JUDUL CHART (SUDAH DI-HIDDEN) ---
-                                display: false,
-                                text: 'Ringkasan Pengeluaran Bulanan',
-                                font: {
-                                    size: 18,
-                                    weight: '600'
-                                },
-                                color: '#1C3FAA',
-                                padding: {
-                                    top: 10,
-                                    bottom: 20
-                                }
-                            },
-                            legend: {
-                                // --- 2. LEGEND (DI-HIDDEN SESUAI PERMINTAAN BARU) ---
-                                display: false, // <-- DIUBAH MENJADI FALSE
-                                position: 'bottom',
-                                labels: {
-                                    usePointStyle: true,
-                                    padding: 16,
-                                    color: '#374151',
-                                    font: {
-                                        size: 12
-                                    }
-                                }
-                            },
-                            tooltip: {
-                                backgroundColor: 'rgba(17,24,39,0.9)',
-                                titleFont: {
-                                    size: 13,
-                                    weight: '600'
-                                },
-                                bodyFont: {
-                                    size: 12
-                                },
-                                cornerRadius: 8,
-                                padding: 10,
-                                displayColors: true,
-                                callbacks: {
-                                    label: (context) => {
-                                        const value = context.raw || 0;
-                                        // --- 3. FORMAT RUPIAH (SUDAH DIPERBAIKI) ---
-                                        return `${context.label}: ${formatRupiah(value)}`;
-                                    }
+
+                        tooltips: {
+                            backgroundColor: 'rgba(17,24,39,0.9)',
+                            titleFontSize: 13,
+                            titleFontStyle: '600',
+                            bodyFontSize: 12,
+                            cornerRadius: 8,
+                            xPadding: 10,
+                            yPadding: 10,
+                            displayColors: true,
+                            callbacks: {
+                                label: function(tooltipItem, data) {
+                                    const label = data.labels[tooltipItem.index] || '';
+                                    const value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem
+                                        .index] || 0;
+                                    return label + ': ' + formatRupiah(value);
                                 }
                             }
                         }
@@ -1167,6 +1224,7 @@
             });
         </script>
     @endif
+
     <script>
         document.addEventListener("DOMContentLoaded", checkBiometric);
 
