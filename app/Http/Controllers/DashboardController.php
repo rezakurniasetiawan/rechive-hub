@@ -12,6 +12,7 @@ use App\Models\Finance\{
     FinanceMonthlyBalance,
     FinanceTransaction
 };
+use App\Models\Reminder\Reminders;
 
 class DashboardController extends Controller
 {
@@ -159,6 +160,7 @@ class DashboardController extends Controller
                 'expense_amount' => $item->expense_amount ?? 0,
             ];
         }
+        $primaryReminder = Reminders::where('is_primary', true)->first();
 
 
         // ========================= Render View ========================== //
@@ -185,7 +187,8 @@ class DashboardController extends Controller
                 'todayExpensesCount',
                 'monthExpensesCount',
                 'todayExpensesTotal',
-                'monthlyExpensesData'
+                'monthlyExpensesData',
+                'primaryReminder'
             ))->render()
         ]);
     }

@@ -53,6 +53,14 @@
                    </li>
                </ul>
            </li>
+           {{-- Reminder --}}
+           <li>
+               <a href="{{ route('reminders.index') }}"
+                   class="side-menu  {{ request()->routeIs('reminders.*') ? 'side-menu--active' : '' }}">
+                   <div class="side-menu__icon"> <i data-feather="bell"></i> </div>
+                   <div class="side-menu__title"> Reminders </div>
+               </a>
+           </li>
            {{-- User --}}
            <li>
                <a href="{{ route('users.index') }}"
@@ -60,7 +68,8 @@
                    <div class="side-menu__icon"> <i data-feather="users"></i> </div>
                    <div class="side-menu__title"> Users </div>
                </a>
-           </li> {{-- 🧑‍💼 Pekerjaan & Proyek --}}
+           </li>
+           {{-- 🧑‍💼 Pekerjaan & Proyek --}}
            {{-- <li>
                <a href="javascript:;" class="side-menu">
                    <div class="side-menu__icon"><i data-feather="briefcase"></i></div>

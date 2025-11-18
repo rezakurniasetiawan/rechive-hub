@@ -9,6 +9,7 @@ use App\Http\Controllers\Finance\{
     FinanceTransactionController,
     FundTransferController
 };
+use App\Http\Controllers\Reminder\RemindersController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\WebAuthnController;
 
@@ -73,6 +74,17 @@ Route::middleware('auth:sanctum')->group(function () {
         });
     });
 
+    Route::controller(RemindersController::class)->group(function () {
+        Route::get('/reminders', 'index')->name('reminders.index');
+        Route::get('/reminders/create', 'create')->name('reminders.create');
+        Route::post('/reminders/store', 'store')->name('reminders.store');
+        Route::get('/reminders/update/{id}', 'edit')->name('reminders.edit');
+        Route::post('/reminders/edit/{id}', 'update')->name('reminders.update');
+        Route::delete('/reminders/delete/{id}', 'destroy')->name('reminders.destroy');
+        Route::post('/reminders/restore/{id}', 'restore')->name('reminders.restore');
+        Route::delete('/reminders/force-delete/{id}', 'forceDelete')->name('reminders.forceDelete');
+        Route::post('/reminders/toggle-primary/{id}', 'togglePrimary')->name('reminders.togglePrimary');
+    });
 
     Route::controller(UserController::class)->group(function () {
         Route::get('/users', 'index')->name('users.index');
