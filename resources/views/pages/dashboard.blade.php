@@ -6,10 +6,10 @@
             <p class="text-gray-600 text-sm mb-4">{{ $primaryReminder->description }}</p>
 
             <div class="text-2xl font-semibold mb-4">
-                <span x-text="time.days"></span>d :
-                <span x-text="time.hours"></span>h :
-                <span x-text="time.minutes"></span>m :
-                <span x-text="time.seconds"></span>s
+                <span x-text="time.days"></span>Hari :
+                <span x-text="time.hours"></span>Jam :
+                <span x-text="time.minutes"></span>Menit :
+                <span x-text="time.seconds"></span>Detik
             </div>
 
             <button @click="open = false"
