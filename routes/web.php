@@ -10,8 +10,10 @@ use App\Http\Controllers\Finance\{
     FundTransferController
 };
 use App\Http\Controllers\Reminder\RemindersController;
+use App\Http\Controllers\SPIManager\SPIManagerLinkController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\WebAuthnController;
+use Termwind\Components\Raw;
 
 // Auth Routes
 Route::controller(AuthController::class)->group(function () {
@@ -74,6 +76,7 @@ Route::middleware('auth:sanctum')->group(function () {
         });
     });
 
+    // Reminder Routes
     Route::controller(RemindersController::class)->group(function () {
         Route::get('/reminders', 'index')->name('reminders.index');
         Route::get('/reminders/create', 'create')->name('reminders.create');
@@ -85,6 +88,19 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/reminders/force-delete/{id}', 'forceDelete')->name('reminders.forceDelete');
         Route::post('/reminders/toggle-primary/{id}', 'togglePrimary')->name('reminders.togglePrimary');
     });
+
+    Route::prefix('spi')->name('spi.')->group(function () {
+        Route::prefix('content')->name('content.')->controller(SPIManagerLinkController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/bulkCreate', 'bulkCreate')->name('bulkCreate');
+            Route::post('/bulk-store', 'bulkStore')->name('bulkStore');
+            Route::get('/copy-link/{id}', 'copyLink')->name('copyLink');
+            Route::get('/mark-as-used/{id}', 'markAsUsed')->name('markAsUsed');
+        });
+    });
+
 
     Route::controller(UserController::class)->group(function () {
         Route::get('/users', 'index')->name('users.index');

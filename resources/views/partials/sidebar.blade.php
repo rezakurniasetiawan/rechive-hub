@@ -53,6 +53,25 @@
                    </li>
                </ul>
            </li>
+
+           {{-- SPI Manager --}}
+           <li>
+               <a href="javascript:;"
+                   class="side-menu {{ request()->routeIs('spi.*') ? 'side-menu--active side-menu--open' : '' }}">
+                   <div class="side-menu__icon"> <i data-feather="link"></i> </div>
+                   <div class="side-menu__title"> SPI Manager <i data-feather="chevron-down"
+                           class="side-menu__sub-icon"></i> </div>
+               </a>
+               <ul class="{{ request()->routeIs('spi.*') ? 'side-menu__sub-open' : '' }}">
+                   <li>
+                       <a href="{{ route('spi.content.index') }}"
+                           class="side-menu {{ request()->routeIs('spi.content.*') ? 'side-menu--active' : '' }}">
+                           <div class="side-menu__icon"> <i data-feather="link-2"></i> </div>
+                           <div class="side-menu__title"> Link Content </div>
+                       </a>
+                   </li>
+               </ul>
+           </li>
            {{-- Reminder --}}
            <li>
                <a href="{{ route('reminders.index') }}"
