@@ -25,4 +25,9 @@ class FinanceCategory extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function financeSubCategories()
+    {
+        return $this->hasMany(FinanceSubCategory::class, 'finance_category_id');
+    }
 }

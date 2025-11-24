@@ -21,6 +21,8 @@ class FinanceTransactionController extends Controller
         // 🔍 Ambil parameter pencarian & filter
         $search      = trim($request->input('search'));
         $categoryId  = $request->input('category');
+        
+        
 
         // 📂 Ambil semua kategori untuk dropdown filter
         $categories = FinanceCategory::select('id', 'name')->orderBy('name')->get();
@@ -77,6 +79,7 @@ class FinanceTransactionController extends Controller
         $totalExpense  = $summary->total_expense  ?? 0;
         $totalTransfer = $transfer->total_transfer ?? 0;
         $netBalance    = $totalIncome - $totalExpense;
+        
 
         // 📄 Render ke view
         return view('layouts.app', [
@@ -210,6 +213,110 @@ class FinanceTransactionController extends Controller
                 ->with('error', 'An unexpected error occurred: ' . $e->getMessage());
         }
     }
+
+    public function destroy($id)
+    {
+        try {
+            $transaction = FinanceTransaction::findOrFail($id);
+            $userId = Auth::id();
+
+            // Cegah user lain menghapus transaksi yang bukan miliknya
+            if ($transaction->created_by != $userId) {
+                return back()->with('error', 'Unauthorized to delete this transaction.');
+            }
+
+            $account = FinanceAccount::findOrFail($transaction->finance_account_id);
+            $type = FinanceType::findOrFail($transaction->finance_type_id);
+
+            $isExpense = strtolower($type->name) === 'expense';
+            $isIncome  = strtolower($type->name) === 'income';
+
+            $amount = $transaction->amount;
+            $date   = \Carbon\Carbon::parse($transaction->date);
+
+            // ============================
+            // 🔄 Kembalikan Saldo Akun
+            // ============================
+            if ($isExpense) {
+                // Expense sebelumnya mengurangi saldo → kembalikan
+                $account->balance += $amount;
+            } elseif ($isIncome) {
+                // Income sebelumnya menambah saldo → kurangi
+                if ($account->balance < $amount) {
+                    return back()->with('error', 'Saldo akun tidak cukup untuk menghapus transaksi ini.');
+                }
+                $account->balance -= $amount;
+            }
+
+            $account->save();
+
+            // ============================
+            // 🔢 Update Summary Table
+            // ============================
+
+            $year  = $date->year;
+            $month = $date->month;
+            $week  = $date->weekOfYear;
+
+            // --- DAILY ---
+            $daily = FinanceDailyBalance::where('date', $date->toDateString())
+                ->where('created_by', $userId)
+                ->first();
+
+            if ($daily) {
+                if ($isIncome)  $daily->income_total  -= $amount;
+                if ($isExpense) $daily->expense_total -= $amount;
+                $daily->save();
+            }
+
+            // --- WEEKLY ---
+            $weekly = FinanceWeeklyBalance::where('year', $year)
+                ->where('week', $week)
+                ->where('created_by', $userId)
+                ->first();
+
+            if ($weekly) {
+                if ($isIncome)  $weekly->income_total  -= $amount;
+                if ($isExpense) $weekly->expense_total -= $amount;
+                $weekly->save();
+            }
+
+            // --- MONTHLY ---
+            $monthly = FinanceMonthlyBalance::where('year', $year)
+                ->where('month', $month)
+                ->where('created_by', $userId)
+                ->first();
+
+            if ($monthly) {
+                if ($isIncome)  $monthly->income_total  -= $amount;
+                if ($isExpense) $monthly->expense_total -= $amount;
+                $monthly->save();
+            }
+
+            // --- YEARLY ---
+            $yearly = FinanceYearlyBalance::where('year', $year)
+                ->where('created_by', $userId)
+                ->first();
+
+            if ($yearly) {
+                if ($isIncome)  $yearly->income_total  -= $amount;
+                if ($isExpense) $yearly->expense_total -= $amount;
+                $yearly->save();
+            }
+
+            // ============================
+            // 🗑 Hapus Transaksi
+            // ============================
+            $transaction->delete();
+
+            return redirect()->route('finance.transaction.index')
+                ->with('success', 'Transaction successfully deleted and balance restored.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to delete transaction: ' . $e->getMessage());
+        }
+    }
+
 
 
     // Transsaction

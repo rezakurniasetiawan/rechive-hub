@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Finance\{
     FinanceAccountController,
     FinanceCategoryController,
+    FinanceSubCategoryController,
     FinanceTransactionController,
     FundTransferController
 };
@@ -58,7 +59,16 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/update/{id}', 'update')->name('update');
             Route::post('/edit/{id}', 'edit')->name('edit');
             Route::delete('/delete/{id}', 'destroy')->name('destroy');
+
+            // Finance Sub Category
+            Route::get('/{id}/sub', 'subIndex')->name('sub.index');
+            Route::get('/{id}/sub/create', 'subCreate')->name('sub.create');
+            Route::post('/{id}/sub/store', 'subStore')->name('sub.store');
+            Route::get('/{categoryId}/sub/update/{subId}', 'subUpdate')->name('sub.update');
+            Route::post('/{categoryId}/sub/edit/{subId}', 'subEdit')->name('sub.edit');
+            Route::delete('/{categoryId}/sub/delete/{subId}', 'subDestroy')->name('sub.destroy');
         });
+
         // Transaction Routes
         Route::prefix('transaction')->name('transaction.')->controller(FinanceTransactionController::class)->group(function () {
             Route::get('/', 'index')->name('index');

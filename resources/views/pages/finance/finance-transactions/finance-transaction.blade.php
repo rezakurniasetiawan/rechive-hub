@@ -49,6 +49,13 @@
                         data-feather="chevron-down"></i>
                 </div>
 
+                {{-- Button filter today --}}
+                <button type="submit" name="filter" value="today"
+                    class="button px-4 py-2 bg-theme-1 text-white rounded-md">
+                    Today
+                </button>
+
+
                 {{-- Search Input --}}
                 <div class="w-56 relative text-gray-700">
                     <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
@@ -125,6 +132,7 @@
                     <th class="text-center whitespace-nowrap">Amount</th>
                     <th class="text-center whitespace-nowrap">Description</th>
                     <th class="text-center whitespace-nowrap">Date & Time</th>
+                    <th class="text-center whitespace-nowrap">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -237,6 +245,14 @@
                                 </span>
                             </div>
                         </td>
+
+                        <td class="table-report__action w-10 text-center">
+                            <button onclick="openDeleteModal({{ $item->id }})"
+                                class="flex items-center text-theme-6 tooltip cursor-pointer" title="Delete">
+                                <i data-feather="trash" class="w-4 h-4"></i>
+                            </button>
+                        </td>
+
                     </tr>
                 @endforeach
             </tbody>
@@ -258,17 +274,28 @@
 <!-- BEGIN: Delete Confirmation Modal -->
 <div class="modal" id="delete-confirmation-modal">
     <div class="modal__content">
-        <div class="p-5 text-center">
-            <i data-feather="x-circle" class="w-16 h-16 text-theme-6 mx-auto mt-3"></i>
-            <div class="text-2xl font-semibold mt-5">Are you sure?</div>
-            <div class="text-gray-600 mt-2 text-sm">
-                Do you really want to delete this transaction? <br>This action cannot be undone.
+        <form id="deleteForm" method="POST" action="">
+            @csrf
+            @method('DELETE')
+
+            <div class="p-5 text-center">
+                <i data-feather="x-circle" class="w-16 h-16 text-theme-6 mx-auto mt-3"></i>
+                <div class="text-2xl font-semibold mt-5">Are you sure?</div>
+                <div class="text-gray-600 mt-2 text-sm">
+                    Do you really want to delete this transaction?<br>This action cannot be undone.
+                </div>
             </div>
-        </div>
-        <div class="px-5 pb-8 text-center">
-            <button type="button" data-dismiss="modal" class="button w-24 border text-gray-700 mr-1">Cancel</button>
-            <button type="button" class="button w-24 bg-theme-6 text-white">Delete</button>
-        </div>
+
+            <div class="px-5 pb-8 text-center">
+                <button type="button" data-dismiss="modal" class="button w-24 border text-gray-700 mr-1">
+                    Cancel
+                </button>
+
+                <button type="submit" class="button w-24 bg-theme-6 text-white">
+                    Delete
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 <!-- END: Delete Confirmation Modal -->
@@ -294,4 +321,15 @@
             }, 500);
         });
     });
+</script>
+
+
+<script>
+    function openDeleteModal(id) {
+        const form = document.getElementById('deleteForm');
+        const baseUrl = "{{ url('finance/transaction/delete') }}";
+        form.action = baseUrl + "/" + id;
+
+        $('#delete-confirmation-modal').modal('show'); // ← gunakan ini
+    }
 </script>
