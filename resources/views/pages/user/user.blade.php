@@ -37,6 +37,8 @@
                   <tr>
                       <th class="whitespace-no-wrap">Name</th>
                       <th class="text-center whitespace-no-wrap">Email</th>
+                      <th class="text-center whitespace-no-wrap">Role</th>
+                      <th class="text-center whitespace-no-wrap">Create Date</th>
                       <th class="text-center whitespace-no-wrap">Actions</th>
                   </tr>
               </thead>
@@ -47,6 +49,8 @@
                               <div class="font-medium whitespace-no-wrap">{{ $user->name }}</div>
                           </td>
                           <td class="text-center">{{ $user->email }}</td>
+                          <td class="text-center">{{ $user->role }}</td>
+                          <td class="text-center">{{ $user->created_at->format('d M Y') }}</td>
                           <td class="table-report__action w-56">
 
                               @if ($user->id != 1)

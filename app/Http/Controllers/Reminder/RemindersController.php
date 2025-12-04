@@ -9,19 +9,31 @@ use Illuminate\Support\Facades\Auth;
 
 class RemindersController extends Controller
 {
-
     public function index()
     {
+        $userId = Auth::id();
         $perPage = 5;
 
-        $activeReminders = Reminders::where('status', 'active')->orderBy('updated_at', 'desc')->paginate($perPage, ['*'], 'activePage');
-        $completedReminders = Reminders::where('status', 'completed')->orderBy('updated_at', 'desc')->paginate($perPage, ['*'], 'completedPage');
-        $deletedReminders = Reminders::where('status', 'deleted')->orderBy('updated_at', 'desc')->paginate($perPage, ['*'], 'deletedPage');
+        $activeReminders = Reminders::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->where('status', 'active')
+            ->orderBy('updated_at', 'desc')
+            ->paginate($perPage, ['*'], 'activePage');
+
+        $completedReminders = Reminders::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->where('status', 'completed')
+            ->orderBy('updated_at', 'desc')
+            ->paginate($perPage, ['*'], 'completedPage');
+
+        $deletedReminders = Reminders::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->where('status', 'deleted')
+            ->orderBy('updated_at', 'desc')
+            ->paginate($perPage, ['*'], 'deletedPage');
 
         return view('layouts.app', [
             'content' => view('pages.reminders.reminder', compact('activeReminders', 'completedReminders', 'deletedReminders'))->render()
         ]);
     }
+
     public function create()
     {
         return view('layouts.app', [
@@ -41,12 +53,12 @@ class RemindersController extends Controller
         ]);
 
         Reminders::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'target_date' => $request->target_date,
-            'category' => $request->category,
-            'repeat_type' => $request->repeat_type,
-            'notify_before_hours' => $request->notify_before_hours,
+            'title' => $validated['title'],
+            'description' => $validated['description'] ?? null,
+            'target_date' => $validated['target_date'],
+            'category' => $validated['category'],
+            'repeat_type' => $validated['repeat_type'],
+            'notify_before_hours' => $validated['notify_before_hours'],
             'status' => 'active',
             'is_primary' => false,
             'created_by'  => Auth::id(),
@@ -55,10 +67,18 @@ class RemindersController extends Controller
         return redirect()->route('reminders.index')->with('success', 'Reminder created successfully.');
     }
 
-    // delete reminder
+    // soft-delete -> set status = deleted
     public function destroy($id)
     {
-        $reminder = Reminders::findOrFail($id);
+        $userId = Auth::id();
+
+        $reminder = Reminders::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->find($id);
+
+        if (! $reminder) {
+            return redirect()->route('reminders.index')->with('error', 'Reminder not found or unauthorized.');
+        }
+
         $reminder->status = 'deleted';
         $reminder->updated_at = now();
         $reminder->save();
@@ -66,10 +86,18 @@ class RemindersController extends Controller
         return redirect()->route('reminders.index')->with('success', 'Reminder deleted successfully.');
     }
 
-    // restore reminder
+    // restore reminder (set status = active)
     public function restore($id)
     {
-        $reminder = Reminders::findOrFail($id);
+        $userId = Auth::id();
+
+        $reminder = Reminders::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->find($id);
+
+        if (! $reminder) {
+            return redirect()->route('reminders.index')->with('error', 'Reminder not found or unauthorized.');
+        }
+
         $reminder->status = 'active';
         $reminder->updated_at = now();
         $reminder->save();
@@ -77,23 +105,40 @@ class RemindersController extends Controller
         return redirect()->route('reminders.index')->with('success', 'Reminder restored successfully.');
     }
 
-    // force delete reminder
+    // force delete reminder (permanent)
     public function forceDelete($id)
     {
-        $reminder = Reminders::findOrFail($id);
+        $userId = Auth::id();
+
+        $reminder = Reminders::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->find($id);
+
+        if (! $reminder) {
+            return redirect()->route('reminders.index')->with('error', 'Reminder not found or unauthorized.');
+        }
+
         $reminder->delete();
 
         return redirect()->route('reminders.index')->with('success', 'Reminder permanently deleted successfully.');
     }
 
-    // togglePrimary
+    // togglePrimary (only affects reminders of the same user)
     public function togglePrimary($id)
     {
-        $reminder = Reminders::findOrFail($id);
+        $userId = Auth::id();
 
-        if (!$reminder->is_primary) {
-            // Set all other reminders to not primary
-            Reminders::where('is_primary', true)->update(['is_primary' => false]);
+        $reminder = Reminders::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->find($id);
+
+        if (! $reminder) {
+            return redirect()->route('reminders.index')->with('error', 'Reminder not found or unauthorized.');
+        }
+
+        if (! $reminder->is_primary) {
+            // Set all other reminders of this user to not primary
+            Reminders::when($userId, fn($q) => $q->where('created_by', $userId))
+                ->where('is_primary', true)
+                ->update(['is_primary' => false]);
 
             // Set this reminder as primary
             $reminder->is_primary = true;

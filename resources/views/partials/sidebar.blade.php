@@ -55,7 +55,7 @@
            </li>
 
            {{-- SPI Manager --}}
-           <li>
+           {{-- <li>
                <a href="javascript:;"
                    class="side-menu {{ request()->routeIs('spi.*') ? 'side-menu--active side-menu--open' : '' }}">
                    <div class="side-menu__icon"> <i data-feather="link"></i> </div>
@@ -71,7 +71,7 @@
                        </a>
                    </li>
                </ul>
-           </li>
+           </li> --}}
            {{-- Reminder --}}
            <li>
                <a href="{{ route('reminders.index') }}"
@@ -81,14 +81,15 @@
                </a>
            </li>
            {{-- User --}}
-           <li>
-               <a href="{{ route('users.index') }}"
-                   class="side-menu  {{ request()->routeIs('users.*') ? 'side-menu--active' : '' }}">
-                   <div class="side-menu__icon"> <i data-feather="users"></i> </div>
-                   <div class="side-menu__title"> Users </div>
-               </a>
-           </li>
-           {{-- 🧑‍💼 Pekerjaan & Proyek --}}
+           @if (auth()->user()->role === 'admin')
+               <li>
+                   <a href="{{ route('users.index') }}"
+                       class="side-menu  {{ request()->routeIs('users.*') ? 'side-menu--active' : '' }}">
+                       <div class="side-menu__icon"> <i data-feather="users"></i> </div>
+                       <div class="side-menu__title"> Users </div>
+                   </a>
+               </li>
+           @endif {{-- 🧑‍💼 Pekerjaan & Proyek --}}
            {{-- <li>
                <a href="javascript:;" class="side-menu">
                    <div class="side-menu__icon"><i data-feather="briefcase"></i></div>

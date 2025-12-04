@@ -13,26 +13,29 @@ use App\Models\Finance\FinanceDailyBalance;
 use App\Models\Finance\FinanceWeeklyBalance;
 use App\Models\Finance\FinanceYearlyBalance;
 use App\Models\Finance\FinanceMonthlyBalance;
+use App\Models\Finance\FundTransfer;
 
 class FinanceTransactionController extends Controller
 {
     public function index(Request $request)
     {
+        $userId     = Auth::id();
         // 🔍 Ambil parameter pencarian & filter
         $search      = trim($request->input('search'));
         $categoryId  = $request->input('category');
-        
-        
 
-        // 📂 Ambil semua kategori untuk dropdown filter
-        $categories = FinanceCategory::select('id', 'name')->orderBy('name')->get();
+        // 📂 Ambil semua kategori untuk dropdown filter (scoped to user if logged)
+        $categories = FinanceCategory::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->select('id', 'name')
+            ->orderBy('name')
+            ->get();
 
-        // 📊 Query utama transaksi keuangan
+        // 📊 Query utama transaksi keuangan (scoped)
         $query = FinanceTransaction::with([
             'financeAccount:id,bank_name,logo',
             'financeCategory:id,name',
             'financeType:id,name,label',
-        ]);
+        ])->when($userId, fn($q) => $q->where('created_by', $userId));
 
         // 🔎 Filter pencarian global
         if (!empty($search)) {
@@ -64,22 +67,22 @@ class FinanceTransactionController extends Controller
                 'category' => $categoryId,
             ]);
 
-        // 💰 Summary global dari FinanceMonthlyBalance (lebih ringan)
-        $summary = \App\Models\Finance\FinanceMonthlyBalance::selectRaw('
-        SUM(income_total) as total_income,
-        SUM(expense_total) as total_expense
-        ')->first();
+        // 💰 Summary global dari FinanceMonthlyBalance (scoped)
+        $summaryQuery = FinanceMonthlyBalance::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->selectRaw('SUM(income_total) as total_income, SUM(expense_total) as total_expense');
 
-        //FundTransfer
-        $transfer = \App\Models\Finance\FundTransfer::selectRaw('
-        SUM(amount) as total_transfer
-        ')->first();
+        $summary = $summaryQuery->first();
+
+        // FundTransfer (scoped)
+        $transferQuery = FundTransfer::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->selectRaw('SUM(amount) as total_transfer');
+
+        $transfer = $transferQuery->first();
 
         $totalIncome   = $summary->total_income   ?? 0;
         $totalExpense  = $summary->total_expense  ?? 0;
         $totalTransfer = $transfer->total_transfer ?? 0;
         $netBalance    = $totalIncome - $totalExpense;
-        
 
         // 📄 Render ke view
         return view('layouts.app', [
@@ -96,15 +99,13 @@ class FinanceTransactionController extends Controller
         ]);
     }
 
-
-
-
-
     public function create()
     {
+        $userId = Auth::id();
+
         $financeTypes = FinanceType::whereRaw('LOWER(name) IN (?, ?)', ['income', 'expense'])->get();
-        $financeAccounts = FinanceAccount::all();
-        $financeCategories = FinanceCategory::inRandomOrder()->get();
+        $financeAccounts = FinanceAccount::when($userId, fn($q) => $q->where('created_by', $userId))->get();
+        $financeCategories = FinanceCategory::when($userId, fn($q) => $q->where('created_by', $userId))->inRandomOrder()->get();
 
         return view('layouts.app', [
             'content' => view('pages.finance.finance-transactions.finance-transaction-create', compact('financeAccounts', 'financeCategories', 'financeTypes'))->render()
@@ -145,14 +146,14 @@ class FinanceTransactionController extends Controller
             }
             $account->save();
 
-            // 🧾 Simpan transaksi
+            // 🧾 Simpan transaksi (sertakan created_by)
             FinanceTransaction::create([
                 ...$validated,
                 'created_by' => $userId,
             ]);
 
             // ======================
-            // 🔢 Update Summary Table
+            // 🔢 Update Summary Table (semua menyertakan created_by)
             // ======================
 
             $incomeField = $isIncome ? 'income_total' : null;
@@ -238,10 +239,10 @@ class FinanceTransactionController extends Controller
             // 🔄 Kembalikan Saldo Akun
             // ============================
             if ($isExpense) {
-                // Expense sebelumnya mengurangi saldo → kembalikan
+                // Expense previously reduced balance → restore
                 $account->balance += $amount;
             } elseif ($isIncome) {
-                // Income sebelumnya menambah saldo → kurangi
+                // Income previously increased balance → subtract
                 if ($account->balance < $amount) {
                     return back()->with('error', 'Saldo akun tidak cukup untuk menghapus transaksi ini.');
                 }
@@ -251,7 +252,7 @@ class FinanceTransactionController extends Controller
             $account->save();
 
             // ============================
-            // 🔢 Update Summary Table
+            // 🔢 Update Summary Table (scoped by created_by)
             // ============================
 
             $year  = $date->year;
@@ -317,17 +318,16 @@ class FinanceTransactionController extends Controller
         }
     }
 
-
-
-    // Transsaction
+    // Transsaction (UI)
     public function transaction()
     {
+        $userId = Auth::id();
+
         $financeTypes = FinanceType::whereRaw('LOWER(name) IN (?, ?)', ['income', 'expense'])->get();
-        $financeAccounts = FinanceAccount::all();
-        $financeCategories = FinanceCategory::inRandomOrder()->get();
+        $financeAccounts = FinanceAccount::when($userId, fn($q) => $q->where('created_by', $userId))->get();
+        $financeCategories = FinanceCategory::when($userId, fn($q) => $q->where('created_by', $userId))->inRandomOrder()->get();
         return view('transactions', compact('financeAccounts', 'financeCategories', 'financeTypes'));
     }
-
 
     public function transactionStore(Request $request)
     {
@@ -363,14 +363,14 @@ class FinanceTransactionController extends Controller
             }
             $account->save();
 
-            // 🧾 Simpan transaksi
+            // 🧾 Simpan transaksi (sertakan created_by)
             FinanceTransaction::create([
                 ...$validated,
                 'created_by' => $userId,
             ]);
 
             // ======================
-            // 🔢 Update Summary Table
+            // 🔢 Update Summary Table (semua menyertakan created_by)
             // ======================
 
             $incomeField = $isIncome ? 'income_total' : null;

@@ -13,6 +13,7 @@ use App\Models\Finance\{
     FinanceTransaction
 };
 use App\Models\Reminder\Reminders;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -23,6 +24,9 @@ class DashboardController extends Controller
         $currentDate  = now();
         $currentYear  = $currentDate->year;
         $currentMonth = $currentDate->month;
+
+        // Auth user id (nullable). When present, we'll scope queries to created_by = $userId
+        $userId = Auth::id();
 
         // If user passed period (preferred) or legacy month/year, override current values
         $period = $request->get('period'); // expected format: YYYY-MM
@@ -61,10 +65,13 @@ class DashboardController extends Controller
         // -------------------------------------------------------------------------
 
         // ========================= Total Balance ========================== //
-        $totalBalance = FinanceAccount::sum('balance');
+        // scope to user's accounts if $userId exists
+        $totalBalance = FinanceAccount::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->sum('balance');
 
         // ========================= Income & Expense (Current Month) ========================== //
-        $monthlyBalance = FinanceMonthlyBalance::where('year', $currentYear)
+        $monthlyBalance = FinanceMonthlyBalance::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->where('year', $currentYear)
             ->where('month', str_pad($currentMonth, 2, '0', STR_PAD_LEFT))
             ->first();
 
@@ -75,7 +82,8 @@ class DashboardController extends Controller
         $lastMonth = $currentMonth === 1 ? 12 : $currentMonth - 1;
         $lastYear  = $currentMonth === 1 ? $currentYear - 1 : $currentYear;
 
-        $lastMonthlyBalance = FinanceMonthlyBalance::where('year', $lastYear)
+        $lastMonthlyBalance = FinanceMonthlyBalance::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->where('year', $lastYear)
             ->where('month', str_pad($lastMonth, 2, '0', STR_PAD_LEFT))
             ->first();
 
@@ -92,7 +100,8 @@ class DashboardController extends Controller
         $netFlowGrowth = $this->calculateGrowth($netFlow, $netFlowLast);
 
         // ========================= Line Chart Data (Full Year) ========================== //
-        $balances = FinanceMonthlyBalance::where('year', $currentYear)
+        $balances = FinanceMonthlyBalance::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->where('year', $currentYear)
             ->get(['month', 'income_total', 'expense_total'])
             ->keyBy('month');
 
@@ -107,7 +116,8 @@ class DashboardController extends Controller
         }
 
         // ========================= Bar Chart Data (Current Month by Date) ========================== //
-        $dailyBalances = FinanceDailyBalance::whereYear('date', $currentYear)
+        $dailyBalances = FinanceDailyBalance::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->whereYear('date', $currentYear)
             ->whereMonth('date', $currentMonth)
             ->get(['date', 'income_total', 'expense_total'])
             ->keyBy(fn($item) => Carbon::parse($item->date)->day);
@@ -124,18 +134,20 @@ class DashboardController extends Controller
         }
 
         // ========================= Last 5 Transactions ========================== //
-        $lastTransaction = FinanceTransaction::with([
-            'financeAccount:id,bank_name,logo',
-            'financeCategory:id,name',
-            'financeType:id,name,label'
-        ])
+        $lastTransaction = FinanceTransaction::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->with([
+                'financeAccount:id,bank_name,logo',
+                'financeCategory:id,name',
+                'financeType:id,name,label'
+            ])
             ->orderBy('date', 'desc')
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();
 
         // ========================= Expense by Category (Pie Chart) ========================== //
-        $expenseByCategoryData = FinanceTransaction::selectRaw('finance_category_id, SUM(amount) as total_expense')
+        $expenseByCategoryData = FinanceTransaction::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->selectRaw('finance_category_id, SUM(amount) as total_expense')
             ->where('finance_type_id', 2) // 2 = Expense
             ->whereYear('date', $currentYear)
             ->whereMonth('date', $currentMonth)
@@ -157,21 +169,25 @@ class DashboardController extends Controller
 
 
         // Today's expenses transaction excluded length
-        $todayExpensesCount = FinanceTransaction::where('finance_type_id', 2)
+        $todayExpensesCount = FinanceTransaction::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->where('finance_type_id', 2)
             ->whereDate('date', $currentDate->toDateString())
             ->count();
 
-        $todayExpensesTotal = FinanceTransaction::where('finance_type_id', 2)
+        $todayExpensesTotal = FinanceTransaction::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->where('finance_type_id', 2)
             ->whereDate('date', $currentDate->toDateString())
             ->sum('amount');
 
         // Month Excluded length
-        $monthExpensesCount = FinanceTransaction::where('finance_type_id', 2)
+        $monthExpensesCount = FinanceTransaction::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->where('finance_type_id', 2)
             ->whereMonth('date', $currentMonth)
             ->count();
 
         // ========================= Monthly Expenses (For Grid 4x4) ========================== //
-        $monthlyExpenses = FinanceTransaction::selectRaw('
+        $monthlyExpenses = FinanceTransaction::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->selectRaw('
                 YEAR(date) as year, 
                 MONTH(date) as month, 
                 SUM(CASE WHEN finance_type_id = 1 THEN amount ELSE 0 END) as income_amount,

@@ -12,6 +12,7 @@ class FundTransfer extends Model
         'to_account_id',
         'amount',
         'date',
+        'created_by',
     ];
 
 
@@ -22,5 +23,10 @@ class FundTransfer extends Model
     public function toAccount()
     {
         return $this->belongsTo(FinanceAccount::class, 'to_account_id');
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'created_by');
     }
 }

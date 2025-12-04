@@ -12,9 +12,14 @@ class FinanceAccountController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $data = FinanceAccount::when($search, function ($query, $search) {
-            return $query->where('bank_name', 'like', '%' . $search . '%');
-        })->get();
+        $userId = Auth::id();
+
+        $data = FinanceAccount::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->when($search, function ($query, $search) {
+                return $query->where('bank_name', 'like', '%' . $search . '%');
+            })
+            ->get();
+
         return view('layouts.app', [
             'content' => view('pages.finance.finance-accounts.finance-account', compact('data'))->render()
         ]);
@@ -51,13 +56,19 @@ class FinanceAccountController extends Controller
 
     public function update($id)
     {
-        $data = FinanceAccount::where('id', $id)->first();
+        $userId = Auth::id();
+
+        // ensure owner if logged in; otherwise behave like before
+        $data = FinanceAccount::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->where('id', $id)
+            ->firstOrFail();
+
         return view('layouts.app', [
             'content' => view('pages.finance.finance-accounts.finance-account-update', compact('data'))->render()
         ]);
     }
 
-    // update
+    // update (edit in your naming)
     public function edit(Request $request, $id)
     {
         $validated = $request->validate([
@@ -66,7 +77,12 @@ class FinanceAccountController extends Controller
             'fullname'    => 'required|string|max:255',
         ]);
 
-        $account = FinanceAccount::findOrFail($id);
+        $userId = Auth::id();
+
+        // ensure owner if logged in; otherwise allow as before
+        $account = FinanceAccount::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->findOrFail($id);
+
         $account->update([
             ...$validated,
             'bank_number' => $request->bank_number,
@@ -81,7 +97,12 @@ class FinanceAccountController extends Controller
 
     public function destroy($id)
     {
-        $account = FinanceAccount::findOrFail($id);
+        $userId = Auth::id();
+
+        // ensure owner if logged in; otherwise behave like before
+        $account = FinanceAccount::when($userId, fn($q) => $q->where('created_by', $userId))
+            ->findOrFail($id);
+
         $account->delete();
 
         return redirect()->route('finance.account.index')->with('success', 'Finance account deleted successfully.');

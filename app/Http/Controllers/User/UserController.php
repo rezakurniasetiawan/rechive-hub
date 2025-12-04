@@ -5,9 +5,17 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        if (!Auth::check() ||   Auth::user()->role !== 'admin') {
+            abort(403, 'Unauthorized access. Admin only.');
+        }
+    }
+
 
     public function index()
     {
