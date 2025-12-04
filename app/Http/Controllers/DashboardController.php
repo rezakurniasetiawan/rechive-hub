@@ -18,9 +18,47 @@ class DashboardController extends Controller
 {
     public function dashboard(Request $request)
     {
+        // ---------- FILTER: accept period=YYYY-MM OR legacy month & year ----------
+        // Default now
         $currentDate  = now();
         $currentYear  = $currentDate->year;
         $currentMonth = $currentDate->month;
+
+        // If user passed period (preferred) or legacy month/year, override current values
+        $period = $request->get('period'); // expected format: YYYY-MM
+        if (!$period) {
+            // legacy support: ?month=MM&year=YYYY
+            $reqMonth = $request->get('month');
+            $reqYear  = $request->get('year');
+            if ($reqMonth && $reqYear) {
+                // normalize values
+                $reqMonth = (int) $reqMonth;
+                $reqYear  = (int) $reqYear;
+                if ($reqMonth >= 1 && $reqMonth <= 12 && $reqYear >= 1900) {
+                    $currentYear  = $reqYear;
+                    $currentMonth = $reqMonth;
+                    // set currentDate to first day of selected month for consistent behavior
+                    $currentDate = Carbon::create($currentYear, $currentMonth, 1);
+                }
+            }
+        } else {
+            // parse period YYYY-MM (robust)
+            try {
+                $parts = explode('-', $period);
+                if (count($parts) === 2) {
+                    $y = (int) $parts[0];
+                    $m = (int) $parts[1];
+                    if ($y >= 1900 && $m >= 1 && $m <= 12) {
+                        $currentYear  = $y;
+                        $currentMonth = $m;
+                        $currentDate  = Carbon::create($currentYear, $currentMonth, 1);
+                    }
+                }
+            } catch (\Throwable $e) {
+                // ignore parse error and keep defaults (now)
+            }
+        }
+        // -------------------------------------------------------------------------
 
         // ========================= Total Balance ========================== //
         $totalBalance = FinanceAccount::sum('balance');
