@@ -3,7 +3,9 @@
            <img alt="Rechive Hub" class="w-8" src="{{ asset('dist/images/logo.svg') }}">
            <div class="hidden xl:block text-white ml-3">
                <span class="text-lg"> ReChive<span class="font-bold">Hub</span> </span>
-               <p class="text-xs text-white opacity-50">Reza & Chelsa Archive Hub</p>
+               @if (auth()->user()->role === 'admin')
+                   <p class="text-xs text-white opacity-50">Reza & Chelsa Archive Hub</p>
+               @endif
            </div>
        </a>
        <div class="side-nav__devider my-6"></div>
@@ -89,7 +91,16 @@
                        <div class="side-menu__title"> Users </div>
                    </a>
                </li>
-           @endif {{-- 🧑‍💼 Pekerjaan & Proyek --}}
+           @endif
+           {{-- Budget --}}
+           <li>
+               <a href="{{ route('budgets.index') }}"
+                   class="side-menu  {{ request()->routeIs('budgets.*') ? 'side-menu--active' : '' }}">
+                   <div class="side-menu__icon"> <i data-feather="pie-chart"></i> </div>
+                   <div class="side-menu__title"> Budgets </div>
+               </a>
+           </li>
+           {{-- 🧑‍💼 Pekerjaan & Proyek --}}
            {{-- <li>
                <a href="javascript:;" class="side-menu">
                    <div class="side-menu__icon"><i data-feather="briefcase"></i></div>

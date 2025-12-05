@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Budget\BudgetController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Finance\{
     FinanceAccountController,
@@ -19,6 +20,7 @@ use Termwind\Components\Raw;
 // Auth Routes
 Route::controller(AuthController::class)->group(function () {
     Route::get('/', 'login')->name('login');
+    Route::get('/getDailyExpensesByAccount', 'getDailyExpensesByAccount')->name('getDailyExpensesByAccount');
     Route::post('/login', 'actionlogin')->name('auth.actionlogin');
     // auth.actionloginpin
     Route::post('/login/pin', 'actionloginpin')->name('auth.actionloginpin');
@@ -110,6 +112,12 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/mark-as-used/{id}', 'markAsUsed')->name('markAsUsed');
         });
     });
+
+    Route::controller(BudgetController  ::class)->group(function () {
+        Route::get('/budgets', 'index')->name('budgets.index');
+    });
+
+    // Buser Routes
 
 
     Route::controller(UserController::class)->group(function () {

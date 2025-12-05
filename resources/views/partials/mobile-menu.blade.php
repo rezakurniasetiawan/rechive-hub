@@ -42,8 +42,33 @@
                          <div class="menu__title"> Finance Transactions </div>
                      </a>
                  </li>
+                 <li>
+                     <a href="{{ route('finance.fundtransfer.index') }}"
+                         class="menu {{ request()->routeIs('finance.fundtransfer.*') ? 'menu--active' : '' }}">
+                         <div class="menu__icon"> <i data-feather="corner-up-right"></i> </div>
+                         <div class="menu__title"> Fund Transfer </div>
+                     </a>
+                 </li>
              </ul>
          </li>
+
+         <li>
+             <a href="{{ route('reminders.index') }}"
+                 class="menu  {{ request()->routeIs('reminders.*') ? 'menu--active' : '' }}">
+                 <div class="menu__icon"> <i data-feather="bell"></i> </div>
+                 <div class="menu__title"> Reminders </div>
+             </a>
+         </li>
+         {{-- User --}}
+         @if (auth()->user()->role === 'admin')
+             <li>
+                 <a href="{{ route('users.index') }}"
+                     class="menu  {{ request()->routeIs('users.*') ? 'menu--active' : '' }}">
+                     <div class="menu__icon"> <i data-feather="users"></i> </div>
+                     <div class="menu__title"> Users </div>
+                 </a>
+             </li>
+         @endif
          {{-- <li>
              <a href="side-menu-inbox.html" class="menu">
                  <div class="menu__icon"> <i data-feather="inbox"></i> </div>

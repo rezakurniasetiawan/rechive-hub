@@ -10,4 +10,6 @@ Route::controller(ApiFinanceTransactionController::class)->group(function () {
     Route::get('/finance/types', 'getFinanceTypes')->name('api.finance.types');
     Route::get('/finance/accounts', 'getFinanceAccounts')->name('api.finance.accounts');
     Route::get('/finance/categories', 'getFinanceCategories')->name('api.finance.categories');
+    // getDailyExpensesByAccount
+    Route::get('/finance/daily-expenses-by-account', 'getDailyExpensesByAccount')->name('api.finance.daily-expenses-by-account');
 });
