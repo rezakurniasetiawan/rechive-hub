@@ -3,7 +3,7 @@
     <h2 class="text-xl font-bold mt-10 tracking-wide">Budget Overview</h2>
 </div>
 
-<div class="grid grid-cols-12 gap-6 mt-6">
+{{-- <div class="grid grid-cols-12 gap-6 mt-6">
 
     <!-- SUMMARY (sticky on lg) -->
     <div class="col-span-12 lg:col-span-4">
@@ -187,4 +187,4 @@
         </div>
     </div>
 
-</div>
+</div> --}}
